@@ -11,45 +11,41 @@
       >{{ s }}</button>
     </div>
 
-    <template>
-      <template v-for="group in grouped" :key="group.date">
-        <p class="view-title date-label">{{ formatDate(group.date) }}</p>
-        <div class="match-list card">
-          <div
-            v-for="(m, i) in group.matches"
-            :key="i"
-            class="match-row"
-            :class="{ 'match-row--divider': i > 0 }"
-          >
-            <div class="match-stage-pill">
-              <span class="pill" :class="stagePillClass(m.stage)">{{ m.stage }}</span>
-              <span v-if="m.time && !m.played" class="match-time">{{ m.time }}</span>
-            </div>
+    <template v-for="group in grouped" :key="group.date">
+      <p class="view-title date-label">{{ formatDate(group.date) }}</p>
+      <div class="match-list card">
+        <div
+          v-for="(m, i) in group.matches"
+          :key="i"
+          class="match-row"
+          :class="{ 'match-row--divider': i > 0 }"
+        >
+          <div class="match-stage-pill">
+            <span class="pill" :class="stagePillClass(m.stage)">{{ m.stage }}</span>
+            <span v-if="m.time && !m.played" class="match-time">{{ m.time }}</span>
+          </div>
 
-            <div class="match-score-row">
-              <!-- Home -->
-              <span class="team-name" :class="{ winner: m.result === 'home' }">{{ m.home }}</span>
-              <div class="score-box">
-                <span v-if="m.played" class="score">
-                  <span :class="{ 'score-winner': m.result === 'home' }">{{ m.home_score }}</span>
-                  –
-                  <span :class="{ 'score-winner': m.result === 'away' }">{{ m.away_score }}</span>
-                </span>
-                <span v-else class="score score--upcoming">vs</span>
-              </div>
-              <span class="team-name team-name--right" :class="{ winner: m.result === 'away' }">{{ m.away }}</span>
+          <div class="match-score-row">
+            <span class="team-name" :class="{ winner: m.result === 'home' }">{{ m.home }}</span>
+            <div class="score-box">
+              <span v-if="m.played" class="score">
+                <span :class="{ 'score-winner': m.result === 'home' }">{{ m.home_score }}</span>
+                –
+                <span :class="{ 'score-winner': m.result === 'away' }">{{ m.away_score }}</span>
+              </span>
+              <span v-else class="score score--upcoming">vs</span>
             </div>
+            <span class="team-name team-name--right" :class="{ winner: m.result === 'away' }">{{ m.away }}</span>
+          </div>
 
-            <!-- Bonus flags -->
-            <div v-if="m.played && m.bonuses" class="bonus-flags">
-              <span v-for="b in parseBonuses(m.bonuses)" :key="b" class="bonus-tag">{{ b }}</span>
-            </div>
+          <div v-if="m.played && m.bonuses" class="bonus-flags">
+            <span v-for="b in parseBonuses(m.bonuses)" :key="b" class="bonus-tag">{{ b }}</span>
           </div>
         </div>
-      </template>
-
-      <p v-if="!grouped.length" class="empty-msg">No matches match the filter</p>
+      </div>
     </template>
+
+    <p v-if="!grouped.length" class="empty-msg">No matches match the filter</p>
   </div>
 </template>
 
@@ -124,11 +120,12 @@ function stagePillClass(s) {
 .match-stage-pill { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .match-time { font-size: 11px; color: var(--text-dim); }
 
-.match-score-row { display: flex; align-items: center; gap: 8px; }
+.match-score-row { display: flex; align-items: center; gap: 6px; }
 
 .team-name {
-  flex: 1; font-size: 14px; font-weight: 500; color: #ffffff;
+  flex: 1; font-size: 13px; font-weight: 500; color: #ffffff;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  min-width: 0;
 }
 .team-name--right { text-align: right; }
 .team-name.winner { color: var(--text); font-weight: 700; }

@@ -16,10 +16,96 @@ export const players = [
 ]
 
 export const matches = [
-  // ── Group Stage ──────────────────────────────────────────────────────────────
-  // Add matches here as the schedule is confirmed.
-  // Example:
-  // { date: '2026-06-11', stage: 'Group Stage', home: 'Mexico', away: 'USA', home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  // ── Group Stage ─────────────────────────────────────────────────────────────
+  // June 11
+  { date: '2026-06-11', stage: 'Group Stage', home: 'Mexico',              away: 'South Africa',        home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-11', stage: 'Group Stage', home: 'South Korea',         away: 'Czech Republic',      home_score: '', away_score: '', bonuses: '', time: '9:00 PM CT' },
+  // June 12
+  { date: '2026-06-12', stage: 'Group Stage', home: 'Canada',              away: 'Bosnia & Herzegovina',home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-12', stage: 'Group Stage', home: 'USA',                 away: 'Paraguay',            home_score: '', away_score: '', bonuses: '', time: '8:00 PM CT' },
+  // June 13
+  { date: '2026-06-13', stage: 'Group Stage', home: 'Qatar',               away: 'Switzerland',         home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-13', stage: 'Group Stage', home: 'Brazil',              away: 'Morocco',             home_score: '', away_score: '', bonuses: '', time: '5:00 PM CT' },
+  { date: '2026-06-13', stage: 'Group Stage', home: 'Haiti',               away: 'Scotland',            home_score: '', away_score: '', bonuses: '', time: '8:00 PM CT' },
+  { date: '2026-06-13', stage: 'Group Stage', home: 'Australia',           away: 'Turkey',              home_score: '', away_score: '', bonuses: '', time: '11:00 PM CT' },
+  // June 14
+  { date: '2026-06-14', stage: 'Group Stage', home: 'Germany',             away: 'Curaçao',             home_score: '', away_score: '', bonuses: '', time: '12:00 PM CT' },
+  { date: '2026-06-14', stage: 'Group Stage', home: 'Netherlands',         away: 'Japan',               home_score: '', away_score: '', bonuses: '', time: '3:00 PM CT' },
+  { date: '2026-06-14', stage: 'Group Stage', home: 'Ivory Coast',         away: 'Ecuador',             home_score: '', away_score: '', bonuses: '', time: '6:00 PM CT' },
+  { date: '2026-06-14', stage: 'Group Stage', home: 'Sweden',              away: 'Tunisia',             home_score: '', away_score: '', bonuses: '', time: '9:00 PM CT' },
+  // June 15
+  { date: '2026-06-15', stage: 'Group Stage', home: 'Spain',               away: 'Cape Verde',          home_score: '', away_score: '', bonuses: '', time: '12:00 PM CT' },
+  { date: '2026-06-15', stage: 'Group Stage', home: 'Belgium',             away: 'Egypt',               home_score: '', away_score: '', bonuses: '', time: '5:00 PM CT' },
+  { date: '2026-06-15', stage: 'Group Stage', home: 'Saudi Arabia',        away: 'Uruguay',             home_score: '', away_score: '', bonuses: '', time: '5:00 PM CT' },
+  { date: '2026-06-15', stage: 'Group Stage', home: 'Iran',                away: 'New Zealand',         home_score: '', away_score: '', bonuses: '', time: '11:00 PM CT' },
+  // June 16
+  { date: '2026-06-16', stage: 'Group Stage', home: 'France',              away: 'Senegal',             home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-16', stage: 'Group Stage', home: 'Iraq',                away: 'Norway',              home_score: '', away_score: '', bonuses: '', time: '5:00 PM CT' },
+  { date: '2026-06-16', stage: 'Group Stage', home: 'Argentina',           away: 'Algeria',             home_score: '', away_score: '', bonuses: '', time: '8:00 PM CT' },
+  { date: '2026-06-16', stage: 'Group Stage', home: 'Austria',             away: 'Jordan',              home_score: '', away_score: '', bonuses: '', time: '11:00 PM CT' },
+  // June 17
+  { date: '2026-06-17', stage: 'Group Stage', home: 'Portugal',            away: 'DR Congo',            home_score: '', away_score: '', bonuses: '', time: '12:00 PM CT' },
+  { date: '2026-06-17', stage: 'Group Stage', home: 'England',             away: 'Croatia',             home_score: '', away_score: '', bonuses: '', time: '3:00 PM CT' },
+  { date: '2026-06-17', stage: 'Group Stage', home: 'Ghana',               away: 'Panama',              home_score: '', away_score: '', bonuses: '', time: '6:00 PM CT' },
+  { date: '2026-06-17', stage: 'Group Stage', home: 'Uzbekistan',          away: 'Colombia',            home_score: '', away_score: '', bonuses: '', time: '9:00 PM CT' },
+  // June 18
+  { date: '2026-06-18', stage: 'Group Stage', home: 'Czech Republic',      away: 'South Africa',        home_score: '', away_score: '', bonuses: '', time: '11:00 AM CT' },
+  { date: '2026-06-18', stage: 'Group Stage', home: 'Switzerland',         away: 'Bosnia & Herzegovina',home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-18', stage: 'Group Stage', home: 'Canada',              away: 'Qatar',               home_score: '', away_score: '', bonuses: '', time: '5:00 PM CT' },
+  { date: '2026-06-18', stage: 'Group Stage', home: 'Mexico',              away: 'South Korea',         home_score: '', away_score: '', bonuses: '', time: '10:00 PM CT' },
+  // June 19
+  { date: '2026-06-19', stage: 'Group Stage', home: 'USA',                 away: 'Australia',           home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-19', stage: 'Group Stage', home: 'Scotland',            away: 'Morocco',             home_score: '', away_score: '', bonuses: '', time: '5:00 PM CT' },
+  { date: '2026-06-19', stage: 'Group Stage', home: 'Brazil',              away: 'Haiti',               home_score: '', away_score: '', bonuses: '', time: '8:00 PM CT' },
+  { date: '2026-06-19', stage: 'Group Stage', home: 'Turkey',              away: 'Paraguay',            home_score: '', away_score: '', bonuses: '', time: '11:00 PM CT' },
+  // June 20
+  { date: '2026-06-20', stage: 'Group Stage', home: 'Netherlands',         away: 'Sweden',              home_score: '', away_score: '', bonuses: '', time: '12:00 PM CT' },
+  { date: '2026-06-20', stage: 'Group Stage', home: 'Germany',             away: 'Ivory Coast',         home_score: '', away_score: '', bonuses: '', time: '3:00 PM CT' },
+  { date: '2026-06-20', stage: 'Group Stage', home: 'Ecuador',             away: 'Curaçao',             home_score: '', away_score: '', bonuses: '', time: '7:00 PM CT' },
+  { date: '2026-06-20', stage: 'Group Stage', home: 'Tunisia',             away: 'Japan',               home_score: '', away_score: '', bonuses: '', time: '11:00 PM CT' },
+  // June 21
+  { date: '2026-06-21', stage: 'Group Stage', home: 'Spain',               away: 'Saudi Arabia',        home_score: '', away_score: '', bonuses: '', time: '11:00 AM CT' },
+  { date: '2026-06-21', stage: 'Group Stage', home: 'Belgium',             away: 'Iran',                home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-21', stage: 'Group Stage', home: 'Uruguay',             away: 'Cape Verde',          home_score: '', away_score: '', bonuses: '', time: '5:00 PM CT' },
+  { date: '2026-06-21', stage: 'Group Stage', home: 'New Zealand',         away: 'Egypt',               home_score: '', away_score: '', bonuses: '', time: '8:00 PM CT' },
+  // June 22
+  { date: '2026-06-22', stage: 'Group Stage', home: 'Argentina',           away: 'Austria',             home_score: '', away_score: '', bonuses: '', time: '12:00 PM CT' },
+  { date: '2026-06-22', stage: 'Group Stage', home: 'France',              away: 'Iraq',                home_score: '', away_score: '', bonuses: '', time: '4:00 PM CT' },
+  { date: '2026-06-22', stage: 'Group Stage', home: 'Norway',              away: 'Senegal',             home_score: '', away_score: '', bonuses: '', time: '7:00 PM CT' },
+  { date: '2026-06-22', stage: 'Group Stage', home: 'Jordan',              away: 'Algeria',             home_score: '', away_score: '', bonuses: '', time: '10:00 PM CT' },
+  // June 23
+  { date: '2026-06-23', stage: 'Group Stage', home: 'Portugal',            away: 'Uzbekistan',          home_score: '', away_score: '', bonuses: '', time: '12:00 PM CT' },
+  { date: '2026-06-23', stage: 'Group Stage', home: 'England',             away: 'Ghana',               home_score: '', away_score: '', bonuses: '', time: '3:00 PM CT' },
+  { date: '2026-06-23', stage: 'Group Stage', home: 'Panama',              away: 'Croatia',             home_score: '', away_score: '', bonuses: '', time: '6:00 PM CT' },
+  { date: '2026-06-23', stage: 'Group Stage', home: 'Colombia',            away: 'DR Congo',            home_score: '', away_score: '', bonuses: '', time: '9:00 PM CT' },
+  // June 24
+  { date: '2026-06-24', stage: 'Group Stage', home: 'Switzerland',         away: 'Canada',              home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-24', stage: 'Group Stage', home: 'Bosnia & Herzegovina',away: 'Qatar',               home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-24', stage: 'Group Stage', home: 'Scotland',            away: 'Brazil',              home_score: '', away_score: '', bonuses: '', time: '5:00 PM CT' },
+  { date: '2026-06-24', stage: 'Group Stage', home: 'Morocco',             away: 'Haiti',               home_score: '', away_score: '', bonuses: '', time: '5:00 PM CT' },
+  { date: '2026-06-24', stage: 'Group Stage', home: 'Czech Republic',      away: 'Mexico',              home_score: '', away_score: '', bonuses: '', time: '8:00 PM CT' },
+  { date: '2026-06-24', stage: 'Group Stage', home: 'South Africa',        away: 'South Korea',         home_score: '', away_score: '', bonuses: '', time: '8:00 PM CT' },
+  // June 25
+  { date: '2026-06-25', stage: 'Group Stage', home: 'Ecuador',             away: 'Germany',             home_score: '', away_score: '', bonuses: '', time: '3:00 PM CT' },
+  { date: '2026-06-25', stage: 'Group Stage', home: 'Curaçao',             away: 'Ivory Coast',         home_score: '', away_score: '', bonuses: '', time: '3:00 PM CT' },
+  { date: '2026-06-25', stage: 'Group Stage', home: 'Japan',               away: 'Sweden',              home_score: '', away_score: '', bonuses: '', time: '6:00 PM CT' },
+  { date: '2026-06-25', stage: 'Group Stage', home: 'Tunisia',             away: 'Netherlands',         home_score: '', away_score: '', bonuses: '', time: '6:00 PM CT' },
+  { date: '2026-06-25', stage: 'Group Stage', home: 'Turkey',              away: 'USA',                 home_score: '', away_score: '', bonuses: '', time: '9:00 PM CT' },
+  { date: '2026-06-25', stage: 'Group Stage', home: 'Paraguay',            away: 'Australia',           home_score: '', away_score: '', bonuses: '', time: '9:00 PM CT' },
+  // June 26
+  { date: '2026-06-26', stage: 'Group Stage', home: 'Norway',              away: 'France',              home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-26', stage: 'Group Stage', home: 'Senegal',             away: 'Iraq',                home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' },
+  { date: '2026-06-26', stage: 'Group Stage', home: 'Cape Verde',          away: 'Saudi Arabia',        home_score: '', away_score: '', bonuses: '', time: '7:00 PM CT' },
+  { date: '2026-06-26', stage: 'Group Stage', home: 'Uruguay',             away: 'Spain',               home_score: '', away_score: '', bonuses: '', time: '7:00 PM CT' },
+  { date: '2026-06-26', stage: 'Group Stage', home: 'Egypt',               away: 'Iran',                home_score: '', away_score: '', bonuses: '', time: '10:00 PM CT' },
+  { date: '2026-06-26', stage: 'Group Stage', home: 'New Zealand',         away: 'Belgium',             home_score: '', away_score: '', bonuses: '', time: '10:00 PM CT' },
+  // June 27
+  { date: '2026-06-27', stage: 'Group Stage', home: 'Panama',              away: 'England',             home_score: '', away_score: '', bonuses: '', time: '4:00 PM CT' },
+  { date: '2026-06-27', stage: 'Group Stage', home: 'Croatia',             away: 'Ghana',               home_score: '', away_score: '', bonuses: '', time: '4:00 PM CT' },
+  { date: '2026-06-27', stage: 'Group Stage', home: 'Colombia',            away: 'Portugal',            home_score: '', away_score: '', bonuses: '', time: '6:30 PM CT' },
+  { date: '2026-06-27', stage: 'Group Stage', home: 'DR Congo',            away: 'Uzbekistan',          home_score: '', away_score: '', bonuses: '', time: '6:30 PM CT' },
+  { date: '2026-06-27', stage: 'Group Stage', home: 'Algeria',             away: 'Austria',             home_score: '', away_score: '', bonuses: '', time: '9:00 PM CT' },
+  { date: '2026-06-27', stage: 'Group Stage', home: 'Jordan',              away: 'Argentina',           home_score: '', away_score: '', bonuses: '', time: '9:00 PM CT' },
 ]
 
 export const tiers = [

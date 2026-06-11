@@ -62,6 +62,7 @@
 }
 
 body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
   background: var(--bg);
   background-image:
     linear-gradient(rgba(189,95,255,0.04) 1px, transparent 1px),

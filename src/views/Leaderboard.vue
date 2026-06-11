@@ -11,7 +11,12 @@
       >
         <div class="lb-main">
           <span class="lb-rank" :class="rankClass(entry.rank)">{{ entry.rank }}</span>
-          <span class="lb-name">{{ entry.name }}</span>
+          <div class="lb-center">
+            <span class="lb-name">{{ entry.name }}</span>
+            <div class="lb-flags">
+              <span v-for="team in entry.teams" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
+            </div>
+          </div>
           <span class="lb-pts">{{ entry.total }} <span class="lb-pts-label">pts</span></span>
         </div>
 
@@ -59,6 +64,61 @@ import { usePoolStore } from '../stores/pool.js'
 const store = usePoolStore()
 const expanded = ref(null)
 
+const FLAG_MAP = {
+  // Tier 1
+  'Spain':                '🇪🇸',
+  'France':               '🇫🇷',
+  'England':              '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+  'Portugal':             '🇵🇹',
+  'Argentina':            '🇦🇷',
+  'Brazil':               '🇧🇷',
+  'Germany':              '🇩🇪',
+  'Netherlands':          '🇳🇱',
+  'Belgium':              '🇧🇪',
+  'Norway':               '🇳🇴',
+  'Colombia':             '🇨🇴',
+  'Morocco':              '🇲🇦',
+  // Tier 2
+  'Japan':                '🇯🇵',
+  'USA':                  '🇺🇸',
+  'Mexico':               '🇲🇽',
+  'Senegal':              '🇸🇳',
+  'Switzerland':          '🇨🇭',
+  'Turkey':               '🇹🇷',
+  'Uruguay':              '🇺🇾',
+  'Croatia':              '🇭🇷',
+  'Ecuador':              '🇪🇨',
+  'Sweden':               '🇸🇪',
+  'Austria':              '🇦🇹',
+  'Canada':               '🇨🇦',
+  // Tier 3
+  'Ivory Coast':          '🇨🇮',
+  'Algeria':              '🇩🇿',
+  'Bosnia & Herzegovina': '🇧🇦',
+  'Czech Republic':       '🇨🇿',
+  'Egypt':                '🇪🇬',
+  'South Korea':          '🇰🇷',
+  'Paraguay':             '🇵🇾',
+  'Scotland':             '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  'Australia':            '🇦🇺',
+  'Ghana':                '🇬🇭',
+  'Iran':                 '🇮🇷',
+  'Tunisia':              '🇹🇳',
+  // Tier 4
+  'DR Congo':             '🇨🇩',
+  'Cape Verde':           '🇨🇻',
+  'Iraq':                 '🇮🇶',
+  'Jordan':               '🇯🇴',
+  'New Zealand':          '🇳🇿',
+  'Panama':               '🇵🇦',
+  'Qatar':                '🇶🇦',
+  'Saudi Arabia':         '🇸🇦',
+  'South Africa':         '🇿🇦',
+  'Uzbekistan':           '🇺🇿',
+  'Curaçao':              '🇨🇼',
+  'Haiti':                '🇭🇹',
+}
+
 function rankClass(r) {
   if (r === 1) return 'rank-gold'
   if (r === 2) return 'rank-silver'
@@ -74,7 +134,7 @@ function rankClass(r) {
 .lb-row--first { border-color: var(--accent); }
 
 .lb-main {
-  display: flex; align-items: center; gap: 12px;
+  display: flex; align-items: flex-start; gap: 12px;
   padding: 14px 16px;
 }
 
@@ -82,14 +142,17 @@ function rankClass(r) {
   width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; font-weight: 800; background: var(--surface2); color: var(--text-dim);
-  flex-shrink: 0;
+  flex-shrink: 0; margin-top: 1px;
 }
 .rank-gold   { background: #4a3a1a; color: #f0c060; }
 .rank-silver { background: #2a2e3a; color: #d0d8e8; }
 .rank-bronze { background: #2e2018; color: #e89060; }
 
-.lb-name { flex: 1; font-size: 15px; font-weight: 600; color: #ffffff; }
-.lb-pts { font-size: 17px; font-weight: 800; color: var(--accent); }
+.lb-center { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.lb-name { font-size: 15px; font-weight: 600; color: #ffffff; }
+.lb-flags { display: flex; gap: 4px; flex-wrap: wrap; }
+.lb-flag { font-size: 18px; line-height: 1; cursor: default; }
+.lb-pts { font-size: 17px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
 .lb-pts-label { font-size: 11px; font-weight: 500; color: var(--text-dim); }
 
 .lb-breakdown {
