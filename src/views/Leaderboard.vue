@@ -82,7 +82,11 @@
     <p class="view-title" style="margin-top:28px">Shared Picks</p>
     <p class="strength-sub">Teams selected by more than one player</p>
     <div class="shared-grid">
-      <div v-for="item in sharedPicks" :key="item.team" class="shared-chip" :class="`shared-t${item.tier}`">
+      <div
+        v-for="item in sharedPicks" :key="item.team"
+        class="shared-chip" :class="`shared-t${item.tier}`"
+        :style="chipScale(item.count)"
+      >
         <span class="shared-team">{{ item.team }}</span>
         <span class="shared-count">×{{ item.count }}</span>
       </div>
@@ -245,6 +249,15 @@ const FLAG_MAP = {
   'Haiti':                '🇭🇹',
 }
 
+function chipScale(count) {
+  const maxCount = Math.max(...sharedPicks.value.map(s => s.count))
+  const t = (count - 2) / Math.max(maxCount - 2, 1)
+  const fontSize = (11 + t * 10).toFixed(1) + 'px'
+  const padV    = (4  + t * 6).toFixed(1) + 'px'
+  const padH    = (10 + t * 10).toFixed(1) + 'px'
+  return { fontSize, padding: `${padV} ${padH}` }
+}
+
 function rankClass(r) {
   if (r === 1) return 'rank-gold'
   if (r === 2) return 'rank-silver'
@@ -365,7 +378,7 @@ function rankClass(r) {
 .tiermix-key span { display: flex; align-items: center; gap: 3px; }
 
 /* ── Shared Picks ─────────────────────────────────────────────── */
-.shared-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.shared-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
 .shared-chip {
   display: flex; align-items: center; gap: 5px;
   padding: 4px 10px; border-radius: 99px; border: 1px solid;

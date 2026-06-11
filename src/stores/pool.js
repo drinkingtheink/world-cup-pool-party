@@ -4,7 +4,23 @@ import { players as rawPlayers, matches as rawMatches, tiers as rawTiers } from 
 import { buildLeaderboard, enrichMatches } from '../services/points.js'
 
 export const usePoolStore = defineStore('pool', () => {
-  const leaderboard = computed(() => buildLeaderboard(rawPlayers, rawMatches))
+  // implied win probability = 100 / (americanOdds + 100)
+  const oddsMap = computed(() => {
+    const map = {}
+    rawTiers.forEach(t => { if (t.odds) map[t.team] = 100 / (t.odds + 100) })
+    return map
+  })
+
+  const leaderboard = computed(() => {
+    const strengthMap = {}
+    rawPlayers.forEach(p => {
+      const teams = [p.team1, p.team2, p.team3, p.team4, p.team5, p.team6].filter(Boolean)
+      strengthMap[p.name] = teams.reduce((sum, t) => sum + (oddsMap.value[t] ?? 0), 0)
+    })
+    return buildLeaderboard(rawPlayers, rawMatches)
+      .sort((a, b) => b.total - a.total || (strengthMap[b.name] ?? 0) - (strengthMap[a.name] ?? 0))
+      .map((entry, i) => ({ ...entry, rank: i + 1 }))
+  })
 
   const teamPlayerMap = computed(() => {
     const map = {}
@@ -34,13 +50,6 @@ export const usePoolStore = defineStore('pool', () => {
   const fifaRankMap = computed(() => {
     const map = {}
     rawTiers.forEach(t => { if (t.fifaRank) map[t.team] = t.fifaRank })
-    return map
-  })
-
-  // implied win probability = 100 / (americanOdds + 100)
-  const oddsMap = computed(() => {
-    const map = {}
-    rawTiers.forEach(t => { if (t.odds) map[t.team] = 100 / (t.odds + 100) })
     return map
   })
 
