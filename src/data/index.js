@@ -15,13 +15,13 @@ export const quotes = [
 
 export const players = [
   { name: 'Charley', team1: 'England', team2: 'Germany', team3: 'Norway', team4: 'Uruguay', team5: 'Morocco', team6: 'Scotland' },
-  { name: 'Jason',   team1: 'France', team2: 'Netherlands', team3: 'Japan', team4: 'Croatia', team5: 'Ivory Coast', team6: 'Switzerland' },
-  { name: 'Dan',     team1: 'Mexico', team2: 'Croatia', team3: 'Ivory Coast', team4: 'Spain', team5: 'Brazil', team6: 'Colombia' },
+  { name: 'Jason',   team1: 'France', team2: 'Netherlands', team3: 'Japan', team4: 'Croatia', team5: 'Côte d\'Ivoire', team6: 'Switzerland' },
+  { name: 'Dan',     team1: 'Mexico', team2: 'Croatia', team3: 'Côte d\'Ivoire', team4: 'Spain', team5: 'Brazil', team6: 'Colombia' },
   { name: 'Jay',     team1: 'England', team2: 'Spain', team3: 'USA', team4: 'Croatia', team5: 'Czech Republic', team6: 'DR Congo' },
   { name: 'Jared',   team1: 'Spain', team2: 'Netherlands', team3: 'Mexico', team4: 'Switzerland', team5: 'South Korea', team6: 'Algeria' },
   { name: 'Gabe',    team1: 'England', team2: 'Brazil', team3: 'Mexico', team4: 'Sweden', team5: 'Senegal', team6: 'Bosnia & Herzegovina' },
   { name: 'James',   team1: 'Senegal', team2: 'Japan', team3: 'Colombia', team4: 'Ecuador', team5: 'DR Congo', team6: 'Spain' },
-  { name: 'Tommy',   team1: 'Argentina', team2: 'Portugal', team3: 'USA', team4: 'Switzerland', team5: 'Croatia', team6: 'Ivory Coast' },
+  { name: 'Tommy',   team1: 'Argentina', team2: 'Portugal', team3: 'USA', team4: 'Switzerland', team5: 'Croatia', team6: 'Côte d\'Ivoire' },
 ]
 
 export const matches = [
@@ -40,7 +40,7 @@ export const matches = [
   // June 14
   { date: '2026-06-14', stage: 'Group Stage', home: 'Germany',             away: 'Curaçao',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '12:00 PM CT' },
   { date: '2026-06-14', stage: 'Group Stage', home: 'Netherlands',         away: 'Japan',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
-  { date: '2026-06-14', stage: 'Group Stage', home: 'Ivory Coast',         away: 'Ecuador',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:00 PM CT' },
+  { date: '2026-06-14', stage: 'Group Stage', home: 'Côte d\'Ivoire',         away: 'Ecuador',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:00 PM CT' },
   { date: '2026-06-14', stage: 'Group Stage', home: 'Sweden',              away: 'Tunisia',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
   // June 15
   { date: '2026-06-15', stage: 'Group Stage', home: 'Spain',               away: 'Cape Verde',          home_score: '', away_score: '', goals: [], penalties_winner: null, time: '12:00 PM CT' },
@@ -69,7 +69,7 @@ export const matches = [
   { date: '2026-06-19', stage: 'Group Stage', home: 'Turkey',              away: 'Paraguay',            home_score: '', away_score: '', goals: [], penalties_winner: null, time: '11:00 PM CT' },
   // June 20
   { date: '2026-06-20', stage: 'Group Stage', home: 'Netherlands',         away: 'Sweden',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '12:00 PM CT' },
-  { date: '2026-06-20', stage: 'Group Stage', home: 'Germany',             away: 'Ivory Coast',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
+  { date: '2026-06-20', stage: 'Group Stage', home: 'Germany',             away: 'Côte d\'Ivoire',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
   { date: '2026-06-20', stage: 'Group Stage', home: 'Ecuador',             away: 'Curaçao',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '7:00 PM CT' },
   { date: '2026-06-20', stage: 'Group Stage', home: 'Tunisia',             away: 'Japan',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '11:00 PM CT' },
   // June 21
@@ -96,7 +96,7 @@ export const matches = [
   { date: '2026-06-24', stage: 'Group Stage', home: 'South Africa',        away: 'South Korea',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '8:00 PM CT' },
   // June 25
   { date: '2026-06-25', stage: 'Group Stage', home: 'Ecuador',             away: 'Germany',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
-  { date: '2026-06-25', stage: 'Group Stage', home: 'Curaçao',             away: 'Ivory Coast',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
+  { date: '2026-06-25', stage: 'Group Stage', home: 'Curaçao',             away: 'Côte d\'Ivoire',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
   { date: '2026-06-25', stage: 'Group Stage', home: 'Japan',               away: 'Sweden',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:00 PM CT' },
   { date: '2026-06-25', stage: 'Group Stage', home: 'Tunisia',             away: 'Netherlands',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:00 PM CT' },
   { date: '2026-06-25', stage: 'Group Stage', home: 'Turkey',              away: 'USA',                 home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
@@ -146,7 +146,7 @@ export const tiers = [
   { team: 'Austria',              tier: 2, odds: 15000, fifaRank: 24 },
   { team: 'Canada',               tier: 2, odds: 15000, fifaRank: 30 },
   // Tier 3 — Solid (200-1 to 500-1)
-  { team: 'Ivory Coast',          tier: 3, odds: 20000, fifaRank: 34 },
+  { team: 'Côte d\'Ivoire',          tier: 3, odds: 20000, fifaRank: 34 },
   { team: 'Algeria',              tier: 3, odds: 25000, fifaRank: 28 },
   { team: 'Bosnia & Herzegovina', tier: 3, odds: 25000, fifaRank: 65 },
   { team: 'Czech Republic',       tier: 3, odds: 25000, fifaRank: 41 },

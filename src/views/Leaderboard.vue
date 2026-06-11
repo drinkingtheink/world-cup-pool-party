@@ -233,7 +233,7 @@ const FLAG_MAP = {
   'Austria':              '🇦🇹',
   'Canada':               '🇨🇦',
   // Tier 3
-  'Ivory Coast':          '🇨🇮',
+  'Côte d\'Ivoire':          '🇨🇮',
   'Algeria':              '🇩🇿',
   'Bosnia & Herzegovina': '🇧🇦',
   'Czech Republic':       '🇨🇿',
