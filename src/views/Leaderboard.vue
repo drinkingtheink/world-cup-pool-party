@@ -55,17 +55,140 @@
         </div>
       </div>
     </div>
+
+    <!-- Tier Mix -->
+    <p class="view-title" style="margin-top:28px">Tier Mix</p>
+    <p class="strength-sub">Squad composition by tier — risk vs. pedigree</p>
+    <div class="tiermix-list">
+      <div v-for="p in tierMix" :key="p.name" class="tiermix-row">
+        <span class="tiermix-name">{{ p.name }}</span>
+        <div class="tiermix-bar">
+          <div class="tiermix-seg seg-t1" :style="{ width: (p.t1/6*100)+'%' }" :title="`${p.t1} Tier 1`"></div>
+          <div class="tiermix-seg seg-t2" :style="{ width: (p.t2/6*100)+'%' }" :title="`${p.t2} Tier 2`"></div>
+          <div class="tiermix-seg seg-t3" :style="{ width: (p.t3/6*100)+'%' }" :title="`${p.t3} Tier 3`"></div>
+          <div class="tiermix-seg seg-t4" :style="{ width: (p.t4/6*100)+'%' }" :title="`${p.t4} Tier 4`"></div>
+        </div>
+        <span class="tiermix-legend">{{ p.t1 }}<span class="tl-dot t1">●</span>{{ p.t2 }}<span class="tl-dot t2">●</span>{{ p.t3 }}<span class="tl-dot t3">●</span>{{ p.t4 }}<span class="tl-dot t4">●</span></span>
+      </div>
+    </div>
+    <div class="tiermix-key">
+      <span><span class="tl-dot t1">●</span> Tier 1</span>
+      <span><span class="tl-dot t2">●</span> Tier 2</span>
+      <span><span class="tl-dot t3">●</span> Tier 3</span>
+      <span><span class="tl-dot t4">●</span> Tier 4</span>
+    </div>
+
+    <!-- Shared Picks -->
+    <p class="view-title" style="margin-top:28px">Shared Picks</p>
+    <p class="strength-sub">Teams selected by more than one player</p>
+    <div class="shared-grid">
+      <div v-for="item in sharedPicks" :key="item.team" class="shared-chip" :class="`shared-t${item.tier}`">
+        <span class="shared-team">{{ item.team }}</span>
+        <span class="shared-count">×{{ item.count }}</span>
+      </div>
+    </div>
+
+    <!-- Wildcards -->
+    <p class="view-title" style="margin-top:28px">Wildcards</p>
+    <p class="strength-sub">Teams held exclusively by one player — their private upside</p>
+    <div class="wildcard-list">
+      <div v-for="item in wildcards" :key="item.team" class="wildcard-row">
+        <span class="wildcard-team" :class="`wt-t${item.tier}`">{{ item.team }}</span>
+        <span class="wildcard-player">{{ item.player }}</span>
+      </div>
+    </div>
+
+    <!-- Avg FIFA Rank -->
+    <p class="view-title" style="margin-top:28px">Avg. FIFA Rank</p>
+    <p class="strength-sub">Mean FIFA ranking across each player's 6 teams (lower = stronger)</p>
+    <div class="strength-list">
+      <div v-for="(entry, i) in avgFifaRank" :key="entry.name" class="strength-row">
+        <span class="strength-rank">{{ i + 1 }}</span>
+        <div class="strength-body">
+          <div class="strength-meta">
+            <span class="strength-name">{{ entry.name }}</span>
+            <span class="fifa-score">Avg #{{ entry.avg }}</span>
+          </div>
+          <div class="strength-track">
+            <div class="fifa-bar" :style="{ width: ready ? (entry.pct * 100).toFixed(1) + '%' : '0%' }"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { usePoolStore } from '../stores/pool.js'
 
 const store = usePoolStore()
 const expanded = ref(null)
 const ready = ref(false)
 onMounted(() => nextTick(() => { ready.value = true }))
+
+function playerTeams(p) {
+  return [p.team1, p.team2, p.team3, p.team4, p.team5, p.team6].filter(Boolean)
+}
+
+// Tier mix per player
+const tierMix = computed(() =>
+  store.players
+    .map(p => {
+      const teams = playerTeams(p)
+      const c = { t1: 0, t2: 0, t3: 0, t4: 0 }
+      teams.forEach(t => { const n = store.tierMap[t] ?? 4; c[`t${n}`]++ })
+      return { name: p.name, ...c, total: teams.length }
+    })
+    .filter(p => p.total > 0)
+)
+
+// Teams picked by 2+ players
+const sharedPicks = computed(() => {
+  const counts = {}, players = {}
+  store.players.forEach(p =>
+    playerTeams(p).forEach(t => {
+      counts[t] = (counts[t] || 0) + 1
+      players[t] = [...(players[t] || []), p.name]
+    })
+  )
+  return Object.entries(counts)
+    .filter(([, c]) => c > 1)
+    .sort((a, b) => b[1] - a[1])
+    .map(([team, count]) => ({ team, count, tier: store.tierMap[team] ?? 4 }))
+})
+
+// Teams held by exactly one player
+const wildcards = computed(() => {
+  const counts = {}, owner = {}
+  store.players.forEach(p =>
+    playerTeams(p).forEach(t => {
+      counts[t] = (counts[t] || 0) + 1
+      owner[t] = p.name
+    })
+  )
+  return Object.entries(counts)
+    .filter(([, c]) => c === 1)
+    .map(([team]) => ({ team, player: owner[team], tier: store.tierMap[team] ?? 4 }))
+    .sort((a, b) => a.tier - b.tier || a.team.localeCompare(b.team))
+})
+
+// Average FIFA rank per player
+const avgFifaRank = computed(() => {
+  const ranked = store.players
+    .map(p => {
+      const teams = playerTeams(p)
+      const ranks = teams.map(t => store.fifaRankMap[t]).filter(Boolean)
+      const avg = ranks.length ? Math.round(ranks.reduce((s, r) => s + r, 0) / ranks.length) : 999
+      return { name: p.name, avg }
+    })
+    .filter(p => p.avg < 999)
+    .sort((a, b) => a.avg - b.avg)
+  const min = ranked[0]?.avg ?? 1
+  const max = ranked.at(-1)?.avg ?? 1
+  const spread = max - min || 1
+  return ranked.map(p => ({ ...p, pct: 0.15 + 0.85 * (1 - (p.avg - min) / spread) }))
+})
 
 const FLAG_MAP = {
   // Tier 1
@@ -214,5 +337,69 @@ function rankClass(r) {
   font-size: 10px; font-weight: 600; color: var(--text-dim);
   background: var(--surface2); border: 1px solid var(--border);
   padding: 2px 7px; border-radius: 99px;
+}
+
+/* ── Tier Mix ─────────────────────────────────────────────────── */
+.tiermix-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+.tiermix-row { display: flex; align-items: center; gap: 10px; }
+.tiermix-name { font-size: 13px; font-weight: 700; color: #fff; width: 62px; flex-shrink: 0; }
+.tiermix-bar {
+  flex: 1; height: 10px; border-radius: 99px; overflow: hidden;
+  background: var(--surface2); display: flex;
+}
+.tiermix-seg { height: 100%; transition: width .6s cubic-bezier(.4,0,.2,1); }
+.seg-t1 { background: #ff2d78; }
+.seg-t2 { background: #00e5ff; }
+.seg-t3 { background: #00ff9f; }
+.seg-t4 { background: #bd5fff; }
+.tiermix-legend { font-size: 11px; font-weight: 700; color: var(--text-dim); white-space: nowrap; display: flex; align-items: center; gap: 3px; }
+.tl-dot { font-size: 9px; }
+.tl-dot.t1 { color: #ff2d78; }
+.tl-dot.t2 { color: #00e5ff; }
+.tl-dot.t3 { color: #00ff9f; }
+.tl-dot.t4 { color: #bd5fff; }
+.tiermix-key {
+  display: flex; gap: 14px; font-size: 10px; color: var(--text-dim);
+  margin-top: 4px; padding-left: 72px;
+}
+.tiermix-key span { display: flex; align-items: center; gap: 3px; }
+
+/* ── Shared Picks ─────────────────────────────────────────────── */
+.shared-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.shared-chip {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 99px; border: 1px solid;
+  font-size: 11px; font-weight: 700;
+}
+.shared-t1 { background: rgba(255,45,120,0.12); color: #ff6fa0; border-color: rgba(255,45,120,0.3); }
+.shared-t2 { background: rgba(0,229,255,0.1); color: #00e5ff; border-color: rgba(0,229,255,0.3); }
+.shared-t3 { background: rgba(0,255,159,0.08); color: #00ff9f; border-color: rgba(0,255,159,0.25); }
+.shared-t4 { background: rgba(189,95,255,0.1); color: #bd5fff; border-color: rgba(189,95,255,0.25); }
+.shared-count {
+  background: rgba(255,255,255,0.12); border-radius: 99px;
+  padding: 0 5px; font-size: 10px; font-weight: 800; color: #fff;
+}
+
+/* ── Wildcards ────────────────────────────────────────────────── */
+.wildcard-list { display: flex; flex-direction: column; gap: 7px; }
+.wildcard-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 10px; border-radius: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+}
+.wildcard-team { font-size: 13px; font-weight: 700; }
+.wt-t1 { color: #ff6fa0; }
+.wt-t2 { color: #00e5ff; }
+.wt-t3 { color: #00ff9f; }
+.wt-t4 { color: #bd5fff; }
+.wildcard-player { font-size: 11px; font-weight: 600; color: var(--text-dim); }
+
+/* ── Avg FIFA Rank ────────────────────────────────────────────── */
+.fifa-score { font-size: 12px; font-weight: 700; color: #ffd200; }
+.fifa-bar {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, #ffd200, #ff8c00);
+  box-shadow: 0 0 8px rgba(255,210,0,0.3);
+  transition: width .6s cubic-bezier(.4,0,.2,1);
 }
 </style>
