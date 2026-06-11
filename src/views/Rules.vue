@@ -2,7 +2,7 @@
   <div class="view">
     <section class="rules-section card">
       <h2 class="rules-h">Team Selection</h2>
-      <p class="rules-p">Each player <strong>freely picks all of their teams</strong>. Duplicate picks are allowed across players.</p>
+      <p class="rules-p">Each player <strong>freely picks all of their teams</strong>. No more than 2 Tier 1 teams. Duplicate picks are allowed across players.</p>
     </section>
 
     <section class="rules-section card">
@@ -34,17 +34,6 @@
           <span class="tb-text">{{ t }}</span>
         </div>
       </div>
-    </section>
-
-    <section class="rules-section card">
-      <h2 class="rules-h">Sealed Predictions</h2>
-      <p class="rules-p">Before the tournament, each player submits (sealed):</p>
-      <ul class="rules-list">
-        <li>Golden Boot pick (top scorer)</li>
-        <li>Exact final score</li>
-        <li>One bold call of their choice</li>
-      </ul>
-      <p class="rules-p rules-p--sub">Used only as the 3rd tiebreaker.</p>
     </section>
 
     <section class="rules-section card">
