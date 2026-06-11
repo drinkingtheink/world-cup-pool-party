@@ -3,10 +3,11 @@
     <p class="view-title">Standings</p>
     <div class="leaderboard">
       <div
-        v-for="entry in store.leaderboard"
+        v-for="(entry, i) in store.leaderboard"
         :key="entry.name"
         class="lb-row card"
         :class="{ 'lb-row--first': entry.rank === 1 }"
+        :style="{ '--i': i }"
         @click="expanded = expanded === entry.name ? null : entry.name"
       >
         <div class="lb-main">
@@ -46,7 +47,7 @@
             <span class="strength-score">{{ (entry.score * 100).toFixed(1) }}%</span>
           </div>
           <div class="strength-track">
-            <div class="strength-bar" :style="{ width: (entry.pct * 100).toFixed(1) + '%' }"></div>
+            <div class="strength-bar" :style="{ width: ready ? (entry.pct * 100).toFixed(1) + '%' : '0%' }"></div>
           </div>
           <div class="strength-teams">
             <span v-for="team in entry.teams" :key="team" class="strength-team">{{ team }}</span>
@@ -58,11 +59,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { usePoolStore } from '../stores/pool.js'
 
 const store = usePoolStore()
 const expanded = ref(null)
+const ready = ref(false)
+onMounted(() => nextTick(() => { ready.value = true }))
 
 const FLAG_MAP = {
   // Tier 1

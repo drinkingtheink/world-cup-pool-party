@@ -11,9 +11,9 @@
       >{{ s }}</button>
     </div>
 
-    <template v-for="group in grouped" :key="group.date">
+    <template v-for="(group, i) in grouped" :key="group.date">
       <p class="view-title date-label">{{ formatDate(group.date) }}</p>
-      <div class="match-list card">
+      <div class="match-list card" :style="{ '--i': i }">
         <div
           v-for="(m, i) in group.matches"
           :key="i"
