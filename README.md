@@ -1,68 +1,73 @@
-# ⚽ WC Pool 2026
+# ⚽ WC Pool Party 2026
 
-Vue 3 + Vite mobile-first app. Reads from a publicly published Google Sheet — no backend, no API key needed. Scores update automatically every 2 minutes.
+Vue 3 + Vite mobile-first app for running a World Cup pool. All data lives in a single file — no backend, no API keys, no external dependencies.
 
 ---
 
-## 1. Set Up Your Google Sheet
+## How It Works
 
-Create a new Google Sheet with **3 tabs** named exactly: `players`, `matches`, `tiers`
+All players, matches, and team tiers are defined in `src/data/index.js`. Edit that file to update picks, enter scores, and manage tiers. The app recalculates standings automatically on every save.
 
-### Tab: players
-Columns: name | team1 | team2 | team3 | team4 | team5 | team6 | chosen1 | chosen2
-- chosen1/chosen2 = the 2 teams the player freely picked; other 4 came from tiered draw
-- One row per player, 8 rows total
+---
 
-### Tab: matches
-Columns: date | stage | home | away | home_score | away_score | bonuses | time
+## Data Structure
 
-Stage values (exact casing): Group Stage, Round of 32, Round of 16, Quarterfinal, Semifinal, Third Place, Final
+### Players
+Each player gets six team picks:
+```js
+{ name: 'Alice', team1: 'Brazil', team2: 'France', team3: 'Japan', team4: 'Ecuador', team5: 'Ghana', team6: 'Qatar' }
+```
+
+### Matches
+```js
+{ date: '2026-06-11', stage: 'Group Stage', home: 'Mexico', away: 'USA', home_score: '', away_score: '', bonuses: '', time: '2:00 PM CT' }
+```
+
+Leave `home_score`/`away_score` blank for upcoming matches.
+
+Stage values (exact casing): `Group Stage`, `Round of 32`, `Round of 16`, `Quarterfinal`, `Semifinal`, `Third Place`, `Final`
 
 Bonus flags (comma-separated, no spaces):
-  home_first_goal, away_first_goal (+1 each)
-  home_comeback, away_comeback (+2 each)
-  home_penalties, away_penalties (+2 each)
+`home_first_goal`, `away_first_goal` (+1 each)
+`home_comeback`, `away_comeback` (+2 each)
+`home_penalties`, `away_penalties` (+2 each)
 
-Leave home_score/away_score blank for upcoming matches.
-
-### Tab: tiers
-Columns: team | tier (1=favorites, 4=underdogs)
-
----
-
-## 2. Publish the Sheet
-
-File → Share → Publish to web → Entire Document → Web page → Publish
-Copy your Sheet ID from the URL: docs.google.com/spreadsheets/d/SHEET_ID/edit
+### Tiers
+```js
+{ team: 'Brazil', tier: 1 }  // 1 = Contenders, 4 = Cinderellas
+```
 
 ---
 
-## 3. Configure
+## Run Locally
 
-  cp .env.example .env.local
-  # Edit .env.local and set VITE_SHEET_ID=your_sheet_id
-
----
-
-## 4. Run Locally
-
-  npm install
-  npm run dev
+```
+npm install
+npm run dev
+```
 
 Open http://localhost:5173
 
 ---
 
-## 5. Deploy Free
+## Deploy
 
-Netlify: npm run build → drag dist/ to netlify.com/drop → add VITE_SHEET_ID env var
-Vercel:  npm i -g vercel && vercel → add VITE_SHEET_ID in project settings
+**Netlify:** `npm run build` → drag `dist/` to netlify.com/drop
+
+**Vercel:** `npm i -g vercel && vercel`
 
 ---
 
 ## Scoring
 
-Win +3 | Draw +1 | Goal +1 | Clean sheet +1 | First goal +1 | Comeback +2 | Pens +2
-R32/R16 ×1.5 | QF ×2 | SF ×3 | Final ×4
+| Event | Points |
+|---|---|
+| Win | +3 |
+| Draw | +1 |
+| Goal scored | +1 |
+| Clean sheet | +1 |
+| First goal bonus | +1 |
+| Comeback win | +2 |
+| Win on penalties | +2 |
 
-The app auto-refreshes every 2 minutes. Tap ↻ to force refresh.
+**Stage multipliers:** R32/R16 ×1.5 · QF ×2 · SF ×3 · Final ×4
