@@ -32,6 +32,7 @@
           <div class="team-card-top">
             <span class="team-card-name">{{ team.name }}</span>
             <span class="pill" :class="`pill-t${team.tier}`">T{{ team.tier }}</span>
+            <span v-if="store.fifaRankMap[team.name]" class="fifa-badge">FIFA #{{ store.fifaRankMap[team.name] }}</span>
           </div>
           <div class="team-card-pts">{{ team.pts }} pts</div>
         </div>
@@ -93,6 +94,13 @@ const teams = computed(() => {
 .team-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 .team-card-name { flex: 1; font-size: 14px; font-weight: 600; color: #ffffff; }
 .team-card-pts { font-size: 20px; font-weight: 800; color: var(--accent); }
+
+.fifa-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: .04em;
+  color: var(--cyan); background: rgba(0,229,255,0.08);
+  border: 1px solid rgba(0,229,255,0.25); border-radius: 4px;
+  padding: 2px 6px; white-space: nowrap; flex-shrink: 0;
+}
 
 .empty-msg { padding: 40px 24px; text-align: center; color: var(--text-dim); font-size: 14px; }
 </style>

@@ -13,6 +13,12 @@ export const usePoolStore = defineStore('pool', () => {
     return map
   })
 
+  const fifaRankMap = computed(() => {
+    const map = {}
+    rawTiers.forEach(t => { if (t.fifaRank) map[t.team] = t.fifaRank })
+    return map
+  })
+
   // implied win probability = 100 / (americanOdds + 100)
   const oddsMap = computed(() => {
     const map = {}
@@ -51,6 +57,7 @@ export const usePoolStore = defineStore('pool', () => {
     enrichedMatches,
     tierMap,
     tierGroups,
+    fifaRankMap,
     paperStrength,
   }
 })

@@ -11,6 +11,7 @@
         <div v-for="(t, i) in searchResults" :key="t.team"
           class="team-list-row" :class="{ 'team-list-row--div': i > 0 }">
           <span class="tl-name">{{ t.team }}</span>
+          <span v-if="store.fifaRankMap[t.team]" class="fifa-badge">FIFA #{{ store.fifaRankMap[t.team] }}</span>
           <span class="pill" :class="`pill-t${t.tier}`">Tier {{ t.tier }}</span>
           <span class="tl-owners">{{ ownersOf(t.team) }}</span>
         </div>
@@ -28,6 +29,7 @@
           <div v-for="(team, i) in store.tierGroups[tier]" :key="team"
             class="team-list-row" :class="{ 'team-list-row--div': i > 0 }">
             <span class="tl-name">{{ team }}</span>
+            <span v-if="store.fifaRankMap[team]" class="fifa-badge">FIFA #{{ store.fifaRankMap[team] }}</span>
             <span class="tl-owners">{{ ownersOf(team) }}</span>
           </div>
           <div v-if="!store.tierGroups[tier]?.length" class="tl-empty">No teams in this tier</div>
@@ -84,5 +86,12 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .team-list-row--div { border-top: 1px solid var(--border); }
 .tl-name { flex: 1; font-size: 14px; font-weight: 500; color: #ffffff; }
 .tl-owners { font-size: 11px; color: var(--text-dim); text-align: right; max-width: 140px; }
+
+.fifa-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: .04em;
+  color: var(--cyan); background: rgba(0,229,255,0.08);
+  border: 1px solid rgba(0,229,255,0.25); border-radius: 4px;
+  padding: 2px 6px; white-space: nowrap; flex-shrink: 0;
+}
 .tl-empty { padding: 16px; text-align: center; color: var(--text-dim); font-size: 13px; }
 </style>
