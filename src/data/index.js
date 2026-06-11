@@ -4,9 +4,18 @@
 // goals: array of { team: 'home'|'away', minute: 23 } in chronological order
 // penalties_winner: 'home', 'away', or null
 
+export const quotes = [
+  { text: 'We lost because we didn\'t win.',                                              author: 'Ronaldo Nazário' },
+  { text: 'It\'s one of them days when you just say, \'It\'s one of them days\'.',        author: 'Ian Wright' },
+  { text: 'That was only a yard away from being an inch-perfect pass.',                   author: 'Murdo MacLeod' },
+  { text: 'Well, Clive, it\'s all about the two Ms — movement and positioning.',          author: 'Ron Atkinson' },
+  { text: 'I only show emotion in bed.',                                                  author: 'Mauricio Pochettino' },
+  { text: 'I made mistakes, and I paid for them. But the ball is still pure.',            author: 'Diego Maradona' },
+]
+
 export const players = [
   { name: 'Charley', team1: 'England', team2: 'Germany', team3: 'Norway', team4: 'Uruguay', team5: 'Morocco', team6: 'Scotland' },
-  { name: 'Jason',   team1: 'France', team2: 'Netherlands', team3: 'Japan', team4: 'Croatia', team5: 'Ivory Coast', team6: 'Sweden' },
+  { name: 'Jason',   team1: 'France', team2: 'Netherlands', team3: 'Japan', team4: 'Croatia', team5: 'Ivory Coast', team6: 'Switzerland' },
   { name: 'Dan',     team1: 'Mexico', team2: 'Croatia', team3: 'Ivory Coast', team4: 'Spain', team5: 'Brazil', team6: 'Colombia' },
   { name: 'Jay',     team1: 'England', team2: 'Spain', team3: 'USA', team4: 'Croatia', team5: 'Czech Republic', team6: 'DR Congo' },
   { name: 'Jared',   team1: 'Spain', team2: 'Netherlands', team3: 'Mexico', team4: 'Switzerland', team5: 'South Korea', team6: 'Algeria' },

@@ -1,6 +1,7 @@
 <template>
   <div class="view">
     <p class="view-title">Standings</p>
+
     <div class="leaderboard">
       <div
         v-for="(entry, i) in store.leaderboard"
@@ -33,6 +34,12 @@
       </div>
 
       <p v-if="!store.leaderboard.length" class="empty-msg">No data yet</p>
+    </div>
+
+    <div class="quote-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">{{ randomQuote.text }}</p>
+      <p class="quote-author">— {{ randomQuote.author }}</p>
     </div>
 
     <!-- Paper Strength -->
@@ -125,10 +132,14 @@
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { usePoolStore } from '../stores/pool.js'
+import { quotes } from '../data/index.js'
 
 const store = usePoolStore()
 const expanded = ref(null)
 const ready = ref(false)
+
+const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
+
 onMounted(() => nextTick(() => { ready.value = true }))
 
 function playerTeams(p) {
@@ -415,4 +426,48 @@ function rankClass(r) {
   box-shadow: 0 0 8px rgba(255,210,0,0.3);
   transition: width .6s cubic-bezier(.4,0,.2,1);
 }
+
+/* ── Header Quote Card ────────────────────────────────────────── */
+.quote-card {
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding: 16px 18px 14px;
+  border-radius: 12px;
+  background: rgba(13,10,30,0.7);
+  border: 1px solid rgba(0,229,255,0.18);
+  box-shadow: 0 0 18px rgba(0,229,255,0.07), inset 0 1px 0 rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+.quote-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(0,229,255,0.04) 0%, rgba(189,95,255,0.04) 100%);
+  pointer-events: none;
+}
+.quote-mark {
+  display: block;
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 40px; line-height: 1;
+  color: var(--cyan);
+  opacity: 0.35;
+  margin-bottom: -6px;
+  text-shadow: 0 0 12px rgba(0,229,255,0.5);
+}
+.quote-text {
+  font-style: italic;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.85);
+  margin: 0 0 8px;
+}
+.quote-author {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cyan);
+  margin: 0;
+  opacity: 0.75;
+  letter-spacing: .04em;
+}
+
 </style>

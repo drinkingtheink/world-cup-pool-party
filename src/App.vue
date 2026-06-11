@@ -2,7 +2,7 @@
   <div class="app">
     <header class="app-header">
       <div class="header-inner">
-        <h1 class="header-title">World Cup Pool Party</h1>
+        <h1 class="header-title">World Cup Pool Party <span class="header-year">2026</span></h1>
       </div>
     </header>
 
@@ -82,6 +82,14 @@ import { BarChart2, Swords, ShieldCheck, Globe, ScrollText } from 'lucide-vue-ne
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes neon-flicker {
+  0%, 80%, 100%  { opacity: 1;   text-shadow: 0 0 6px #00e5ff, 0 0 18px #00e5ff, 0 0 40px rgba(0,229,255,0.5); }
+  81%            { opacity: 0.5; text-shadow: none; }
+  82%            { opacity: 1;   text-shadow: 0 0 6px #00e5ff, 0 0 18px #00e5ff; }
+  83%            { opacity: 0.7; text-shadow: none; }
+  84%            { opacity: 1;   text-shadow: 0 0 6px #00e5ff, 0 0 18px #00e5ff, 0 0 40px rgba(0,229,255,0.5); }
+}
+
 body {
   font-family: 'Space Grotesk', system-ui, sans-serif;
   background-color: #130e28;
@@ -113,6 +121,17 @@ body {
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: shimmer 8s ease-in-out infinite;
+}
+
+.header-year {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 19px; font-weight: 900;
+  letter-spacing: .08em;
+  -webkit-text-stroke: 1.5px #00e5ff;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 6px #00e5ff, 0 0 18px #00e5ff, 0 0 40px rgba(0,229,255,0.5);
+  animation: neon-flicker 6s ease-in-out infinite;
+  margin-left: 4px;
 }
 
 /* ── Main scroll area ────────────────────────────────────────────── */
