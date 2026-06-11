@@ -6,7 +6,7 @@
 
 export const players = [
   { name: 'Charley', team1: 'England', team2: 'Brazil', team3: 'Norway', team4: 'Germany', team5: 'Morocco', team6: 'Scotland' },
-  { name: 'Jason',   team1: '', team2: '', team3: '', team4: '', team5: '', team6: '' },
+  { name: 'Jason',   team1: 'France', team2: 'Netherlands', team3: 'Japan', team4: 'Croatia', team5: 'Ivory Coast', team6: 'Sweden' },
   { name: 'Dan',     team1: 'Mexico', team2: 'Croatia', team3: 'Ivory Coast', team4: 'Spain', team5: 'Brazil', team6: 'Colombia' },
   { name: 'Jay',     team1: '', team2: '', team3: '', team4: '', team5: '', team6: '' },
   { name: 'Jared',   team1: '', team2: '', team3: '', team4: '', team5: '', team6: '' },
