@@ -28,14 +28,25 @@
           <div class="match-score-row">
             <span class="team-name" :class="{ winner: m.result === 'home' }">{{ m.home }}</span>
             <div class="score-box">
-              <span v-if="m.played" class="score">
-                <span :class="{ 'score-winner': m.result === 'home' }">{{ m.home_score }}</span>
+              <span v-if="m.home_score !== '' || m.away_score !== ''" class="score">
+                <span :class="{ 'score-winner': m.result === 'home' }">{{ m.home_score !== '' ? m.home_score : 0 }}</span>
                 –
-                <span :class="{ 'score-winner': m.result === 'away' }">{{ m.away_score }}</span>
+                <span :class="{ 'score-winner': m.result === 'away' }">{{ m.away_score !== '' ? m.away_score : 0 }}</span>
               </span>
               <span v-else class="score score--upcoming">vs</span>
             </div>
             <span class="team-name team-name--right" :class="{ winner: m.result === 'away' }">{{ m.away }}</span>
+          </div>
+
+          <div v-if="m.played && matchEvents(m).length" class="goal-list">
+            <div v-for="(e, ei) in matchEvents(m)" :key="ei" class="goal-item">
+              <span class="goal-item__home">
+                <template v-if="e.team === 'home'">{{ e.minute }}' {{ eventIcon(e) }}</template>
+              </span>
+              <span class="goal-item__away">
+                <template v-if="e.team === 'away'">{{ eventIcon(e) }} {{ e.minute }}'</template>
+              </span>
+            </div>
           </div>
 
           <div v-if="m.homePlayers.length || m.awayPlayers.length" class="rivalry">
@@ -101,6 +112,18 @@ function renderedBonuses(flagSet) {
   return [...(flagSet ?? [])].map(b => BONUS_LABELS[b]).filter(Boolean)
 }
 
+function matchEvents(m) {
+  const goals = (m.goals ?? []).map(g => ({ ...g, kind: 'goal' }))
+  const cards = (m.cards ?? []).map(c => ({ ...c, kind: 'card' }))
+  return [...goals, ...cards].sort((a, b) => a.minute - b.minute)
+}
+
+function eventIcon(e) {
+  if (e.kind === 'goal') return '⚽'
+  if (e.type === 'red') return '🟥'
+  return '🟨'
+}
+
 function stagePillClass(s) {
   if (s === 'Final') return 'pill-t1'
   if (s?.includes('Semi')) return 'pill-t2'
@@ -141,6 +164,11 @@ function stagePillClass(s) {
 .score { font-size: 19px; font-weight: 700; white-space: nowrap; }
 .score--upcoming { color: var(--text-dim); font-size: 16px; }
 .score-winner { color: var(--green); }
+
+.goal-list { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
+.goal-item { display: flex; font-size: 13px; color: var(--text-dim); }
+.goal-item__home { flex: 1; }
+.goal-item__away { flex: 1; text-align: right; }
 
 .rivalry {
   display: flex; align-items: center; gap: 6px;

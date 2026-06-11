@@ -2,6 +2,7 @@
 // Edit this file to update players, matches, and tiers.
 // Match scores: leave home_score / away_score as '' for unplayed matches.
 // goals: array of { team: 'home'|'away', minute: 23 } in chronological order
+// cards: array of { team: 'home'|'away', minute: 23, type: 'yellow'|'red' } in chronological order
 // penalties_winner: 'home', 'away', or null
 
 export const quotes = [
@@ -27,7 +28,7 @@ export const players = [
 export const matches = [
   // ── Group Stage ─────────────────────────────────────────────────────────────
   // June 11
-  { date: '2026-06-11', stage: 'Group Stage', home: 'Mexico',              away: 'South Africa',        home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
+  { date: '2026-06-11', stage: 'Group Stage', home: 'Mexico',              away: 'South Africa',        home_score: '3', away_score: '0', goals: [{ team: 'home', minute: 9 }, { team: 'home', minute: 67 }, { team: 'home', minute: 92 }], cards: [{ team: 'home', minute: 23, type: 'yellow' }, { team: 'away', minute: 49, type: 'red' }, { team: 'away', minute: 84, type: 'red' }, { team: 'home', minute: 92, type: 'red' }], penalties_winner: null, time: '2:00 PM CT' },
   { date: '2026-06-11', stage: 'Group Stage', home: 'South Korea',         away: 'Czech Republic',      home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
   // June 12
   { date: '2026-06-12', stage: 'Group Stage', home: 'Canada',              away: 'Bosnia & Herzegovina',home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
