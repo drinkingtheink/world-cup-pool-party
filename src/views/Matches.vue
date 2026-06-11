@@ -105,6 +105,7 @@ function stagePillClass(s) {
   if (s === 'Final') return 'pill-t1'
   if (s?.includes('Semi')) return 'pill-t2'
   if (s?.includes('Quarter')) return 'pill-t3'
+  if (s === 'Group Stage') return 'pill-gold'
   return 'pill-t4'
 }
 </script>
@@ -144,14 +145,14 @@ function stagePillClass(s) {
 .rivalry {
   display: flex; align-items: center; gap: 6px;
   margin-top: 8px; padding: 5px 8px;
-  background: rgba(189,95,255,0.08); border: 1px solid rgba(189,95,255,0.2);
+  background: rgba(0,255,159,0.06); border: 1px solid rgba(0,255,159,0.2);
   border-radius: 6px;
 }
-.rivalry-side { font-size: 11px; font-weight: 700; color: var(--purple); flex: 1; }
+.rivalry-side { font-size: 11px; font-weight: 700; color: var(--green); flex: 1; }
 .rivalry-side:last-child { text-align: right; }
 .rivalry-vs {
   font-size: 10px; font-weight: 800; letter-spacing: .06em;
-  color: var(--accent); flex-shrink: 0;
+  color: var(--green); flex-shrink: 0; opacity: 0.5;
 }
 
 .bonus-flags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }

@@ -174,5 +174,6 @@ body {
 .pill-t2 { background: rgba(0,229,255,0.12); color: #00e5ff; border: 1px solid rgba(0,229,255,0.3); }
 .pill-t3 { background: rgba(0,255,159,0.1);  color: #00ff9f; border: 1px solid rgba(0,255,159,0.25); }
 .pill-t4 { background: rgba(189,95,255,0.12); color: #bd5fff; border: 1px solid rgba(189,95,255,0.3); }
+.pill-gold { background: rgba(255,210,0,0.12); color: #ffd200; border: 1px solid rgba(255,210,0,0.3); }
 .pill-chosen { background: rgba(0,229,255,0.1); color: #00e5ff; border: 1px solid rgba(0,229,255,0.25); }
 </style>
