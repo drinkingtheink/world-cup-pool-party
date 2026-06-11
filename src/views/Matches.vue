@@ -38,8 +38,14 @@
             <span class="team-name team-name--right" :class="{ winner: m.result === 'away' }">{{ m.away }}</span>
           </div>
 
-          <div v-if="m.played && m.bonuses" class="bonus-flags">
-            <span v-for="b in parseBonuses(m.bonuses)" :key="b" class="bonus-tag">{{ b }}</span>
+          <div v-if="m.homePlayers.length || m.awayPlayers.length" class="rivalry">
+            <span class="rivalry-side">{{ m.homePlayers.join(', ') }}</span>
+            <span class="rivalry-vs">vs</span>
+            <span class="rivalry-side">{{ m.awayPlayers.join(', ') }}</span>
+          </div>
+
+          <div v-if="m.played && m.bonusFlags?.size" class="bonus-flags">
+            <span v-for="b in renderedBonuses(m.bonusFlags)" :key="b" class="bonus-tag">{{ b }}</span>
           </div>
         </div>
       </div>
@@ -91,8 +97,8 @@ const BONUS_LABELS = {
   away_penalties:  '🎯 Away Won Pens',
 }
 
-function parseBonuses(str) {
-  return (str || '').split(',').map(b => BONUS_LABELS[b.trim()]).filter(Boolean)
+function renderedBonuses(flagSet) {
+  return [...(flagSet ?? [])].map(b => BONUS_LABELS[b]).filter(Boolean)
 }
 
 function stagePillClass(s) {
@@ -134,6 +140,19 @@ function stagePillClass(s) {
 .score { font-size: 16px; font-weight: 700; white-space: nowrap; }
 .score--upcoming { color: var(--text-dim); font-size: 13px; }
 .score-winner { color: var(--green); }
+
+.rivalry {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 8px; padding: 5px 8px;
+  background: rgba(189,95,255,0.08); border: 1px solid rgba(189,95,255,0.2);
+  border-radius: 6px;
+}
+.rivalry-side { font-size: 11px; font-weight: 700; color: var(--purple); flex: 1; }
+.rivalry-side:last-child { text-align: right; }
+.rivalry-vs {
+  font-size: 10px; font-weight: 800; letter-spacing: .06em;
+  color: var(--accent); flex-shrink: 0;
+}
 
 .bonus-flags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
 .bonus-tag { font-size: 10px; color: var(--accent); background: #2a2010; border-radius: 4px; padding: 2px 6px; }

@@ -5,7 +5,25 @@ import { buildLeaderboard, enrichMatches } from '../services/points.js'
 
 export const usePoolStore = defineStore('pool', () => {
   const leaderboard = computed(() => buildLeaderboard(rawPlayers, rawMatches))
-  const enrichedMatches = computed(() => enrichMatches(rawMatches))
+
+  const teamPlayerMap = computed(() => {
+    const map = {}
+    rawPlayers.forEach(p => {
+      [p.team1, p.team2, p.team3, p.team4, p.team5, p.team6].filter(Boolean).forEach(t => {
+        if (!map[t]) map[t] = []
+        map[t].push(p.name)
+      })
+    })
+    return map
+  })
+
+  const enrichedMatches = computed(() =>
+    enrichMatches(rawMatches).map(m => ({
+      ...m,
+      homePlayers: teamPlayerMap.value[m.home] ?? [],
+      awayPlayers: teamPlayerMap.value[m.away] ?? [],
+    }))
+  )
 
   const tierMap = computed(() => {
     const map = {}
