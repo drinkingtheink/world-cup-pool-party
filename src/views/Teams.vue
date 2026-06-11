@@ -10,8 +10,10 @@
       <div class="card team-list">
         <div v-for="(t, i) in searchResults" :key="t.team"
           class="team-list-row" :class="{ 'team-list-row--div': i > 0 }">
-          <span class="tl-name">{{ t.team }}</span>
-          <span v-if="store.fifaRankMap[t.team]" class="fifa-badge">FIFA #{{ store.fifaRankMap[t.team] }}</span>
+          <div class="tl-left">
+            <span class="tl-name">{{ t.team }}</span>
+            <span v-if="store.fifaRankMap[t.team]" class="tl-rank" :class="`tl-rank-t${t.tier}`">#{{ store.fifaRankMap[t.team] }}</span>
+          </div>
           <span class="pill" :class="`pill-t${t.tier}`">Tier {{ t.tier }}</span>
           <span class="tl-owners">{{ ownersOf(t.team) }}</span>
         </div>
@@ -28,8 +30,10 @@
         <div class="card team-list">
           <div v-for="(team, i) in store.tierGroups[tier]" :key="team"
             class="team-list-row" :class="{ 'team-list-row--div': i > 0 }">
-            <span class="tl-name">{{ team }}</span>
-            <span v-if="store.fifaRankMap[team]" class="fifa-badge">FIFA #{{ store.fifaRankMap[team] }}</span>
+            <div class="tl-left">
+              <span class="tl-name">{{ team }}</span>
+              <span v-if="store.fifaRankMap[team]" class="tl-rank" :class="`tl-rank-t${tier}`">#{{ store.fifaRankMap[team] }}</span>
+            </div>
             <span class="tl-owners">{{ ownersOf(team) }}</span>
           </div>
           <div v-if="!store.tierGroups[tier]?.length" class="tl-empty">No teams in this tier</div>
@@ -84,14 +88,13 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .team-list {}
 .team-list-row { display: flex; align-items: center; gap: 10px; padding: 11px 14px; }
 .team-list-row--div { border-top: 1px solid var(--border); }
-.tl-name { flex: 1; font-size: 17px; font-weight: 500; color: #ffffff; }
+.tl-left { flex: 1; display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+.tl-name { font-size: 17px; font-weight: 500; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tl-rank { font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.tl-rank-t1 { color: #ff6fa0; }
+.tl-rank-t2 { color: var(--cyan); }
+.tl-rank-t3 { color: var(--green); }
+.tl-rank-t4 { color: var(--purple); }
 .tl-owners { font-size: 13px; color: var(--text-dim); text-align: right; max-width: 140px; }
-
-.fifa-badge {
-  font-size: 12px; font-weight: 700; letter-spacing: .04em;
-  color: var(--cyan); background: rgba(0,229,255,0.08);
-  border: 1px solid rgba(0,229,255,0.25); border-radius: 4px;
-  padding: 2px 6px; white-space: nowrap; flex-shrink: 0;
-}
 .tl-empty { padding: 16px; text-align: center; color: var(--text-dim); font-size: 16px; }
 </style>

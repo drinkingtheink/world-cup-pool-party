@@ -72,7 +72,8 @@ export const usePoolStore = defineStore('pool', () => {
       const n = Number(t.tier)
       if (groups[n]) groups[n].push(t.team)
     })
-    Object.values(groups).forEach(g => g.sort())
+    const rankOf = team => rawTiers.find(t => t.team === team)?.fifaRank ?? 999
+    Object.values(groups).forEach(g => g.sort((a, b) => rankOf(a) - rankOf(b)))
     return groups
   })
 
