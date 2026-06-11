@@ -72,26 +72,26 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .search-input {
   width: 100%; padding: 10px 14px; background: var(--surface);
   border: 1px solid var(--border); border-radius: var(--radius);
-  color: var(--text); font-size: 14px;
+  color: var(--text); font-size: 17px;
 }
 .search-input::placeholder { color: var(--text-dim); }
 .search-input:focus { outline: none; border-color: var(--accent); }
 
 .tier-section { margin-bottom: 16px; }
 .tier-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.tier-sub { font-size: 11px; color: var(--text-dim); }
+.tier-sub { font-size: 13px; color: var(--text-dim); }
 
 .team-list {}
 .team-list-row { display: flex; align-items: center; gap: 10px; padding: 11px 14px; }
 .team-list-row--div { border-top: 1px solid var(--border); }
-.tl-name { flex: 1; font-size: 14px; font-weight: 500; color: #ffffff; }
-.tl-owners { font-size: 11px; color: var(--text-dim); text-align: right; max-width: 140px; }
+.tl-name { flex: 1; font-size: 17px; font-weight: 500; color: #ffffff; }
+.tl-owners { font-size: 13px; color: var(--text-dim); text-align: right; max-width: 140px; }
 
 .fifa-badge {
-  font-size: 10px; font-weight: 700; letter-spacing: .04em;
+  font-size: 12px; font-weight: 700; letter-spacing: .04em;
   color: var(--cyan); background: rgba(0,229,255,0.08);
   border: 1px solid rgba(0,229,255,0.25); border-radius: 4px;
   padding: 2px 6px; white-space: nowrap; flex-shrink: 0;
 }
-.tl-empty { padding: 16px; text-align: center; color: var(--text-dim); font-size: 13px; }
+.tl-empty { padding: 16px; text-align: center; color: var(--text-dim); font-size: 16px; }
 </style>

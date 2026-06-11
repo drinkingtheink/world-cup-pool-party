@@ -16,7 +16,7 @@
           <div class="lb-center">
             <span class="lb-name">{{ entry.name }}</span>
             <div class="lb-flags">
-              <span v-for="team in entry.teams" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
+              <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
             </div>
           </div>
           <span class="lb-pts">{{ entry.total }} <span class="lb-pts-label">pts</span></span>
@@ -25,7 +25,8 @@
         <!-- Expanded team breakdown -->
         <transition name="expand">
           <div v-if="expanded === entry.name" class="lb-breakdown">
-            <div v-for="team in entry.teams" :key="team" class="lb-team-row">
+            <div v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-team-row">
+              <span class="lb-team-flag">{{ FLAG_MAP[team] ?? '🏳' }}</span>
               <span class="lb-team-name">{{ team }}</span>
               <span class="lb-team-pts">{{ entry.breakdown[team] ?? 0 }} pts</span>
             </div>
@@ -140,7 +141,7 @@ import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { CalendarDays, ChevronRight } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
-import { quotes } from '../data/index.js'
+import { quotes, FLAG_MAP } from '../data/index.js'
 
 const router = useRouter()
 
@@ -215,60 +216,6 @@ const avgFifaRank = computed(() => {
   return ranked.map(p => ({ ...p, pct: 0.15 + 0.85 * (1 - (p.avg - min) / spread) }))
 })
 
-const FLAG_MAP = {
-  // Tier 1
-  'Spain':                '🇪🇸',
-  'France':               '🇫🇷',
-  'England':              '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-  'Portugal':             '🇵🇹',
-  'Argentina':            '🇦🇷',
-  'Brazil':               '🇧🇷',
-  'Germany':              '🇩🇪',
-  'Netherlands':          '🇳🇱',
-  'Belgium':              '🇧🇪',
-  'Norway':               '🇳🇴',
-  'Colombia':             '🇨🇴',
-  'Morocco':              '🇲🇦',
-  // Tier 2
-  'Japan':                '🇯🇵',
-  'USA':                  '🇺🇸',
-  'Mexico':               '🇲🇽',
-  'Senegal':              '🇸🇳',
-  'Switzerland':          '🇨🇭',
-  'Turkey':               '🇹🇷',
-  'Uruguay':              '🇺🇾',
-  'Croatia':              '🇭🇷',
-  'Ecuador':              '🇪🇨',
-  'Sweden':               '🇸🇪',
-  'Austria':              '🇦🇹',
-  'Canada':               '🇨🇦',
-  // Tier 3
-  'Côte d\'Ivoire':          '🇨🇮',
-  'Algeria':              '🇩🇿',
-  'Bosnia & Herzegovina': '🇧🇦',
-  'Czech Republic':       '🇨🇿',
-  'Egypt':                '🇪🇬',
-  'South Korea':          '🇰🇷',
-  'Paraguay':             '🇵🇾',
-  'Scotland':             '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
-  'Australia':            '🇦🇺',
-  'Ghana':                '🇬🇭',
-  'Iran':                 '🇮🇷',
-  'Tunisia':              '🇹🇳',
-  // Tier 4
-  'DR Congo':             '🇨🇩',
-  'Cape Verde':           '🇨🇻',
-  'Iraq':                 '🇮🇶',
-  'Jordan':               '🇯🇴',
-  'New Zealand':          '🇳🇿',
-  'Panama':               '🇵🇦',
-  'Qatar':                '🇶🇦',
-  'Saudi Arabia':         '🇸🇦',
-  'South Africa':         '🇿🇦',
-  'Uzbekistan':           '🇺🇿',
-  'Curaçao':              '🇨🇼',
-  'Haiti':                '🇭🇹',
-}
 
 function chipScale(count) {
   const maxCount = Math.max(...sharedPicks.value.map(s => s.count))
@@ -277,6 +224,10 @@ function chipScale(count) {
   const padV    = (4  + t * 6).toFixed(1) + 'px'
   const padH    = (10 + t * 10).toFixed(1) + 'px'
   return { fontSize, padding: `${padV} ${padH}` }
+}
+
+function rankedTeams(teams) {
+  return [...teams].sort((a, b) => (store.fifaRankMap[a] ?? 999) - (store.fifaRankMap[b] ?? 999))
 }
 
 function rankClass(r) {
@@ -301,7 +252,7 @@ function rankClass(r) {
 .lb-rank {
   width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 800; background: var(--surface2); color: var(--text-dim);
+  font-size: 14px; font-weight: 800; background: var(--surface2); color: var(--text-dim);
   flex-shrink: 0; margin-top: 1px;
 }
 .rank-gold   { background: #4a3a1a; color: #f0c060; }
@@ -309,11 +260,11 @@ function rankClass(r) {
 .rank-bronze { background: #2e2018; color: #e89060; }
 
 .lb-center { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.lb-name { font-size: 15px; font-weight: 600; color: #ffffff; }
+.lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
 .lb-flags { display: flex; gap: 4px; flex-wrap: wrap; }
-.lb-flag { font-size: 24px; line-height: 1; cursor: default; }
-.lb-pts { font-size: 17px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
-.lb-pts-label { font-size: 11px; font-weight: 500; color: var(--text-dim); }
+.lb-flag { font-size: 29px; line-height: 1; cursor: default; }
+.lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
+.lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
 
 .lb-breakdown {
   border-top: 1px solid var(--border);
@@ -322,19 +273,20 @@ function rankClass(r) {
 }
 .lb-team-row {
   display: flex; align-items: center; justify-content: space-between;
-  font-size: 13px;
+  font-size: 16px;
 }
-.lb-team-name { display: flex; align-items: center; gap: 6px; color: var(--text-dim); }
+.lb-team-flag { font-size: 18px; line-height: 1; flex-shrink: 0; }
+.lb-team-name { display: flex; align-items: center; gap: 6px; color: var(--text-dim); flex: 1; }
 .lb-team-pts { font-weight: 600; color: #ffffff; }
 
 .expand-enter-active, .expand-leave-active { transition: opacity .15s; }
 .expand-enter-from, .expand-leave-to { opacity: 0; }
 
-.empty-msg { text-align: center; color: var(--text-dim); padding: 32px; font-size: 14px; }
+.empty-msg { text-align: center; color: var(--text-dim); padding: 32px; font-size: 17px; }
 
 /* ── Paper Strength ───────────────────────────────────────────── */
 .strength-sub {
-  font-size: 11px; color: var(--text-dim); margin-bottom: 14px; margin-top: -8px;
+  font-size: 13px; color: var(--text-dim); margin-bottom: 14px; margin-top: -8px;
 }
 
 .strength-list { display: flex; flex-direction: column; gap: 12px; }
@@ -345,7 +297,7 @@ function rankClass(r) {
   width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
   background: var(--surface2); color: var(--text-dim);
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 800; margin-top: 2px;
+  font-size: 13px; font-weight: 800; margin-top: 2px;
 }
 
 .strength-body { flex: 1; }
@@ -353,8 +305,8 @@ function rankClass(r) {
 .strength-meta {
   display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;
 }
-.strength-name { font-size: 14px; font-weight: 700; color: #ffffff; }
-.strength-score { font-size: 12px; font-weight: 700; color: var(--cyan); }
+.strength-name { font-size: 17px; font-weight: 700; color: #ffffff; }
+.strength-score { font-size: 14px; font-weight: 700; color: var(--cyan); }
 
 .strength-track {
   height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; margin-bottom: 7px;
@@ -368,7 +320,7 @@ function rankClass(r) {
 
 .strength-teams { display: flex; flex-wrap: wrap; gap: 4px; }
 .strength-team {
-  font-size: 10px; font-weight: 600; color: var(--text-dim);
+  font-size: 12px; font-weight: 600; color: var(--text-dim);
   background: var(--surface2); border: 1px solid var(--border);
   padding: 2px 7px; border-radius: 99px;
 }
@@ -376,7 +328,7 @@ function rankClass(r) {
 /* ── Tier Mix ─────────────────────────────────────────────────── */
 .tiermix-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
 .tiermix-row { display: flex; align-items: center; gap: 10px; }
-.tiermix-name { font-size: 13px; font-weight: 700; color: #fff; width: 62px; flex-shrink: 0; }
+.tiermix-name { font-size: 16px; font-weight: 700; color: #fff; width: 62px; flex-shrink: 0; }
 .tiermix-bar {
   flex: 1; height: 10px; border-radius: 99px; overflow: hidden;
   background: var(--surface2); display: flex;
@@ -386,14 +338,14 @@ function rankClass(r) {
 .seg-t2 { background: #00e5ff; }
 .seg-t3 { background: #00ff9f; }
 .seg-t4 { background: #bd5fff; }
-.tiermix-legend { font-size: 11px; font-weight: 700; color: var(--text-dim); white-space: nowrap; display: flex; align-items: center; gap: 3px; }
-.tl-dot { font-size: 9px; }
+.tiermix-legend { font-size: 13px; font-weight: 700; color: var(--text-dim); white-space: nowrap; display: flex; align-items: center; gap: 3px; }
+.tl-dot { font-size: 11px; }
 .tl-dot.t1 { color: #ff2d78; }
 .tl-dot.t2 { color: #00e5ff; }
 .tl-dot.t3 { color: #00ff9f; }
 .tl-dot.t4 { color: #bd5fff; }
 .tiermix-key {
-  display: flex; gap: 14px; font-size: 10px; color: var(--text-dim);
+  display: flex; gap: 14px; font-size: 12px; color: var(--text-dim);
   margin-top: 4px; padding-left: 72px;
 }
 .tiermix-key span { display: flex; align-items: center; gap: 3px; }
@@ -403,7 +355,7 @@ function rankClass(r) {
 .shared-chip {
   display: flex; align-items: center; gap: 5px;
   padding: 4px 10px; border-radius: 99px; border: 1px solid;
-  font-size: 11px; font-weight: 700;
+  font-size: 13px; font-weight: 700;
 }
 .shared-t1 { background: rgba(255,45,120,0.12); color: #ff6fa0; border-color: rgba(255,45,120,0.3); }
 .shared-t2 { background: rgba(0,229,255,0.1); color: #00e5ff; border-color: rgba(0,229,255,0.3); }
@@ -411,7 +363,7 @@ function rankClass(r) {
 .shared-t4 { background: rgba(189,95,255,0.1); color: #bd5fff; border-color: rgba(189,95,255,0.25); }
 .shared-count {
   background: rgba(255,255,255,0.12); border-radius: 99px;
-  padding: 0 5px; font-size: 10px; font-weight: 800; color: #fff;
+  padding: 0 5px; font-size: 12px; font-weight: 800; color: #fff;
 }
 
 /* ── Wildcards ────────────────────────────────────────────────── */
@@ -421,15 +373,15 @@ function rankClass(r) {
   padding: 7px 10px; border-radius: 8px;
   background: var(--surface2); border: 1px solid var(--border);
 }
-.wildcard-team { font-size: 13px; font-weight: 700; }
+.wildcard-team { font-size: 16px; font-weight: 700; }
 .wt-t1 { color: #ff6fa0; }
 .wt-t2 { color: #00e5ff; }
 .wt-t3 { color: #00ff9f; }
 .wt-t4 { color: #bd5fff; }
-.wildcard-player { font-size: 11px; font-weight: 600; color: var(--text-dim); }
+.wildcard-player { font-size: 13px; font-weight: 600; color: var(--text-dim); }
 
 /* ── Avg FIFA Rank ────────────────────────────────────────────── */
-.fifa-score { font-size: 12px; font-weight: 700; color: #ffd200; }
+.fifa-score { font-size: 14px; font-weight: 700; color: #ffd200; }
 .fifa-bar {
   height: 100%; border-radius: 99px;
   background: linear-gradient(90deg, #ffd200, #ff8c00);
@@ -463,7 +415,7 @@ function rankClass(r) {
     inset 0 1px 0 rgba(255,255,255,0.06);
   color: #fff;
   font-family: 'Orbitron', system-ui, sans-serif;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -533,7 +485,7 @@ function rankClass(r) {
 .quote-mark {
   display: block;
   font-family: 'Orbitron', system-ui, sans-serif;
-  font-size: 40px; line-height: 1;
+  font-size: 48px; line-height: 1;
   color: var(--cyan);
   opacity: 0.35;
   margin-bottom: -6px;
@@ -541,13 +493,13 @@ function rankClass(r) {
 }
 .quote-text {
   font-style: italic;
-  font-size: 13.5px;
+  font-size: 17px;
   line-height: 1.55;
   color: rgba(255,255,255,0.85);
   margin: 0 0 8px;
 }
 .quote-author {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--cyan);
   margin: 0;

@@ -78,17 +78,17 @@ const tiebreakers = [
   margin-bottom: 12px; padding: 16px;
 }
 .rules-h {
-  font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  font-size: 16px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 10px;
 }
-.rules-p { font-size: 13px; color: #ffffff; line-height: 1.5; margin-bottom: 8px; }
-.rules-p--sub { font-size: 12px; margin-top: -4px; }
+.rules-p { font-size: 16px; color: #ffffff; line-height: 1.5; margin-bottom: 8px; }
+.rules-p--sub { font-size: 14px; margin-top: -4px; }
 .rules-p:last-child { margin-bottom: 0; }
 
 .rules-table { display: flex; flex-direction: column; gap: 0; }
 .rules-row {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+  padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 16px;
 }
 .rules-row:last-child { border-bottom: none; padding-bottom: 0; }
 .rules-event { color: #ffffff; }
@@ -96,14 +96,14 @@ const tiebreakers = [
 .rules-pts.mult { color: var(--accent); }
 
 .rules-list { padding-left: 18px; margin-top: 6px; }
-.rules-list li { font-size: 13px; color: #ffffff; line-height: 1.7; }
+.rules-list li { font-size: 16px; color: #ffffff; line-height: 1.7; }
 
 .tb-list { display: flex; flex-direction: column; gap: 10px; }
 .tb-row { display: flex; align-items: flex-start; gap: 12px; }
 .tb-num {
   width: 22px; height: 22px; border-radius: 50%; background: var(--surface2);
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 800; color: var(--accent); flex-shrink: 0;
+  font-size: 13px; font-weight: 800; color: var(--accent); flex-shrink: 0;
 }
-.tb-text { font-size: 13px; color: #ffffff; line-height: 1.4; }
+.tb-text { font-size: 16px; color: #ffffff; line-height: 1.4; }
 </style>

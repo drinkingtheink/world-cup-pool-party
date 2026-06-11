@@ -3,7 +3,7 @@
     <!-- Player selector -->
     <div class="player-scroll">
       <button
-        v-for="p in store.players"
+        v-for="p in sortedPlayers"
         :key="p.name"
         class="player-chip"
         :class="{ active: selected === p.name }"
@@ -30,6 +30,7 @@
           class="team-card card"
         >
           <div class="team-card-top">
+            <span class="team-card-flag">{{ FLAG_MAP[team.name] ?? '🏳' }}</span>
             <span class="team-card-name">{{ team.name }}</span>
             <span class="pill" :class="`pill-t${team.tier}`">T{{ team.tier }}</span>
             <span v-if="store.fifaRankMap[team.name]" class="fifa-badge">FIFA #{{ store.fifaRankMap[team.name] }}</span>
@@ -44,9 +45,12 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { usePoolStore } from '../stores/pool.js'
+import { FLAG_MAP } from '../data/index.js'
 
 const store = usePoolStore()
 const selected = ref(null)
+
+const sortedPlayers = computed(() => [...store.players].sort((a, b) => a.name.localeCompare(b.name)))
 
 const player = computed(() => store.players.find(p => p.name === selected.value))
 const playerEntry = computed(() => store.leaderboard.find(e => e.name === selected.value))
@@ -60,7 +64,8 @@ const teams = computed(() => {
     name,
     tier: store.tierMap[name] ?? '?',
     pts: playerEntry.value.breakdown[name] ?? 0,
-  }))
+    fifaRank: store.fifaRankMap[name] ?? 999,
+  })).sort((a, b) => a.fifaRank - b.fifaRank)
 })
 </script>
 
@@ -74,7 +79,7 @@ const teams = computed(() => {
 .player-chip {
   flex-shrink: 0; padding: 7px 14px; border-radius: 99px;
   border: 1px solid var(--border); background: var(--surface);
-  color: var(--text-dim); font-size: 13px; font-weight: 600; cursor: pointer;
+  color: var(--text-dim); font-size: 16px; font-weight: 600; cursor: pointer;
   transition: all .15s;
 }
 .player-chip.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
@@ -82,25 +87,26 @@ const teams = computed(() => {
 .pts-banner {
   display: flex; align-items: center; gap: 10px; padding: 14px 16px;
 }
-.pts-name { flex: 1; font-size: 16px; font-weight: 700; color: #ffffff; }
-.pts-total { font-size: 22px; font-weight: 800; color: var(--accent); }
-.pts-label { font-size: 12px; color: var(--text-dim); }
-.pts-rank { font-size: 12px; color: var(--text-dim); }
+.pts-name { flex: 1; font-size: 19px; font-weight: 700; color: #ffffff; }
+.pts-total { font-size: 26px; font-weight: 800; color: var(--accent); }
+.pts-label { font-size: 14px; color: var(--text-dim); }
+.pts-rank { font-size: 14px; color: var(--text-dim); }
 
 .team-grid { display: flex; flex-direction: column; gap: 8px; }
 
 .team-card { padding: 12px 14px; }
 
 .team-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-.team-card-name { flex: 1; font-size: 14px; font-weight: 600; color: #ffffff; }
-.team-card-pts { font-size: 20px; font-weight: 800; color: var(--accent); }
+.team-card-flag { font-size: 22px; line-height: 1; flex-shrink: 0; }
+.team-card-name { flex: 1; font-size: 17px; font-weight: 600; color: #ffffff; }
+.team-card-pts { font-size: 24px; font-weight: 800; color: var(--accent); }
 
 .fifa-badge {
-  font-size: 10px; font-weight: 700; letter-spacing: .04em;
+  font-size: 12px; font-weight: 700; letter-spacing: .04em;
   color: var(--cyan); background: rgba(0,229,255,0.08);
   border: 1px solid rgba(0,229,255,0.25); border-radius: 4px;
   padding: 2px 6px; white-space: nowrap; flex-shrink: 0;
 }
 
-.empty-msg { padding: 40px 24px; text-align: center; color: var(--text-dim); font-size: 14px; }
+.empty-msg { padding: 40px 24px; text-align: center; color: var(--text-dim); font-size: 17px; }
 </style>

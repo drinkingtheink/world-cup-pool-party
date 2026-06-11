@@ -114,7 +114,7 @@ function stagePillClass(s) {
 .filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
 .filter-btn {
   padding: 5px 10px; border-radius: 99px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--text-dim); font-size: 11px; font-weight: 600; cursor: pointer;
+  background: var(--surface); color: var(--text-dim); font-size: 13px; font-weight: 600; cursor: pointer;
 }
 .filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
@@ -125,12 +125,12 @@ function stagePillClass(s) {
 .match-row--divider { border-top: 1px solid var(--border); }
 
 .match-stage-pill { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.match-time { font-size: 11px; color: var(--text-dim); }
+.match-time { font-size: 13px; color: var(--text-dim); }
 
 .match-score-row { display: flex; align-items: center; gap: 6px; }
 
 .team-name {
-  flex: 1; font-size: 13px; font-weight: 500; color: #ffffff;
+  flex: 1; font-size: 16px; font-weight: 500; color: #ffffff;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   min-width: 0;
 }
@@ -138,8 +138,8 @@ function stagePillClass(s) {
 .team-name.winner { color: var(--text); font-weight: 700; }
 
 .score-box { flex-shrink: 0; }
-.score { font-size: 16px; font-weight: 700; white-space: nowrap; }
-.score--upcoming { color: var(--text-dim); font-size: 13px; }
+.score { font-size: 19px; font-weight: 700; white-space: nowrap; }
+.score--upcoming { color: var(--text-dim); font-size: 16px; }
 .score-winner { color: var(--green); }
 
 .rivalry {
@@ -148,15 +148,15 @@ function stagePillClass(s) {
   background: rgba(0,255,159,0.06); border: 1px solid rgba(0,255,159,0.2);
   border-radius: 6px;
 }
-.rivalry-side { font-size: 11px; font-weight: 700; color: var(--green); flex: 1; }
+.rivalry-side { font-size: 13px; font-weight: 700; color: var(--green); flex: 1; }
 .rivalry-side:last-child { text-align: right; }
 .rivalry-vs {
-  font-size: 10px; font-weight: 800; letter-spacing: .06em;
+  font-size: 12px; font-weight: 800; letter-spacing: .06em;
   color: var(--green); flex-shrink: 0; opacity: 0.5;
 }
 
 .bonus-flags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-.bonus-tag { font-size: 10px; color: var(--accent); background: #2a2010; border-radius: 4px; padding: 2px 6px; }
+.bonus-tag { font-size: 12px; color: var(--accent); background: #2a2010; border-radius: 4px; padding: 2px 6px; }
 
-.empty-msg { text-align: center; color: var(--text-dim); padding: 32px; font-size: 14px; }
+.empty-msg { text-align: center; color: var(--text-dim); padding: 32px; font-size: 17px; }
 </style>

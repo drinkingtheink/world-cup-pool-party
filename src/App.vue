@@ -114,7 +114,7 @@ body {
 }
 .header-title {
   font-family: 'Orbitron', system-ui, sans-serif;
-  font-size: 15px; font-weight: 800;
+  font-size: 18px; font-weight: 800;
   letter-spacing: .06em; text-transform: uppercase;
   background: linear-gradient(90deg, var(--accent) 0%, var(--cyan) 40%, rgba(255,255,255,0.6) 50%, var(--cyan) 60%, var(--accent) 100%);
   background-size: 250% auto;
@@ -125,7 +125,7 @@ body {
 
 .header-year {
   font-family: 'Orbitron', system-ui, sans-serif;
-  font-size: 19px; font-weight: 900;
+  font-size: 23px; font-weight: 900;
   letter-spacing: .08em;
   -webkit-text-stroke: 1.5px #00e5ff;
   -webkit-text-fill-color: transparent;
@@ -164,13 +164,13 @@ body {
   animation: tab-pulse 2.5s ease-in-out infinite;
 }
 .tab-icon { width: 20px; height: 20px; stroke-width: 1.75; }
-.tab-label { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.tab-label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 
 /* ── View shell ──────────────────────────────────────────────────── */
 .view { padding: 16px; }
 .view-title {
   font-family: 'Orbitron', system-ui, sans-serif;
-  font-size: 10px; font-weight: 700; color: var(--text-dim);
+  font-size: 12px; font-weight: 700; color: var(--text-dim);
   letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px;
 }
 
@@ -187,7 +187,7 @@ body {
 /* ── Tier pills ──────────────────────────────────────────────────── */
 .pill {
   display: inline-flex; align-items: center;
-  font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
   padding: 2px 8px; border-radius: 99px;
 }
 .pill-t1 { background: rgba(255,45,120,0.15); color: #ff6fa0; border: 1px solid rgba(255,45,120,0.35); }
