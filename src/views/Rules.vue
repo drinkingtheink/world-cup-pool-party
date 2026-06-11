@@ -69,7 +69,6 @@ const bonuses = [
 const tiebreakers = [
   'Most total goals scored across all 6 teams',
   'Furthest single team advancement',
-  'Best sealed pre-tournament predictions',
   'Rock-paper-scissors',
 ]
 </script>
