@@ -28,6 +28,27 @@
 
       <p v-if="!store.leaderboard.length" class="empty-msg">No data yet</p>
     </div>
+
+    <!-- Paper Strength -->
+    <p class="view-title" style="margin-top:28px">Strength on Paper</p>
+    <p class="strength-sub">Ranked by total implied win probability (BetMGM odds)</p>
+    <div class="strength-list">
+      <div v-for="(entry, i) in store.paperStrength" :key="entry.name" class="strength-row">
+        <span class="strength-rank">{{ i + 1 }}</span>
+        <div class="strength-body">
+          <div class="strength-meta">
+            <span class="strength-name">{{ entry.name }}</span>
+            <span class="strength-score">{{ (entry.score * 100).toFixed(1) }}%</span>
+          </div>
+          <div class="strength-track">
+            <div class="strength-bar" :style="{ width: (entry.pct * 100).toFixed(1) + '%' }"></div>
+          </div>
+          <div class="strength-teams">
+            <span v-for="team in entry.teams" :key="team" class="strength-team">{{ team }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -87,4 +108,45 @@ function rankClass(r) {
 .expand-enter-from, .expand-leave-to { opacity: 0; }
 
 .empty-msg { text-align: center; color: var(--text-dim); padding: 32px; font-size: 14px; }
+
+/* ── Paper Strength ───────────────────────────────────────────── */
+.strength-sub {
+  font-size: 11px; color: var(--text-dim); margin-bottom: 14px; margin-top: -8px;
+}
+
+.strength-list { display: flex; flex-direction: column; gap: 12px; }
+
+.strength-row { display: flex; align-items: flex-start; gap: 10px; }
+
+.strength-rank {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  background: var(--surface2); color: var(--text-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; margin-top: 2px;
+}
+
+.strength-body { flex: 1; }
+
+.strength-meta {
+  display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;
+}
+.strength-name { font-size: 14px; font-weight: 700; color: #ffffff; }
+.strength-score { font-size: 12px; font-weight: 700; color: var(--cyan); }
+
+.strength-track {
+  height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; margin-bottom: 7px;
+}
+.strength-bar {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, var(--cyan), var(--accent));
+  box-shadow: 0 0 8px rgba(0,229,255,0.4);
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+
+.strength-teams { display: flex; flex-wrap: wrap; gap: 4px; }
+.strength-team {
+  font-size: 10px; font-weight: 600; color: var(--text-dim);
+  background: var(--surface2); border: 1px solid var(--border);
+  padding: 2px 7px; border-radius: 99px;
+}
 </style>
