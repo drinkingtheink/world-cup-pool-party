@@ -2,7 +2,7 @@
   <div class="app">
     <header class="app-header">
       <div class="header-inner">
-        <h1 class="header-title">World Cup Pool Party <span class="header-year">2026</span><span class="header-flags">🇺🇸🇲🇽🇨🇦</span></h1>
+        <h1 class="header-title">World Cup Pool Party <span class="header-year">2026</span></h1>
       </div>
     </header>
 
@@ -132,14 +132,6 @@ body {
   text-shadow: 0 0 6px #00e5ff, 0 0 18px #00e5ff, 0 0 40px rgba(0,229,255,0.5);
   animation: neon-flicker 6s ease-in-out infinite;
   margin-left: 4px;
-}
-
-.header-flags {
-  font-size: 15px;
-  margin-left: 5px;
-  letter-spacing: 1px;
-  -webkit-text-fill-color: initial;
-  -webkit-text-stroke: 0;
 }
 
 /* ── Main scroll area ────────────────────────────────────────────── */
