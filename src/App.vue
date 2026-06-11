@@ -12,23 +12,23 @@
 
     <nav class="tab-bar">
       <router-link to="/"         class="tab" active-class="tab--active">
-        <span class="tab-icon">🏆</span>
+        <BarChart2 class="tab-icon" />
         <span class="tab-label">Standings</span>
       </router-link>
       <router-link to="/matches"  class="tab" active-class="tab--active">
-        <span class="tab-icon">📅</span>
+        <Swords class="tab-icon" />
         <span class="tab-label">Matches</span>
       </router-link>
       <router-link to="/my-teams" class="tab" active-class="tab--active">
-        <span class="tab-icon">👤</span>
+        <ShieldCheck class="tab-icon" />
         <span class="tab-label">My Teams</span>
       </router-link>
       <router-link to="/teams"    class="tab" active-class="tab--active">
-        <span class="tab-icon">🌍</span>
+        <Globe class="tab-icon" />
         <span class="tab-label">Teams</span>
       </router-link>
       <router-link to="/rules"    class="tab" active-class="tab--active">
-        <span class="tab-icon">📋</span>
+        <ScrollText class="tab-icon" />
         <span class="tab-label">Rules</span>
       </router-link>
     </nav>
@@ -36,6 +36,7 @@
 </template>
 
 <script setup>
+import { BarChart2, Swords, ShieldCheck, Globe, ScrollText } from 'lucide-vue-next'
 </script>
 
 <style>
@@ -110,7 +111,7 @@ body {
   color: var(--accent);
   text-shadow: var(--glow-pink);
 }
-.tab-icon { font-size: 18px; line-height: 1; }
+.tab-icon { width: 20px; height: 20px; stroke-width: 1.75; }
 .tab-label { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 
 /* ── View shell ──────────────────────────────────────────────────── */
