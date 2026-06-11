@@ -127,7 +127,7 @@ function stagePillClass(s) {
 .match-score-row { display: flex; align-items: center; gap: 8px; }
 
 .team-name {
-  flex: 1; font-size: 14px; font-weight: 500; color: var(--text-dim);
+  flex: 1; font-size: 14px; font-weight: 500; color: #ffffff;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .team-name--right { text-align: right; }

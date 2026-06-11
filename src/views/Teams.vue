@@ -57,10 +57,10 @@ function ownersOf(team) {
 }
 
 const TIER_LABELS = {
-  1: 'Favorites (40–1 or shorter)',
-  2: 'Contenders (50–1 to 150–1)',
-  3: 'Dark horses (200–1 to 500–1)',
-  4: 'Underdogs (750–1+)',
+  1: 'Contenders (+450 to 20–1)',
+  2: 'Dark Horses (50–1 to 150–1)',
+  3: 'Solid (200–1 to 500–1)',
+  4: 'Cinderellas (750–1+)',
 }
 function tierLabel(t) { return TIER_LABELS[t] }
 </script>
@@ -82,7 +82,7 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .team-list {}
 .team-list-row { display: flex; align-items: center; gap: 10px; padding: 11px 14px; }
 .team-list-row--div { border-top: 1px solid var(--border); }
-.tl-name { flex: 1; font-size: 14px; font-weight: 500; }
+.tl-name { flex: 1; font-size: 14px; font-weight: 500; color: #ffffff; }
 .tl-owners { font-size: 11px; color: var(--text-dim); text-align: right; max-width: 140px; }
 .tl-empty { padding: 16px; text-align: center; color: var(--text-dim); font-size: 13px; }
 </style>

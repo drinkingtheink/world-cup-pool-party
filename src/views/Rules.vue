@@ -93,7 +93,7 @@ const tiebreakers = [
   font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
   color: var(--accent); margin-bottom: 10px;
 }
-.rules-p { font-size: 13px; color: var(--text-dim); line-height: 1.5; margin-bottom: 8px; }
+.rules-p { font-size: 13px; color: #ffffff; line-height: 1.5; margin-bottom: 8px; }
 .rules-p--sub { font-size: 12px; margin-top: -4px; }
 .rules-p:last-child { margin-bottom: 0; }
 
@@ -103,12 +103,12 @@ const tiebreakers = [
   padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
 }
 .rules-row:last-child { border-bottom: none; padding-bottom: 0; }
-.rules-event { color: var(--text-dim); }
+.rules-event { color: #ffffff; }
 .rules-pts { font-weight: 700; color: var(--green); }
 .rules-pts.mult { color: var(--accent); }
 
 .rules-list { padding-left: 18px; margin-top: 6px; }
-.rules-list li { font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.rules-list li { font-size: 13px; color: #ffffff; line-height: 1.7; }
 
 .tb-list { display: flex; flex-direction: column; gap: 10px; }
 .tb-row { display: flex; align-items: flex-start; gap: 12px; }
@@ -117,5 +117,5 @@ const tiebreakers = [
   display: flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 800; color: var(--accent); flex-shrink: 0;
 }
-.tb-text { font-size: 13px; color: var(--text-dim); line-height: 1.4; }
+.tb-text { font-size: 13px; color: #ffffff; line-height: 1.4; }
 </style>

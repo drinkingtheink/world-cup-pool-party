@@ -81,7 +81,7 @@ const teams = computed(() => {
 .pts-banner {
   display: flex; align-items: center; gap: 10px; padding: 14px 16px;
 }
-.pts-name { flex: 1; font-size: 16px; font-weight: 700; }
+.pts-name { flex: 1; font-size: 16px; font-weight: 700; color: #ffffff; }
 .pts-total { font-size: 22px; font-weight: 800; color: var(--accent); }
 .pts-label { font-size: 12px; color: var(--text-dim); }
 .pts-rank { font-size: 12px; color: var(--text-dim); }
@@ -91,7 +91,7 @@ const teams = computed(() => {
 .team-card { padding: 12px 14px; }
 
 .team-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-.team-card-name { flex: 1; font-size: 14px; font-weight: 600; }
+.team-card-name { flex: 1; font-size: 14px; font-weight: 600; color: #ffffff; }
 .team-card-pts { font-size: 20px; font-weight: 800; color: var(--accent); }
 
 .empty-msg { padding: 40px 24px; text-align: center; color: var(--text-dim); font-size: 14px; }

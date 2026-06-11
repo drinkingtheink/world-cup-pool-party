@@ -2,8 +2,7 @@
   <div class="app">
     <header class="app-header">
       <div class="header-inner">
-        <span class="header-logo">⚽</span>
-        <h1 class="header-title">WC Pool <span class="header-year">2026</span></h1>
+        <h1 class="header-title">World Cup Pool Party</h1>
       </div>
     </header>
 
@@ -40,51 +39,106 @@
 </script>
 
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg:         #0d0f14;
-  --surface:    #161a23;
-  --surface2:   #1e2330;
-  --border:     #2a3044;
-  --accent:     #c9a84c;
-  --accent-dim: #8a6e2f;
-  --text:       #e8eaf0;
-  --text-dim:   #8892a4;
-  --green:      #3ecf6c;
-  --red:        #e05252;
-  --blue:       #4fa3e0;
-  --tab-h:      60px;
-  --header-h:   52px;
-  --radius:     10px;
+  --bg:        #080612;
+  --surface:   #100c20;
+  --surface2:  #1a1436;
+  --border:    #2e2060;
+  --accent:    #ff2d78;
+  --accent-dim:#8c1040;
+  --cyan:      #00e5ff;
+  --purple:    #bd5fff;
+  --text:      #f0e8ff;
+  --text-dim:  #c8baee;
+  --green:     #00ff9f;
+  --red:       #ff3366;
+  --blue:      #00e5ff;
+  --tab-h:     60px;
+  --header-h:  56px;
+  --radius:    10px;
+
+  --glow-pink: 0 0 8px rgba(255,45,120,0.5), 0 0 24px rgba(255,45,120,0.2);
+  --glow-cyan: 0 0 8px rgba(0,229,255,0.5), 0 0 24px rgba(0,229,255,0.2);
 }
 
-html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
-#app { height: 100%; }
+body {
+  background: var(--bg);
+  background-image:
+    linear-gradient(rgba(189,95,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(189,95,255,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
 .app { display: flex; flex-direction: column; height: 100dvh; }
-a { color: inherit; text-decoration: none; }
 
-.app-header { background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.header-inner { display: flex; align-items: center; gap: 8px; padding: 0 16px; height: var(--header-h); }
-.header-logo { font-size: 20px; }
-.header-title { flex: 1; font-size: 17px; font-weight: 700; letter-spacing: .02em; }
-.header-year { color: var(--accent); }
+/* ── Header ─────────────────────────────────────────────────────── */
+.app-header {
+  background: linear-gradient(180deg, #130e28 0%, #0e0a20 100%);
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, var(--accent), var(--cyan)) 1;
+  flex-shrink: 0;
+}
+.header-inner {
+  display: flex; align-items: center;
+  padding: 0 16px; height: var(--header-h);
+}
+.header-title {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 15px; font-weight: 800;
+  letter-spacing: .06em; text-transform: uppercase;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--cyan) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
+/* ── Main scroll area ────────────────────────────────────────────── */
 .app-main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 
-.tab-bar { display: flex; flex-shrink: 0; height: var(--tab-h); background: var(--surface); border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); }
-.tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--text-dim); transition: color .15s; }
-.tab--active { color: var(--accent); }
+/* ── Tab bar ─────────────────────────────────────────────────────── */
+.tab-bar {
+  display: flex; flex-shrink: 0; height: var(--tab-h);
+  background: linear-gradient(0deg, #130e28 0%, #0e0a20 100%);
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, var(--accent), var(--cyan)) 1;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tab {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  color: var(--text-dim); transition: color .2s, text-shadow .2s;
+}
+.tab--active {
+  color: var(--accent);
+  text-shadow: var(--glow-pink);
+}
 .tab-icon { font-size: 18px; line-height: 1; }
-.tab-label { font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.tab-label { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 
+/* ── View shell ──────────────────────────────────────────────────── */
 .view { padding: 16px; }
-.view-title { font-size: 12px; font-weight: 700; color: var(--text-dim); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-.pill { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; }
-.pill-t1 { background: #4a3a1a; color: #f0c060; }
-.pill-t2 { background: #1a2f3a; color: #60b0e0; }
-.pill-t3 { background: #1a3328; color: #60d0a0; }
-.pill-t4 { background: #2e1a2e; color: #c080e0; }
-.pill-chosen { background: #2a3a1a; color: #90d050; }
+.view-title {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 10px; font-weight: 700; color: var(--text-dim);
+  letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px;
+}
+
+/* ── Cards ───────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* ── Tier pills ──────────────────────────────────────────────────── */
+.pill {
+  display: inline-flex; align-items: center;
+  font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 99px;
+}
+.pill-t1 { background: rgba(255,45,120,0.15); color: #ff6fa0; border: 1px solid rgba(255,45,120,0.35); }
+.pill-t2 { background: rgba(0,229,255,0.12); color: #00e5ff; border: 1px solid rgba(0,229,255,0.3); }
+.pill-t3 { background: rgba(0,255,159,0.1);  color: #00ff9f; border: 1px solid rgba(0,255,159,0.25); }
+.pill-t4 { background: rgba(189,95,255,0.12); color: #bd5fff; border: 1px solid rgba(189,95,255,0.3); }
+.pill-chosen { background: rgba(0,229,255,0.1); color: #00e5ff; border: 1px solid rgba(0,229,255,0.25); }
 </style>

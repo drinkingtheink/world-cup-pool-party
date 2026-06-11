@@ -64,10 +64,10 @@ function rankClass(r) {
   flex-shrink: 0;
 }
 .rank-gold   { background: #4a3a1a; color: #f0c060; }
-.rank-silver { background: #2a2e3a; color: #a0aabf; }
-.rank-bronze { background: #2e2018; color: #c07040; }
+.rank-silver { background: #2a2e3a; color: #d0d8e8; }
+.rank-bronze { background: #2e2018; color: #e89060; }
 
-.lb-name { flex: 1; font-size: 15px; font-weight: 600; }
+.lb-name { flex: 1; font-size: 15px; font-weight: 600; color: #ffffff; }
 .lb-pts { font-size: 17px; font-weight: 800; color: var(--accent); }
 .lb-pts-label { font-size: 11px; font-weight: 500; color: var(--text-dim); }
 
@@ -81,7 +81,7 @@ function rankClass(r) {
   font-size: 13px;
 }
 .lb-team-name { display: flex; align-items: center; gap: 6px; color: var(--text-dim); }
-.lb-team-pts { font-weight: 600; color: var(--text); }
+.lb-team-pts { font-weight: 600; color: #ffffff; }
 
 .expand-enter-active, .expand-leave-active { transition: opacity .15s; }
 .expand-enter-from, .expand-leave-to { opacity: 0; }
