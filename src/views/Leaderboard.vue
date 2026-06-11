@@ -36,6 +36,12 @@
       <p v-if="!store.leaderboard.length" class="empty-msg">No data yet</p>
     </div>
 
+    <button class="schedule-btn" @click="router.push('/matches')">
+      <CalendarDays :size="15" class="schedule-btn-icon" />
+      <span class="schedule-btn-label">See Match Schedule</span>
+      <ChevronRight :size="14" class="schedule-btn-arrow" />
+    </button>
+
     <div class="quote-card">
       <span class="quote-mark">"</span>
       <p class="quote-text">{{ randomQuote.text }}</p>
@@ -131,8 +137,12 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
+import { CalendarDays, ChevronRight } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
 import { quotes } from '../data/index.js'
+
+const router = useRouter()
 
 const store = usePoolStore()
 const expanded = ref(null)
@@ -426,6 +436,81 @@ function rankClass(r) {
   box-shadow: 0 0 8px rgba(255,210,0,0.3);
   transition: width .6s cubic-bezier(.4,0,.2,1);
 }
+
+/* ── Match Schedule Button ────────────────────────────────────── */
+@keyframes btn-shimmer {
+  0%   { background-position: -300% center; }
+  100% { background-position:  300% center; }
+}
+
+.schedule-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  padding: 15px 20px;
+  margin: 16px 0 20px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255,45,120,0.12) 0%, rgba(13,10,30,0.9) 50%, rgba(0,229,255,0.12) 100%);
+  box-shadow:
+    0 0 0 1px rgba(255,45,120,0.45),
+    0 0 18px rgba(255,45,120,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  color: #fff;
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s cubic-bezier(.4,0,.2,1);
+}
+
+.schedule-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255,255,255,0.04) 50%,
+    transparent 80%
+  );
+  background-size: 300% auto;
+  animation: btn-shimmer 7s linear infinite;
+  pointer-events: none;
+}
+
+.schedule-btn:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px rgba(0,229,255,0.55),
+    0 0 18px rgba(0,229,255,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.schedule-btn:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    0 0 0 1px rgba(255,45,120,0.6),
+    0 0 10px rgba(255,45,120,0.25),
+    inset 0 2px 4px rgba(0,0,0,0.3);
+  transition: transform 0.07s ease, box-shadow 0.07s ease;
+}
+
+.schedule-btn-label {
+  background: linear-gradient(90deg, var(--accent) 0%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.schedule-btn-icon { color: var(--accent); flex-shrink: 0; }
+.schedule-btn-arrow { color: var(--cyan); flex-shrink: 0; opacity: 0.7; }
 
 /* ── Header Quote Card ────────────────────────────────────────── */
 .quote-card {

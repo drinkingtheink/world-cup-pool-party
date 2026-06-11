@@ -21,7 +21,7 @@
       </router-link>
       <router-link to="/my-teams" class="tab" active-class="tab--active">
         <ShieldCheck class="tab-icon" />
-        <span class="tab-label">My Teams</span>
+        <span class="tab-label">Players</span>
       </router-link>
       <router-link to="/teams"    class="tab" active-class="tab--active">
         <Globe class="tab-icon" />
@@ -160,6 +160,7 @@ body {
 .tab {
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 3px;
+  padding: 10px;
   color: var(--text-dim); transition: color .2s, text-shadow .2s;
   text-decoration: none;
 }
