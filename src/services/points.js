@@ -1,5 +1,10 @@
 // ─── Points Engine ────────────────────────────────────────────────────────────
 // Pure functions. No Vue/Pinia deps. All scoring logic lives here.
+//
+// Match shape:
+//   home, away, stage, home_score, away_score
+//   goals: [{ team: 'home'|'away', minute: Number }]  — chronological
+//   penalties_winner: 'home' | 'away' | null
 
 const STAGE_MULTIPLIERS = {
   'Group Stage':    1,
@@ -15,20 +20,51 @@ function multiplierFor(stage) {
   return STAGE_MULTIPLIERS[stage] ?? 1
 }
 
+// Derive bonus flags from the goals timeline + penalties_winner
+function deriveBonuses(match) {
+  const { goals = [], penalties_winner = null } = match
+  const flags = new Set()
+
+  if (goals.length > 0) {
+    // First goal
+    flags.add(`${goals[0].team}_first_goal`)
+
+    // Comeback win — winner was losing at some point
+    const hs = Number(match.home_score)
+    const as = Number(match.away_score)
+    const winner = hs > as ? 'home' : as > hs ? 'away' : null
+    if (winner) {
+      let h = 0, a = 0
+      let wasTrailing = false
+      for (const g of goals) {
+        if (g.team === 'home') h++; else a++
+        if (winner === 'home' && a > h) wasTrailing = true
+        if (winner === 'away' && h > a) wasTrailing = true
+      }
+      if (wasTrailing) flags.add(`${winner}_comeback`)
+    }
+  }
+
+  if (penalties_winner) flags.add(`${penalties_winner}_penalties`)
+
+  return flags
+}
+
 // Points for a single team in a single match (before multiplier)
 function matchPointsForTeam(team, match) {
-  const { home, away, home_score, away_score, bonuses, stage } = match
-  const hs = Number(home_score)
-  const as = Number(away_score)
+  const { home, away, home_score, away_score, stage } = match
   const isHome = home === team
   const isAway = away === team
   if (!isHome && !isAway) return 0
-  if (home_score === '' || away_score === '') return 0 // match not played yet
+  if (home_score === '' || away_score === '') return 0
 
+  const hs = Number(home_score)
+  const as = Number(away_score)
+  const side = isHome ? 'home' : 'away'
   const scored = isHome ? hs : as
   const conceded = isHome ? as : hs
-  const bonusFlags = (bonuses || '').split(',').map(b => b.trim()).filter(Boolean)
-  const side = isHome ? 'home' : 'away'
+
+  const bonuses = deriveBonuses(match)
 
   let pts = 0
 
@@ -36,16 +72,16 @@ function matchPointsForTeam(team, match) {
   if (scored > conceded) pts += 3
   else if (scored === conceded) pts += 1
 
-  // Goals scored
+  // Goals scored (regular time + ET, not penalties)
   pts += scored
 
   // Clean sheet
   if (conceded === 0) pts += 1
 
   // Bonus events
-  if (bonusFlags.includes(`${side}_first_goal`)) pts += 1
-  if (bonusFlags.includes(`${side}_comeback`)) pts += 2
-  if (bonusFlags.includes(`${side}_penalties`)) pts += 2
+  if (bonuses.has(`${side}_first_goal`)) pts += 1
+  if (bonuses.has(`${side}_comeback`))   pts += 2
+  if (bonuses.has(`${side}_penalties`))  pts += 2
 
   return pts * multiplierFor(stage)
 }
@@ -96,6 +132,7 @@ export function enrichMatches(matches) {
       else if (as > hs) result = 'away'
       else result = 'draw'
     }
-    return { ...m, played, result }
+    const bonuses = played ? deriveBonuses(m) : new Set()
+    return { ...m, played, result, bonusFlags: bonuses }
   })
 }
