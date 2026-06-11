@@ -151,7 +151,7 @@ function rankClass(r) {
 .lb-center { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .lb-name { font-size: 15px; font-weight: 600; color: #ffffff; }
 .lb-flags { display: flex; gap: 4px; flex-wrap: wrap; }
-.lb-flag { font-size: 18px; line-height: 1; cursor: default; }
+.lb-flag { font-size: 24px; line-height: 1; cursor: default; }
 .lb-pts { font-size: 17px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
 .lb-pts-label { font-size: 11px; font-weight: 500; color: var(--text-dim); }
 
