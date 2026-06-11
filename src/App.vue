@@ -104,6 +104,7 @@ body {
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 3px;
   color: var(--text-dim); transition: color .2s, text-shadow .2s;
+  text-decoration: none;
 }
 .tab--active {
   color: var(--accent);
