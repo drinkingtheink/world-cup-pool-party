@@ -25,13 +25,16 @@ function deriveBonuses(match) {
   const { goals = [], penalties_winner = null } = match
   const flags = new Set()
 
+  const hs = Number(match.home_score)
+  const as = Number(match.away_score)
+  if (as === 0) flags.add('home_clean_sheet')
+  if (hs === 0) flags.add('away_clean_sheet')
+
   if (goals.length > 0) {
     // First goal
     flags.add(`${goals[0].team}_first_goal`)
 
     // Comeback win — winner was losing at some point
-    const hs = Number(match.home_score)
-    const as = Number(match.away_score)
     const winner = hs > as ? 'home' : as > hs ? 'away' : null
     if (winner) {
       let h = 0, a = 0

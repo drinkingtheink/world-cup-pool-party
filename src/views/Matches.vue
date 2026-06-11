@@ -56,7 +56,7 @@
           </div>
 
           <div v-if="m.played && m.bonusFlags?.size" class="bonus-flags">
-            <span v-for="b in renderedBonuses(m.bonusFlags)" :key="b" class="bonus-tag">{{ b }}</span>
+            <span v-for="b in renderedBonuses(m)" :key="b.label" class="bonus-tag">{{ b.label }}</span>
           </div>
         </div>
       </div>
@@ -99,17 +99,22 @@ function formatDate(d) {
   return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
-const BONUS_LABELS = {
-  home_first_goal: '⚡ Home First Goal',
-  away_first_goal: '⚡ Away First Goal',
-  home_comeback:   '🔥 Home Comeback',
-  away_comeback:   '🔥 Away Comeback',
-  home_penalties:  '🎯 Home Won Pens',
-  away_penalties:  '🎯 Away Won Pens',
+const BONUS_META = {
+  first_goal:   { icon: '⚡', label: 'First Goal' },
+  comeback:     { icon: '🔥', label: 'Comeback Win' },
+  penalties:    { icon: '🎯', label: 'Won Penalties' },
+  clean_sheet:  { icon: '🧤', label: 'Clean Sheet' },
 }
 
-function renderedBonuses(flagSet) {
-  return [...(flagSet ?? [])].map(b => BONUS_LABELS[b]).filter(Boolean)
+function renderedBonuses(m) {
+  return [...(m.bonusFlags ?? [])].map(flag => {
+    const side = flag.startsWith('home_') ? 'home' : 'away'
+    const type = flag.slice(side.length + 1)
+    const meta = BONUS_META[type]
+    if (!meta) return null
+    const team = side === 'home' ? m.home : m.away
+    return { label: `${meta.icon} ${team} ${meta.label}` }
+  }).filter(Boolean)
 }
 
 function matchEvents(m) {
@@ -161,7 +166,7 @@ function stagePillClass(s) {
 .team-name.winner { color: var(--text); font-weight: 700; }
 
 .score-box { flex-shrink: 0; }
-.score { font-size: 19px; font-weight: 700; white-space: nowrap; }
+.score { font-size: 19px; font-weight: 700; white-space: nowrap; color: var(--text); }
 .score--upcoming { color: var(--text-dim); font-size: 16px; }
 .score-winner { color: var(--green); }
 
