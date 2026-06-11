@@ -16,12 +16,12 @@ export const quotes = [
 export const players = [
   { name: 'Charley', team1: 'England', team2: 'Germany', team3: 'Norway', team4: 'Uruguay', team5: 'Morocco', team6: 'Scotland' },
   { name: 'Jason',   team1: 'France', team2: 'Netherlands', team3: 'Japan', team4: 'Croatia', team5: 'Côte d\'Ivoire', team6: 'Switzerland' },
-  { name: 'Dan',     team1: 'Mexico', team2: 'Croatia', team3: 'Côte d\'Ivoire', team4: 'Spain', team5: 'Brazil', team6: 'Colombia' },
+  { name: 'Dan',     team1: 'Mexico', team2: 'Croatia', team3: 'Côte d\'Ivoire', team4: 'Spain', team5: 'Brazil', team6: 'Uruguay' },
   { name: 'Jay',     team1: 'England', team2: 'Spain', team3: 'USA', team4: 'Croatia', team5: 'Czech Republic', team6: 'DR Congo' },
-  { name: 'Jared',   team1: 'Spain', team2: 'Netherlands', team3: 'Mexico', team4: 'Switzerland', team5: 'South Korea', team6: 'Algeria' },
+  { name: 'Jared',   team1: 'Spain', team2: 'Netherlands', team3: 'Mexico', team4: 'Switzerland', team5: 'South Korea', team6: 'Morocco' },
   { name: 'Gabe',    team1: 'England', team2: 'Brazil', team3: 'Mexico', team4: 'Sweden', team5: 'Senegal', team6: 'Bosnia & Herzegovina' },
   { name: 'James',   team1: 'Senegal', team2: 'Japan', team3: 'Colombia', team4: 'Ecuador', team5: 'DR Congo', team6: 'Spain' },
-  { name: 'Tommy',   team1: 'Argentina', team2: 'Portugal', team3: 'USA', team4: 'Switzerland', team5: 'Croatia', team6: 'Côte d\'Ivoire' },
+  { name: 'Tommy',   team1: 'Argentina', team2: 'Portugal', team3: 'USA', team4: 'Switzerland', team5: 'Colombia', team6: 'Côte d\'Ivoire' },
 ]
 
 export const matches = [
