@@ -10,6 +10,8 @@
       <router-view />
     </main>
 
+    <AnnouncementModal />
+
     <nav class="tab-bar">
       <router-link to="/"         class="tab" active-class="tab--active">
         <BarChart2 class="tab-icon" />
@@ -37,6 +39,7 @@
 
 <script setup>
 import { BarChart2, Swords, ShieldCheck, Globe, ScrollText } from 'lucide-vue-next'
+import AnnouncementModal from './components/AnnouncementModal.vue'
 </script>
 
 <style>
