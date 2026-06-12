@@ -182,7 +182,7 @@ const playerGoals = computed(() => {
   })
   return map
 })
-const matchesPlayed = computed(() => store.matches.filter(m => m.home_score !== '').length)
+const matchesPlayed = computed(() => store.matches.filter(m => m.home_score !== '' && !m.snapshot_minute).length)
 const totalMatches  = computed(() => store.matches.length)
 
 function playerTeams(p) {
