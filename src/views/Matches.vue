@@ -22,7 +22,7 @@
         >
           <div class="match-stage-pill">
             <span class="pill" :class="stagePillClass(m.stage)">{{ m.stage }}</span>
-            <span v-if="m.snapshot_minute" class="match-time match-time--live">● {{ m.snapshot_minute }}'</span>
+            <span v-if="m.snapshot_minute" class="match-time match-time--live">● LIVE</span>
             <span v-else-if="m.time && !m.played" class="match-time">{{ m.time }}</span>
           </div>
 
@@ -35,6 +35,7 @@
                 <span :class="{ 'score-winner': m.result === 'away' }">{{ m.away_score !== '' ? m.away_score : 0 }}</span>
               </span>
               <span v-else class="score score--upcoming">vs</span>
+              <span v-if="m.snapshot_minute" class="score-minute">{{ m.snapshot_minute }}'</span>
             </div>
             <span class="team-name team-name--right" :class="{ winner: m.result === 'away' }">{{ m.away }}</span>
           </div>
@@ -167,10 +168,11 @@ function stagePillClass(s) {
 .team-name--right { text-align: right; }
 .team-name.winner { color: var(--text); font-weight: 700; }
 
-.score-box { flex-shrink: 0; }
+.score-box { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .score { font-size: 19px; font-weight: 700; white-space: nowrap; color: var(--text); }
 .score--upcoming { color: var(--text-dim); font-size: 16px; }
 .score-winner { color: var(--green); }
+.score-minute { font-size: 12px; font-weight: 700; color: var(--green); letter-spacing: .03em; }
 
 .goal-list { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
 .goal-item { display: flex; font-size: 13px; color: var(--text-dim); }
