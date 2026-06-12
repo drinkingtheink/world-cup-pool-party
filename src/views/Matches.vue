@@ -22,7 +22,8 @@
         >
           <div class="match-stage-pill">
             <span class="pill" :class="stagePillClass(m.stage)">{{ m.stage }}</span>
-            <span v-if="m.time && !m.played" class="match-time">{{ m.time }}</span>
+            <span v-if="m.snapshot_minute" class="match-time match-time--live">● {{ m.snapshot_minute }}'</span>
+            <span v-else-if="m.time && !m.played" class="match-time">{{ m.time }}</span>
           </div>
 
           <div class="match-score-row">
@@ -154,6 +155,7 @@ function stagePillClass(s) {
 
 .match-stage-pill { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .match-time { font-size: 13px; color: var(--text-dim); }
+.match-time--live { color: var(--green); font-weight: 700; }
 
 .match-score-row { display: flex; align-items: center; gap: 6px; }
 
