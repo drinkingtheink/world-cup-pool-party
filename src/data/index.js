@@ -18,105 +18,14 @@ export const players = [
   { name: 'Charley', team1: 'England', team2: 'Germany', team3: 'Norway', team4: 'Uruguay', team5: 'Morocco', team6: 'Scotland' },
   { name: 'Jason',   team1: 'France', team2: 'Netherlands', team3: 'Japan', team4: 'Croatia', team5: 'Côte d\'Ivoire', team6: 'Switzerland' },
   { name: 'Dan',     team1: 'Mexico', team2: 'Croatia', team3: 'Côte d\'Ivoire', team4: 'Spain', team5: 'Brazil', team6: 'Uruguay' },
-  { name: 'Jay',     team1: 'England', team2: 'Spain', team3: 'USA', team4: 'Croatia', team5: 'Czech Republic', team6: 'DR Congo' },
+  { name: 'Jay',     team1: 'England', team2: 'Spain', team3: 'USA', team4: 'Croatia', team5: 'Czechia', team6: 'DR Congo' },
   { name: 'Jared',   team1: 'Spain', team2: 'Netherlands', team3: 'Mexico', team4: 'Switzerland', team5: 'South Korea', team6: 'Morocco' },
   { name: 'Gabe',    team1: 'England', team2: 'Brazil', team3: 'Mexico', team4: 'Sweden', team5: 'Senegal', team6: 'Bosnia & Herzegovina' },
   { name: 'James',   team1: 'Senegal', team2: 'Japan', team3: 'Colombia', team4: 'Ecuador', team5: 'DR Congo', team6: 'Spain' },
   { name: 'Tommy',   team1: 'Argentina', team2: 'Portugal', team3: 'USA', team4: 'Switzerland', team5: 'Colombia', team6: 'Côte d\'Ivoire' },
 ]
 
-export const matches = [
-  // ── Group Stage ─────────────────────────────────────────────────────────────
-  // June 11
-  { date: '2026-06-11', stage: 'Group Stage', home: 'Mexico',              away: 'South Africa',        home_score: '2', away_score: '0', goals: [{ team: 'home', minute: 9 }, { team: 'home', minute: 67 }], cards: [{ team: 'home', minute: 23, type: 'yellow' }, { team: 'away', minute: 49, type: 'red' }, { team: 'away', minute: 84, type: 'red' }, { team: 'home', minute: 92, type: 'red' }], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-11', stage: 'Group Stage', home: 'South Korea',         away: 'Czech Republic',      home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
-  // June 12
-  { date: '2026-06-12', stage: 'Group Stage', home: 'Canada',              away: 'Bosnia & Herzegovina',home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-12', stage: 'Group Stage', home: 'USA',                 away: 'Paraguay',            home_score: '', away_score: '', goals: [], penalties_winner: null, time: '8:00 PM CT' },
-  // June 13
-  { date: '2026-06-13', stage: 'Group Stage', home: 'Qatar',               away: 'Switzerland',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-13', stage: 'Group Stage', home: 'Brazil',              away: 'Morocco',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '5:00 PM CT' },
-  { date: '2026-06-13', stage: 'Group Stage', home: 'Haiti',               away: 'Scotland',            home_score: '', away_score: '', goals: [], penalties_winner: null, time: '8:00 PM CT' },
-  { date: '2026-06-13', stage: 'Group Stage', home: 'Australia',           away: 'Turkey',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '11:00 PM CT' },
-  // June 14
-  { date: '2026-06-14', stage: 'Group Stage', home: 'Germany',             away: 'Curaçao',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '12:00 PM CT' },
-  { date: '2026-06-14', stage: 'Group Stage', home: 'Netherlands',         away: 'Japan',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
-  { date: '2026-06-14', stage: 'Group Stage', home: 'Côte d\'Ivoire',         away: 'Ecuador',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:00 PM CT' },
-  { date: '2026-06-14', stage: 'Group Stage', home: 'Sweden',              away: 'Tunisia',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
-  // June 15
-  { date: '2026-06-15', stage: 'Group Stage', home: 'Spain',               away: 'Cape Verde',          home_score: '', away_score: '', goals: [], penalties_winner: null, time: '12:00 PM CT' },
-  { date: '2026-06-15', stage: 'Group Stage', home: 'Belgium',             away: 'Egypt',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '5:00 PM CT' },
-  { date: '2026-06-15', stage: 'Group Stage', home: 'Saudi Arabia',        away: 'Uruguay',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '5:00 PM CT' },
-  { date: '2026-06-15', stage: 'Group Stage', home: 'Iran',                away: 'New Zealand',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '11:00 PM CT' },
-  // June 16
-  { date: '2026-06-16', stage: 'Group Stage', home: 'France',              away: 'Senegal',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-16', stage: 'Group Stage', home: 'Iraq',                away: 'Norway',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '5:00 PM CT' },
-  { date: '2026-06-16', stage: 'Group Stage', home: 'Argentina',           away: 'Algeria',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '8:00 PM CT' },
-  { date: '2026-06-16', stage: 'Group Stage', home: 'Austria',             away: 'Jordan',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '11:00 PM CT' },
-  // June 17
-  { date: '2026-06-17', stage: 'Group Stage', home: 'Portugal',            away: 'DR Congo',            home_score: '', away_score: '', goals: [], penalties_winner: null, time: '12:00 PM CT' },
-  { date: '2026-06-17', stage: 'Group Stage', home: 'England',             away: 'Croatia',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
-  { date: '2026-06-17', stage: 'Group Stage', home: 'Ghana',               away: 'Panama',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:00 PM CT' },
-  { date: '2026-06-17', stage: 'Group Stage', home: 'Uzbekistan',          away: 'Colombia',            home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
-  // June 18
-  { date: '2026-06-18', stage: 'Group Stage', home: 'Czech Republic',      away: 'South Africa',        home_score: '', away_score: '', goals: [], penalties_winner: null, time: '11:00 AM CT' },
-  { date: '2026-06-18', stage: 'Group Stage', home: 'Switzerland',         away: 'Bosnia & Herzegovina',home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-18', stage: 'Group Stage', home: 'Canada',              away: 'Qatar',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '5:00 PM CT' },
-  { date: '2026-06-18', stage: 'Group Stage', home: 'Mexico',              away: 'South Korea',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '10:00 PM CT' },
-  // June 19
-  { date: '2026-06-19', stage: 'Group Stage', home: 'USA',                 away: 'Australia',           home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-19', stage: 'Group Stage', home: 'Scotland',            away: 'Morocco',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '5:00 PM CT' },
-  { date: '2026-06-19', stage: 'Group Stage', home: 'Brazil',              away: 'Haiti',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '8:00 PM CT' },
-  { date: '2026-06-19', stage: 'Group Stage', home: 'Turkey',              away: 'Paraguay',            home_score: '', away_score: '', goals: [], penalties_winner: null, time: '11:00 PM CT' },
-  // June 20
-  { date: '2026-06-20', stage: 'Group Stage', home: 'Netherlands',         away: 'Sweden',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '12:00 PM CT' },
-  { date: '2026-06-20', stage: 'Group Stage', home: 'Germany',             away: 'Côte d\'Ivoire',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
-  { date: '2026-06-20', stage: 'Group Stage', home: 'Ecuador',             away: 'Curaçao',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '7:00 PM CT' },
-  { date: '2026-06-20', stage: 'Group Stage', home: 'Tunisia',             away: 'Japan',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '11:00 PM CT' },
-  // June 21
-  { date: '2026-06-21', stage: 'Group Stage', home: 'Spain',               away: 'Saudi Arabia',        home_score: '', away_score: '', goals: [], penalties_winner: null, time: '11:00 AM CT' },
-  { date: '2026-06-21', stage: 'Group Stage', home: 'Belgium',             away: 'Iran',                home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-21', stage: 'Group Stage', home: 'Uruguay',             away: 'Cape Verde',          home_score: '', away_score: '', goals: [], penalties_winner: null, time: '5:00 PM CT' },
-  { date: '2026-06-21', stage: 'Group Stage', home: 'New Zealand',         away: 'Egypt',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '8:00 PM CT' },
-  // June 22
-  { date: '2026-06-22', stage: 'Group Stage', home: 'Argentina',           away: 'Austria',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '12:00 PM CT' },
-  { date: '2026-06-22', stage: 'Group Stage', home: 'France',              away: 'Iraq',                home_score: '', away_score: '', goals: [], penalties_winner: null, time: '4:00 PM CT' },
-  { date: '2026-06-22', stage: 'Group Stage', home: 'Norway',              away: 'Senegal',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '7:00 PM CT' },
-  { date: '2026-06-22', stage: 'Group Stage', home: 'Jordan',              away: 'Algeria',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '10:00 PM CT' },
-  // June 23
-  { date: '2026-06-23', stage: 'Group Stage', home: 'Portugal',            away: 'Uzbekistan',          home_score: '', away_score: '', goals: [], penalties_winner: null, time: '12:00 PM CT' },
-  { date: '2026-06-23', stage: 'Group Stage', home: 'England',             away: 'Ghana',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
-  { date: '2026-06-23', stage: 'Group Stage', home: 'Panama',              away: 'Croatia',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:00 PM CT' },
-  { date: '2026-06-23', stage: 'Group Stage', home: 'Colombia',            away: 'DR Congo',            home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
-  // June 24
-  { date: '2026-06-24', stage: 'Group Stage', home: 'Switzerland',         away: 'Canada',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-24', stage: 'Group Stage', home: 'Bosnia & Herzegovina',away: 'Qatar',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-24', stage: 'Group Stage', home: 'Scotland',            away: 'Brazil',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '5:00 PM CT' },
-  { date: '2026-06-24', stage: 'Group Stage', home: 'Morocco',             away: 'Haiti',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '5:00 PM CT' },
-  { date: '2026-06-24', stage: 'Group Stage', home: 'Czech Republic',      away: 'Mexico',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '8:00 PM CT' },
-  { date: '2026-06-24', stage: 'Group Stage', home: 'South Africa',        away: 'South Korea',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '8:00 PM CT' },
-  // June 25
-  { date: '2026-06-25', stage: 'Group Stage', home: 'Ecuador',             away: 'Germany',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
-  { date: '2026-06-25', stage: 'Group Stage', home: 'Curaçao',             away: 'Côte d\'Ivoire',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '3:00 PM CT' },
-  { date: '2026-06-25', stage: 'Group Stage', home: 'Japan',               away: 'Sweden',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:00 PM CT' },
-  { date: '2026-06-25', stage: 'Group Stage', home: 'Tunisia',             away: 'Netherlands',         home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:00 PM CT' },
-  { date: '2026-06-25', stage: 'Group Stage', home: 'Turkey',              away: 'USA',                 home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
-  { date: '2026-06-25', stage: 'Group Stage', home: 'Paraguay',            away: 'Australia',           home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
-  // June 26
-  { date: '2026-06-26', stage: 'Group Stage', home: 'Norway',              away: 'France',              home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-26', stage: 'Group Stage', home: 'Senegal',             away: 'Iraq',                home_score: '', away_score: '', goals: [], penalties_winner: null, time: '2:00 PM CT' },
-  { date: '2026-06-26', stage: 'Group Stage', home: 'Cape Verde',          away: 'Saudi Arabia',        home_score: '', away_score: '', goals: [], penalties_winner: null, time: '7:00 PM CT' },
-  { date: '2026-06-26', stage: 'Group Stage', home: 'Uruguay',             away: 'Spain',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '7:00 PM CT' },
-  { date: '2026-06-26', stage: 'Group Stage', home: 'Egypt',               away: 'Iran',                home_score: '', away_score: '', goals: [], penalties_winner: null, time: '10:00 PM CT' },
-  { date: '2026-06-26', stage: 'Group Stage', home: 'New Zealand',         away: 'Belgium',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '10:00 PM CT' },
-  // June 27
-  { date: '2026-06-27', stage: 'Group Stage', home: 'Panama',              away: 'England',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '4:00 PM CT' },
-  { date: '2026-06-27', stage: 'Group Stage', home: 'Croatia',             away: 'Ghana',               home_score: '', away_score: '', goals: [], penalties_winner: null, time: '4:00 PM CT' },
-  { date: '2026-06-27', stage: 'Group Stage', home: 'Colombia',            away: 'Portugal',            home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:30 PM CT' },
-  { date: '2026-06-27', stage: 'Group Stage', home: 'DR Congo',            away: 'Uzbekistan',          home_score: '', away_score: '', goals: [], penalties_winner: null, time: '6:30 PM CT' },
-  { date: '2026-06-27', stage: 'Group Stage', home: 'Algeria',             away: 'Austria',             home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
-  { date: '2026-06-27', stage: 'Group Stage', home: 'Jordan',              away: 'Argentina',           home_score: '', away_score: '', goals: [], penalties_winner: null, time: '9:00 PM CT' },
-]
+export { default as matches } from './matches.json'
 
 export const tiers = [
   // Tier 1 — Contenders (+450 to 20-1)
@@ -150,7 +59,7 @@ export const tiers = [
   { team: 'Côte d\'Ivoire',          tier: 3, odds: 20000, fifaRank: 34 },
   { team: 'Algeria',              tier: 3, odds: 25000, fifaRank: 28 },
   { team: 'Bosnia & Herzegovina', tier: 3, odds: 25000, fifaRank: 65 },
-  { team: 'Czech Republic',       tier: 3, odds: 25000, fifaRank: 41 },
+  { team: 'Czechia',       tier: 3, odds: 25000, fifaRank: 41 },
   { team: 'Egypt',                tier: 3, odds: 25000, fifaRank: 29 },
   { team: 'South Korea',          tier: 3, odds: 25000, fifaRank: 25 },
   { team: 'Paraguay',             tier: 3, odds: 25000, fifaRank: 40 },
@@ -202,7 +111,7 @@ export const FLAG_MAP = {
   'Côte d\'Ivoire':       '🇨🇮',
   'Algeria':              '🇩🇿',
   'Bosnia & Herzegovina': '🇧🇦',
-  'Czech Republic':       '🇨🇿',
+  'Czechia':       '🇨🇿',
   'Egypt':                '🇪🇬',
   'South Korea':          '🇰🇷',
   'Paraguay':             '🇵🇾',
