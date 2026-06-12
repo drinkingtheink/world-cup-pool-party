@@ -1,6 +1,6 @@
 <template>
   <div class="view">
-    <p class="view-title">Standings</p>
+    <p class="view-title">Full Tournament Stats</p>
 
     <div class="tourney-stats card">
       <div class="stat-item">
@@ -19,6 +19,8 @@
       <span class="schedule-btn-label">See Match Schedule</span>
       <ChevronRight :size="14" class="schedule-btn-arrow" />
     </button>
+
+    <p class="view-title">Standings</p>
 
     <div class="leaderboard">
       <div
