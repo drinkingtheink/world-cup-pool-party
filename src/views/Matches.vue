@@ -23,12 +23,13 @@
           v-for="(m, i) in group.matches"
           :key="i"
           class="match-row"
-          :class="{ 'match-row--divider': i > 0 }"
+          :class="{ 'match-row--divider': i > 0, 'match-row--orphan': isOrphan(m) }"
         >
           <div class="match-stage-pill">
             <span class="pill" :class="stagePillClass(m.stage)">{{ m.stage }}</span>
             <span v-if="m.snapshot_minute" class="match-time match-time--live">● LIVE</span>
             <span v-else-if="m.time && !m.played" class="match-time">{{ m.time }}</span>
+            <span v-if="isOrphan(m)" class="orphan-tag">🍿 Popcorn game</span>
           </div>
 
           <div class="match-score-row">
@@ -144,6 +145,10 @@ function eventIcon(e) {
   return '🟨'
 }
 
+function isOrphan(m) {
+  return m.homePlayers.length === 0 && m.awayPlayers.length === 0
+}
+
 function stagePillClass(s) {
   if (s === 'Final') return 'pill-t1'
   if (s?.includes('Semi')) return 'pill-t2'
@@ -190,6 +195,8 @@ function stagePillClass(s) {
 .match-list--today { border-color: rgba(0,255,159,0.25); }
 .match-row { padding: 12px 14px; }
 .match-row--divider { border-top: 1px solid var(--border); }
+
+.orphan-tag { font-size: 12px; color: var(--text-dim); margin-left: auto; }
 
 .match-stage-pill { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .match-time { font-size: 13px; color: var(--text-dim); }
