@@ -2,6 +2,18 @@
   <div class="view">
     <p class="view-title">Standings</p>
 
+    <div class="tourney-stats card">
+      <div class="stat-item">
+        <span class="stat-value">{{ totalGoals }}</span>
+        <span class="stat-label">Goals Scored</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">{{ matchesPlayed }} <span class="stat-of">/ {{ totalMatches }}</span></span>
+        <span class="stat-label">Matches Played</span>
+      </div>
+    </div>
+
     <div class="leaderboard">
       <div
         v-for="(entry, i) in store.leaderboard"
@@ -153,6 +165,10 @@ const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
 
 onMounted(() => nextTick(() => { ready.value = true }))
 
+const totalGoals    = computed(() => store.matches.reduce((sum, m) => sum + (m.goals?.length ?? 0), 0))
+const matchesPlayed = computed(() => store.matches.filter(m => m.home_score !== '').length)
+const totalMatches  = computed(() => store.matches.length)
+
 function playerTeams(p) {
   return [p.team1, p.team2, p.team3, p.team4, p.team5, p.team6].filter(Boolean)
 }
@@ -239,6 +255,16 @@ function rankClass(r) {
 </script>
 
 <style scoped>
+.tourney-stats {
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 16px; margin-bottom: 16px;
+}
+.stat-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.stat-value { font-size: 26px; font-weight: 800; color: var(--green); }
+.stat-of { font-size: 16px; color: var(--text-dim); font-weight: 600; }
+.stat-label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
+.stat-divider { width: 1px; height: 40px; background: var(--border); }
+
 .leaderboard { display: flex; flex-direction: column; gap: 8px; }
 
 .lb-row { cursor: pointer; transition: border-color .15s; }
