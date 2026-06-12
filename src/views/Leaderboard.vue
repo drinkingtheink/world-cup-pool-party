@@ -30,6 +30,7 @@
             <div class="lb-flags">
               <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
             </div>
+            <span class="lb-goals"><span class="lb-goals-label">Total Group Goals:</span> {{ playerGoals[entry.name] }}</span>
           </div>
           <span class="lb-pts">{{ entry.total }} <span class="lb-pts-label">pts</span></span>
         </div>
@@ -166,6 +167,21 @@ const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
 onMounted(() => nextTick(() => { ready.value = true }))
 
 const totalGoals    = computed(() => store.matches.reduce((sum, m) => sum + (m.goals?.length ?? 0), 0))
+
+const playerGoals = computed(() => {
+  const map = {}
+  store.players.forEach(p => {
+    const teams = new Set(playerTeams(p))
+    let g = 0
+    store.matches.forEach(m => {
+      ;(m.goals ?? []).forEach(goal => {
+        if (teams.has(goal.team === 'home' ? m.home : m.away)) g++
+      })
+    })
+    map[p.name] = g
+  })
+  return map
+})
 const matchesPlayed = computed(() => store.matches.filter(m => m.home_score !== '').length)
 const totalMatches  = computed(() => store.matches.length)
 
@@ -289,6 +305,8 @@ function rankClass(r) {
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
 .lb-flags { display: flex; gap: 4px; flex-wrap: wrap; }
 .lb-flag { font-size: 29px; line-height: 1; cursor: default; }
+.lb-goals { font-size: 12px; font-weight: 600; color: var(--text-dim); letter-spacing: .02em; }
+.lb-goals-label { text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
 .lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
 .lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
 
