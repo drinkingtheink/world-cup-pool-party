@@ -12,7 +12,7 @@
     </div>
 
     <template v-for="(group, i) in grouped" :key="group.date">
-      <div class="date-header" :class="{ 'date-header--first': i === 0, 'date-header--today': isToday(group.date), 'date-header--past': isPast(group.date) }">
+      <div class="date-header" :ref="el => { if (isToday(group.date)) todayEl = el }" :class="{ 'date-header--first': i === 0, 'date-header--today': isToday(group.date), 'date-header--past': isPast(group.date) }">
         <span class="date-header__text">{{ formatDate(group.date) }}</span>
         <span class="date-header__count">{{ group.matches.length }} match{{ group.matches.length !== 1 ? 'es' : '' }}</span>
         <span v-if="isToday(group.date)" class="date-header__badge date-header__badge--today">Today</span>
@@ -75,11 +75,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { usePoolStore } from '../stores/pool.js'
 
 const store = usePoolStore()
 const activeStage = ref(null)
+const todayEl = ref(null)
+
+onMounted(() => nextTick(() => todayEl.value?.scrollIntoView({ block: 'start' })))
 
 const stages = computed(() => {
   const s = new Set(store.enrichedMatches.map(m => m.stage))
