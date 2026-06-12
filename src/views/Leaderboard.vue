@@ -303,8 +303,8 @@ function rankClass(r) {
 
 .lb-center { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
-.lb-flags { display: flex; gap: 4px; flex-wrap: wrap; }
-.lb-flag { font-size: 29px; line-height: 1; cursor: default; }
+.lb-flags { display: flex; gap: 3px; flex-wrap: nowrap; }
+.lb-flag { font-size: 24px; line-height: 1; cursor: default; flex-shrink: 0; }
 .lb-goals { font-size: 12px; font-weight: 600; color: var(--text-dim); letter-spacing: .02em; }
 .lb-goals-label { text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
 .lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
