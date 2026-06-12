@@ -80,7 +80,7 @@ const teams = computed(() => {
       group,
       groupConflict: group ? groupCount[group] > 1 : false,
     }
-  }).sort((a, b) => a.fifaRank - b.fifaRank)
+  }).sort((a, b) => b.pts - a.pts || a.fifaRank - b.fifaRank)
 })
 </script>
 
