@@ -51,6 +51,7 @@
               <span class="goal-item__home">
                 <template v-if="e.team === 'home'">{{ e.minute }}' {{ eventIcon(e) }}</template>
               </span>
+              <span class="goal-item__gap"></span>
               <span class="goal-item__away">
                 <template v-if="e.team === 'away'">{{ eventIcon(e) }} {{ e.minute }}'</template>
               </span>
@@ -63,8 +64,14 @@
             <span class="rivalry-side">{{ m.awayPlayers.join(', ') }}</span>
           </div>
 
-          <div v-if="m.played && m.bonusFlags?.size" class="bonus-flags">
-            <span v-for="b in renderedBonuses(m)" :key="b.label" class="bonus-tag">{{ b.label }}</span>
+          <div v-if="m.played && m.bonusFlags?.size" class="bonus-row">
+            <div class="bonus-col bonus-col--home">
+              <span v-for="b in homeBonuses(m)" :key="b.label" class="bonus-tag">{{ b.label }}</span>
+            </div>
+            <span class="bonus-col--gap"></span>
+            <div class="bonus-col bonus-col--away">
+              <span v-for="b in awayBonuses(m)" :key="b.label" class="bonus-tag">{{ b.label }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -132,9 +139,12 @@ function renderedBonuses(m) {
     const meta = BONUS_META[type]
     if (!meta) return null
     const team = side === 'home' ? m.home : m.away
-    return { label: `${meta.icon} ${team} ${meta.label}` }
+    return { label: `${meta.icon} ${meta.label}`, side }
   }).filter(Boolean)
 }
+
+function homeBonuses(m) { return renderedBonuses(m).filter(b => b.side === 'home') }
+function awayBonuses(m) { return renderedBonuses(m).filter(b => b.side === 'away') }
 
 function matchEvents(m) {
   const goals = (m.goals ?? []).map(g => ({ ...g, kind: 'goal' }))
@@ -222,9 +232,10 @@ function stagePillClass(s) {
 .score-minute { font-size: 12px; font-weight: 700; color: var(--green); letter-spacing: .03em; }
 
 .goal-list { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
-.goal-item { display: flex; font-size: 13px; color: var(--text-dim); }
-.goal-item__home { flex: 1; }
-.goal-item__away { flex: 1; text-align: right; }
+.goal-item { display: grid; grid-template-columns: 1fr 60px 1fr; font-size: 13px; color: var(--text-dim); }
+.goal-item__home { text-align: right; padding-right: 6px; }
+.goal-item__gap  { }
+.goal-item__away { text-align: left; padding-left: 6px; }
 
 .rivalry {
   display: flex; align-items: center; gap: 6px;
@@ -239,8 +250,12 @@ function stagePillClass(s) {
   color: var(--green); flex-shrink: 0; opacity: 0.5;
 }
 
-.bonus-flags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-.bonus-tag { font-size: 12px; color: var(--accent); background: #2a2010; border-radius: 4px; padding: 2px 6px; }
+.bonus-row { display: grid; grid-template-columns: 1fr 60px 1fr; margin-top: 8px; gap: 4px 0; }
+.bonus-col { display: flex; flex-direction: column; gap: 4px; }
+.bonus-col--home { align-items: flex-start; }
+.bonus-col--away { align-items: flex-end; }
+.bonus-col--gap  { }
+.bonus-tag { font-size: 12px; color: var(--accent); background: #2a2010; border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
 
 .empty-msg { text-align: center; color: var(--text-dim); padding: 32px; font-size: 17px; }
 </style>
