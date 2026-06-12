@@ -28,12 +28,16 @@
           v-for="team in teams"
           :key="team.name"
           class="team-card card"
+          :class="{ 'team-card--conflict': team.groupConflict }"
         >
           <div class="team-card-top">
             <span class="team-card-flag">{{ FLAG_MAP[team.name] ?? '🏳' }}</span>
             <span class="team-card-name">{{ team.name }}</span>
             <span class="pill" :class="`pill-t${team.tier}`">T{{ team.tier }}</span>
             <span v-if="store.fifaRankMap[team.name]" class="fifa-badge">FIFA #{{ store.fifaRankMap[team.name] }}</span>
+            <span v-if="team.group" class="group-badge" :class="{ 'group-badge--conflict': team.groupConflict }">
+              {{ team.groupConflict ? '⚠️ ' : '' }}Grp {{ team.group }}
+            </span>
           </div>
           <div class="team-card-pts">{{ team.pts }} pts</div>
         </div>
@@ -57,15 +61,26 @@ const playerEntry = computed(() => store.leaderboard.find(e => e.name === select
 
 const teams = computed(() => {
   if (!player.value || !playerEntry.value) return []
-  return [
+  const names = [
     player.value.team1, player.value.team2, player.value.team3,
     player.value.team4, player.value.team5, player.value.team6,
-  ].filter(Boolean).map(name => ({
-    name,
-    tier: store.tierMap[name] ?? '?',
-    pts: playerEntry.value.breakdown[name] ?? 0,
-    fifaRank: store.fifaRankMap[name] ?? 999,
-  })).sort((a, b) => a.fifaRank - b.fifaRank)
+  ].filter(Boolean)
+  const groupCount = {}
+  names.forEach(n => {
+    const g = store.groupOf[n]
+    if (g) groupCount[g] = (groupCount[g] || 0) + 1
+  })
+  return names.map(name => {
+    const group = store.groupOf[name]
+    return {
+      name,
+      tier: store.tierMap[name] ?? '?',
+      pts: playerEntry.value.breakdown[name] ?? 0,
+      fifaRank: store.fifaRankMap[name] ?? 999,
+      group,
+      groupConflict: group ? groupCount[group] > 1 : false,
+    }
+  }).sort((a, b) => a.fifaRank - b.fifaRank)
 })
 </script>
 
@@ -100,6 +115,18 @@ const teams = computed(() => {
 .team-card-flag { font-size: 22px; line-height: 1; flex-shrink: 0; }
 .team-card-name { flex: 1; font-size: 17px; font-weight: 600; color: #ffffff; }
 .team-card-pts { font-size: 24px; font-weight: 800; color: var(--accent); }
+
+.group-badge {
+  font-size: 12px; font-weight: 700; letter-spacing: .04em;
+  color: var(--text-dim); background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 2px 6px; white-space: nowrap; flex-shrink: 0;
+}
+.group-badge--conflict {
+  color: #ffb020; background: rgba(255,176,32,0.1);
+  border-color: rgba(255,176,32,0.4);
+}
+.team-card--conflict { border-color: rgba(255,176,32,0.35); }
 
 .fifa-badge {
   font-size: 12px; font-weight: 700; letter-spacing: .04em;
