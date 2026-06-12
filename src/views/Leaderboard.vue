@@ -14,6 +14,12 @@
       </div>
     </div>
 
+    <button class="schedule-btn" @click="router.push('/matches')">
+      <CalendarDays :size="15" class="schedule-btn-icon" />
+      <span class="schedule-btn-label">See Match Schedule</span>
+      <ChevronRight :size="14" class="schedule-btn-arrow" />
+    </button>
+
     <div class="leaderboard">
       <div
         v-for="(entry, i) in store.leaderboard"
@@ -49,12 +55,6 @@
 
       <p v-if="!store.leaderboard.length" class="empty-msg">No data yet</p>
     </div>
-
-    <button class="schedule-btn" @click="router.push('/matches')">
-      <CalendarDays :size="15" class="schedule-btn-icon" />
-      <span class="schedule-btn-label">See Match Schedule</span>
-      <ChevronRight :size="14" class="schedule-btn-arrow" />
-    </button>
 
     <div class="quote-card">
       <span class="quote-mark">"</span>
