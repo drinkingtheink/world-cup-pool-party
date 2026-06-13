@@ -181,6 +181,10 @@ body {
 
 /* ── View shell ──────────────────────────────────────────────────── */
 .view { padding: 16px; }
+
+@media (min-width: 768px) {
+  .view { max-width: 1000px; margin: 0 auto; }
+}
 .view-title {
   font-family: 'Orbitron', system-ui, sans-serif;
   font-size: 12px; font-weight: 700; color: var(--text-dim);
