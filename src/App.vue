@@ -138,7 +138,17 @@ body {
 }
 
 /* ── Main scroll area ────────────────────────────────────────────── */
-.app-main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+.app-main { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: #2e2060 #080612; }
+
+.app-main::-webkit-scrollbar { width: 4px; }
+.app-main::-webkit-scrollbar-track { background: var(--bg); }
+.app-main::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: linear-gradient(180deg, var(--accent), var(--cyan));
+}
+.app-main::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff6fa0, #40eeff);
+}
 
 /* ── Tab bar ─────────────────────────────────────────────────────── */
 .tab-bar {
