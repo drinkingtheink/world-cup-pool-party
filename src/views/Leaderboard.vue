@@ -34,16 +34,18 @@
         <div class="lb-main">
           <span class="lb-rank" :class="rankClass(entry.rank)">{{ entry.rank }}</span>
           <div class="lb-center">
-            <span class="lb-name">{{ entry.name }}</span>
+            <div class="lb-name-row">
+              <span class="lb-name">{{ entry.name }}</span>
+              <span class="lb-today-tomorrow">
+                <span class="lb-tt-label">Today:</span> {{ playerMatchDays[entry.name].today }}
+                <span class="lb-tt-sep">|</span>
+                <span class="lb-tt-label">Tomorrow:</span> {{ playerMatchDays[entry.name].tomorrow }}
+              </span>
+            </div>
             <div class="lb-flags">
               <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
             </div>
             <span class="lb-goals"><span class="lb-goals-label">Total Group Goals:</span> {{ playerGoals[entry.name] }}</span>
-            <span class="lb-today-tomorrow">
-              <span class="lb-tt-label">Games Today:</span> {{ playerMatchDays[entry.name].today }}
-              <span class="lb-tt-sep">|</span>
-              <span class="lb-tt-label">Tomorrow:</span> {{ playerMatchDays[entry.name].tomorrow }}
-            </span>
           </div>
           <span class="lb-pts">{{ entry.total }} <span class="lb-pts-label">pts</span></span>
         </div>
@@ -342,12 +344,15 @@ function rankClass(r) {
 .lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
 .lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
 
+.lb-name-row {
+  display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+}
 .lb-today-tomorrow {
   font-size: 11px; font-weight: 600; color: var(--text-dim);
-  letter-spacing: .02em;
+  letter-spacing: .02em; white-space: nowrap;
 }
 .lb-tt-label { text-transform: uppercase; letter-spacing: .06em; font-size: 10px; }
-.lb-tt-sep { margin: 0 5px; opacity: 0.4; }
+.lb-tt-sep { margin: 0 4px; opacity: 0.4; }
 
 .lb-breakdown {
   border-top: 1px solid var(--border);
