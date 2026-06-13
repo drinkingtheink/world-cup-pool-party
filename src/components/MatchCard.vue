@@ -1,5 +1,5 @@
 <template>
-  <div class="match-row" :class="{ 'match-row--divider': showDivider, 'match-row--orphan': isOrphan, 'match-row--live': match.snapshot_minute }">
+  <div class="match-row" :class="{ 'match-row--divider': showDivider, 'match-row--orphan': isOrphan, 'match-row--live': match.snapshot_minute, 'match-row--played': match.played && !match.snapshot_minute }">
     <div class="match-stage-pill">
       <span class="pill" :class="stagePillClass">{{ match.stage }}</span>
       <span v-if="match.snapshot_minute" class="match-time match-time--live">● LIVE</span>
@@ -114,6 +114,12 @@ const awayBonuses = computed(() => allBonuses.value.filter(b => b.side === 'away
   background: rgba(0,255,159,0.04);
   box-shadow: inset 3px 0 0 rgba(0,255,159,0.5);
 }
+.match-row--played {
+  background: rgba(0,0,0,0.12);
+  box-shadow: inset 3px 0 0 rgba(255,255,255,0.07);
+}
+.match-row--played .team-name,
+.match-row--played .match-time { opacity: 0.6; }
 
 .match-stage-pill { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .match-time { font-size: 13px; color: var(--text-dim); }
