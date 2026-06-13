@@ -1,6 +1,6 @@
 <template>
   <div class="view">
-    <!-- Stage filter -->
+    <!-- Stage filter + update button -->
     <div class="filter-row">
       <button
         v-for="s in stages"
@@ -9,6 +9,11 @@
         :class="{ active: activeStage === s }"
         @click="activeStage = activeStage === s ? null : s"
       >{{ s }}</button>
+      <button class="update-btn" :class="{ loading: updating }" @click="updateScores" :disabled="updating">
+        <span v-if="updating">Updating…</span>
+        <span v-else-if="updateMsg" class="update-msg">{{ updateMsg }}</span>
+        <span v-else>Update Scores</span>
+      </button>
     </div>
 
     <template v-for="(group, i) in grouped" :key="group.date">
@@ -40,6 +45,27 @@ import MatchCard from '../components/MatchCard.vue'
 const store = usePoolStore()
 const activeStage = ref(null)
 const todayEl = ref(null)
+const updating = ref(false)
+const updateMsg = ref('')
+
+async function updateScores() {
+  updating.value = true
+  updateMsg.value = ''
+  try {
+    const secret = import.meta.env.VITE_UPDATE_SECRET
+    if (!secret) throw new Error('VITE_UPDATE_SECRET not set')
+    const res = await fetch(`/.netlify/functions/update-matches?secret=${encodeURIComponent(secret)}`)
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
+    updateMsg.value = data.updated?.length ? `Done — reloading…` : `Done (no changes)`
+    if (data.updated?.length) setTimeout(() => location.reload(), 1200)
+  } catch (err) {
+    updateMsg.value = `Error: ${err.message}`
+  } finally {
+    updating.value = false
+    setTimeout(() => { updateMsg.value = '' }, 5000)
+  }
+}
 
 onMounted(() => nextTick(() => todayEl.value?.scrollIntoView({ block: 'start' })))
 
@@ -79,12 +105,26 @@ function isPast(d)  { return d < todayStr() }
 </script>
 
 <style scoped>
-.filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
 .filter-btn {
   padding: 5px 10px; border-radius: 99px; border: 1px solid var(--border);
   background: var(--surface); color: var(--text-dim); font-size: 13px; font-weight: 600; cursor: pointer;
 }
 .filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+.update-btn {
+  margin-left: auto;
+  padding: 5px 12px; border-radius: 99px;
+  border: 1px solid rgba(0,255,159,0.3);
+  background: rgba(0,255,159,0.07);
+  color: var(--accent); font-size: 12px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  cursor: pointer; white-space: nowrap;
+  transition: opacity .15s, background .15s;
+}
+.update-btn:disabled { cursor: default; opacity: 0.6; }
+.update-btn.loading { opacity: 0.6; }
+.update-msg { color: var(--text); font-weight: 600; }
 
 .date-header {
   display: flex; align-items: center; gap: 8px;
