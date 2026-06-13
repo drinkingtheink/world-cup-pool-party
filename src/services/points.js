@@ -27,8 +27,10 @@ function deriveBonuses(match) {
 
   const hs = Number(match.home_score)
   const as = Number(match.away_score)
-  if (as === 0) flags.add('home_clean_sheet')
-  if (hs === 0) flags.add('away_clean_sheet')
+  if (!match.snapshot_minute) {
+    if (as === 0) flags.add('home_clean_sheet')
+    if (hs === 0) flags.add('away_clean_sheet')
+  }
 
   if (goals.length > 0) {
     // First goal
@@ -66,6 +68,13 @@ function matchPointsForTeam(team, match) {
   const side = isHome ? 'home' : 'away'
   const scored = isHome ? hs : as
   const conceded = isHome ? as : hs
+
+  if (match.snapshot_minute) {
+    const bonuses = deriveBonuses(match)
+    let pts = scored
+    if (bonuses.has(`${side}_first_goal`)) pts += 1
+    return pts * multiplierFor(stage)
+  }
 
   const bonuses = deriveBonuses(match)
 
