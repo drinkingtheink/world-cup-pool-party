@@ -20,7 +20,7 @@
       <ChevronRight :size="14" class="schedule-btn-arrow" />
     </button>
 
-    <p class="view-title">Standings</p>
+    <p class="view-title"></p>
 
     <div class="leaderboard">
       <div
@@ -39,6 +39,18 @@
               <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
             </div>
             <span class="lb-goals"><span class="lb-goals-label">Total Group Goals:</span> {{ playerGoals[entry.name] }}</span>
+            <div class="lb-days">
+              <div
+                v-for="day in playerMatchDays[entry.name]"
+                :key="day.date"
+                class="lb-day"
+                :class="{ 'lb-day--today': day.date === today, 'lb-day--past': day.date < today }"
+                :title="formatDate(day.date)"
+              >
+                <span class="lb-day-num">{{ day.date.slice(8) }}</span>
+                <span class="lb-day-ct">×{{ day.count }}</span>
+              </div>
+            </div>
           </div>
           <span class="lb-pts">{{ entry.total }} <span class="lb-pts-label">pts</span></span>
         </div>
@@ -168,6 +180,12 @@ const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
 
 onMounted(() => nextTick(() => { ready.value = true }))
 
+function todayStr() {
+  const t = new Date()
+  return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`
+}
+const today = todayStr()
+
 const totalGoals    = computed(() => store.matches.reduce((sum, m) => sum + (m.goals?.length ?? 0), 0))
 
 const playerGoals = computed(() => {
@@ -189,6 +207,28 @@ const totalMatches  = computed(() => store.matches.length)
 
 function playerTeams(p) {
   return [p.team1, p.team2, p.team3, p.team4, p.team5, p.team6].filter(Boolean)
+}
+
+const playerMatchDays = computed(() => {
+  const result = {}
+  store.players.forEach(p => {
+    const teams = new Set(playerTeams(p))
+    const days = {}
+    store.matches.forEach(m => {
+      if (teams.has(m.home) || teams.has(m.away)) {
+        days[m.date] = (days[m.date] || 0) + 1
+      }
+    })
+    result[p.name] = Object.entries(days)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, count]) => ({ date, count }))
+  })
+  return result
+})
+
+function formatDate(d) {
+  const dt = new Date(d + 'T12:00:00')
+  return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
 // Tier mix per player
@@ -311,6 +351,32 @@ function rankClass(r) {
 .lb-goals-label { text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
 .lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
 .lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
+
+.lb-days {
+  display: flex; gap: 4px; overflow-x: auto;
+  scrollbar-width: none; padding-bottom: 1px;
+}
+.lb-days::-webkit-scrollbar { display: none; }
+
+.lb-day {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 26px; padding: 3px 0;
+  border-radius: 5px; gap: 1px;
+  background: var(--surface2); border: 1px solid var(--border);
+}
+.lb-day--today { background: rgba(0,255,159,0.1); border-color: rgba(0,255,159,0.4); }
+.lb-day--past  { opacity: 0.3; }
+.lb-day-num {
+  font-size: 11px; font-weight: 700; line-height: 1;
+  color: var(--text-dim);
+}
+.lb-day--today .lb-day-num { color: var(--accent); }
+.lb-day-ct {
+  font-size: 9px; font-weight: 800; line-height: 1;
+  color: var(--text-dim); opacity: 0.7;
+}
+.lb-day--today .lb-day-ct { color: var(--accent); opacity: 1; }
 
 .lb-breakdown {
   border-top: 1px solid var(--border);
