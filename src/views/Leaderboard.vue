@@ -192,7 +192,14 @@
     </div>
 
     <!-- Pool Matchups -->
-    <p id="pool-matchups" class="view-title" style="margin-top:28px">Pool Matchups</p>
+    <div class="section-title-row" style="margin-top:28px">
+      <p id="pool-matchups" class="view-title">Pool Matchups</p>
+      <button class="section-link-btn" @click="copyMatchupsLink" :title="matchupsLinkCopied ? 'Copied!' : 'Copy link'">
+        <Check v-if="matchupsLinkCopied" :size="12" />
+        <Link2 v-else :size="12" />
+        <span>{{ matchupsLinkCopied ? 'Copied!' : 'Copy link' }}</span>
+      </button>
+    </div>
     <p class="strength-sub">Group stage matches where players have skin in the game on both sides</p>
     <div class="mu-summary">
       <div v-for="type in matchupStats.sortedTypes" :key="type" class="mu-chip" :class="`mu-intensity-${matchupStats.intensity[type]}`">
@@ -232,7 +239,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { CalendarDays, ChevronRight } from 'lucide-vue-next'
+import { CalendarDays, ChevronRight, Link2, Check } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
 import { quotes, FLAG_MAP } from '../data/index.js'
 
@@ -242,6 +249,15 @@ const route  = useRoute()
 const store = usePoolStore()
 const expanded = ref(null)
 const ready = ref(false)
+
+const matchupsLinkCopied = ref(false)
+function copyMatchupsLink() {
+  const url = `${window.location.origin}${window.location.pathname}#/#pool-matchups`
+  navigator.clipboard.writeText(url).then(() => {
+    matchupsLinkCopied.value = true
+    setTimeout(() => { matchupsLinkCopied.value = false }, 2000)
+  })
+}
 
 function scrollToHash(hash) {
   if (!hash) return
@@ -789,6 +805,19 @@ function rankClass(r) {
   font-size: 11px; font-weight: 800; letter-spacing: .06em;
   color: var(--text-dim); opacity: 0.4;
 }
+
+/* ── Section link ─────────────────────────────────────────────── */
+.section-title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.section-title-row .view-title { margin-bottom: 0; }
+.section-link-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 99px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text-dim); font-size: 11px; font-weight: 700;
+  letter-spacing: .04em; cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.section-link-btn:hover { color: var(--cyan); border-color: rgba(0,229,255,0.4); }
 
 /* ── Pool Matchups ────────────────────────────────────────────── */
 .mu-summary { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
