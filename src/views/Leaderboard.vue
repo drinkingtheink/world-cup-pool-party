@@ -143,6 +143,28 @@
       </div>
     </div>
 
+    <!-- Same-Group Picks -->
+    <p class="view-title" style="margin-top:28px">Same-Group Picks</p>
+    <p class="strength-sub">Players with two or more teams competing in the same group</p>
+    <div v-if="groupClashes.length" class="clash-list">
+      <div v-for="entry in groupClashes" :key="entry.name" class="clash-row">
+        <span class="clash-player">{{ entry.name }}</span>
+        <div class="clash-groups">
+          <div v-for="clash in entry.clashes" :key="clash.group" class="clash-group">
+            <span class="clash-group-label">Group {{ clash.group }}</span>
+            <div class="clash-teams">
+              <span v-for="(team, ti) in clash.teams" :key="team" class="clash-team">
+                <span class="clash-flag">{{ FLAG_MAP[team] ?? '🏳' }}</span>
+                <span class="clash-team-name">{{ team }}</span>
+                <span v-if="ti < clash.teams.length - 1" class="clash-vs">vs</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p v-else class="strength-sub" style="font-style:italic">No same-group picks</p>
+
     <!-- Avg FIFA Rank -->
     <p class="view-title" style="margin-top:28px">Avg. FIFA Rank</p>
     <p class="strength-sub">Mean FIFA ranking across each player's 6 teams (lower = stronger)</p>
@@ -270,6 +292,27 @@ const wildcards = computed(() => {
     .map(([team]) => ({ team, player: owner[team], tier: store.tierMap[team] ?? 4 }))
     .sort((a, b) => a.tier - b.tier || a.team.localeCompare(b.team))
 })
+
+// Players with 2+ teams in the same group
+const groupClashes = computed(() =>
+  store.players
+    .map(p => {
+      const teams = playerTeams(p)
+      const byGroup = {}
+      teams.forEach(t => {
+        const g = store.groupOf[t]
+        if (!g) return
+        if (!byGroup[g]) byGroup[g] = []
+        byGroup[g].push(t)
+      })
+      const clashes = Object.entries(byGroup)
+        .filter(([, ts]) => ts.length >= 2)
+        .map(([group, ts]) => ({ group, teams: ts }))
+        .sort((a, b) => a.group.localeCompare(b.group))
+      return { name: p.name, clashes }
+    })
+    .filter(p => p.clashes.length > 0)
+)
 
 // Average FIFA rank per player
 const avgFifaRank = computed(() => {
@@ -601,4 +644,38 @@ function rankClass(r) {
   letter-spacing: .04em;
 }
 
+/* ── Same-Group Picks ─────────────────────────────────────────── */
+.clash-list { display: flex; flex-direction: column; gap: 10px; }
+
+.clash-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+}
+
+.clash-player {
+  font-size: 15px; font-weight: 700; color: #fff;
+  width: 62px; flex-shrink: 0; padding-top: 1px;
+}
+
+.clash-groups { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+
+.clash-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.clash-group-label {
+  font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  color: #ffd200; background: rgba(255,210,0,0.1);
+  border: 1px solid rgba(255,210,0,0.25);
+  border-radius: 4px; padding: 2px 6px; flex-shrink: 0;
+}
+
+.clash-teams { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.clash-team { display: flex; align-items: center; gap: 4px; }
+.clash-flag { font-size: 18px; line-height: 1; }
+.clash-team-name { font-size: 13px; font-weight: 600; color: var(--text-dim); }
+.clash-vs {
+  font-size: 11px; font-weight: 800; letter-spacing: .06em;
+  color: var(--text-dim); opacity: 0.4;
+}
 </style>
