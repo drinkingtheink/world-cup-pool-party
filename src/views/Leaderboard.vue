@@ -884,5 +884,5 @@ function rankClass(r) {
 .mu-team { font-size: 14px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mu-players { font-size: 11px; font-weight: 600; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mu-vs { font-size: 11px; font-weight: 800; color: var(--text-dim); letter-spacing: .06em; flex-shrink: 0; }
-.mu-player-both { color: var(--accent); font-weight: 800; }
+.mu-player-both { color: var(--green); font-weight: 800; }
 </style>
