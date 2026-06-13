@@ -192,7 +192,7 @@
     </div>
 
     <!-- Pool Matchups -->
-    <p class="view-title" style="margin-top:28px">Pool Matchups</p>
+    <p id="pool-matchups" class="view-title" style="margin-top:28px">Pool Matchups</p>
     <p class="strength-sub">Group stage matches where players have skin in the game on both sides</p>
     <div class="mu-summary">
       <div v-for="type in matchupStats.sortedTypes" :key="type" class="mu-chip" :class="`mu-intensity-${matchupStats.intensity[type]}`">
@@ -230,21 +230,32 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { CalendarDays, ChevronRight } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
 import { quotes, FLAG_MAP } from '../data/index.js'
 
 const router = useRouter()
+const route  = useRoute()
 
 const store = usePoolStore()
 const expanded = ref(null)
 const ready = ref(false)
 
-const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
+function scrollToHash(hash) {
+  if (!hash) return
+  nextTick(() => {
+    const el   = document.querySelector(hash)
+    const main = document.querySelector('.app-main')
+    if (el && main) main.scrollTo({ top: el.offsetTop - 16, behavior: 'smooth' })
+  })
+}
 
-onMounted(() => nextTick(() => { ready.value = true }))
+watch(() => route.hash, scrollToHash)
+onMounted(() => nextTick(() => { ready.value = true; scrollToHash(route.hash) }))
+
+const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
 
 function todayStr() {
   const t = new Date()
