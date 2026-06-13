@@ -222,7 +222,10 @@
               <span class="mu-players">{{ m.homePlayers.join(', ') }}</span>
             </div>
           </div>
-          <span class="mu-vs">vs</span>
+          <div class="mu-center">
+            <span class="mu-vs">vs</span>
+            <span class="mu-date">{{ fmtDate(m.date) }}</span>
+          </div>
           <div class="mu-side mu-side--right">
             <div class="mu-info mu-info--right">
               <span class="mu-team">{{ m.away }}</span>
@@ -430,6 +433,8 @@ const matchupStats = computed(() => {
       byType[key].push(m)
     })
 
+  Object.values(byType).forEach(arr => arr.sort((a, b) => a.date.localeCompare(b.date)))
+
   const sortedTypes = Object.keys(tally).sort((a, b) => {
     const [a1, a2] = a.split('v').map(Number)
     const [b1, b2] = b.split('v').map(Number)
@@ -446,6 +451,12 @@ const matchupStats = computed(() => {
 
   return { tally, byType, sortedTypes, intensity }
 })
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+function fmtDate(d) {
+  const [, m, day] = d.split('-')
+  return `${MONTHS[+m - 1]} ${+day}`
+}
 
 function chipScale(count) {
   const maxCount = Math.max(...sharedPicks.value.map(s => s.count))
@@ -859,5 +870,7 @@ function rankClass(r) {
 .mu-info--right { align-items: flex-end; }
 .mu-team { font-size: 14px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mu-players { font-size: 11px; font-weight: 600; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mu-vs { font-size: 11px; font-weight: 800; color: var(--text-dim); flex-shrink: 0; letter-spacing: .06em; }
+.mu-center { display: flex; flex-direction: column; align-items: center; gap: 3px; flex-shrink: 0; }
+.mu-vs { font-size: 11px; font-weight: 800; color: var(--text-dim); letter-spacing: .06em; }
+.mu-date { font-size: 10px; font-weight: 700; color: var(--text-dim); opacity: 0.55; letter-spacing: .04em; white-space: nowrap; }
 </style>
