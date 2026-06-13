@@ -5,7 +5,15 @@
         <img v-if="announcement.image" :src="announcement.image" class="modal-image" />
         <div class="modal-body">
           <p class="modal-title">{{ announcement.title }}</p>
-          <p class="modal-text">{{ announcement.body }}</p>
+          <p v-if="announcement.body" class="modal-text" style="white-space: pre-line">{{ announcement.body }}</p>
+        </div>
+        <div v-if="todayMatches.length" class="modal-matches card">
+          <MatchCard
+            v-for="(m, i) in todayMatches"
+            :key="m.home + m.away"
+            :match="m"
+            :show-divider="i > 0"
+          />
         </div>
         <button class="modal-btn" @click="dismiss">Got it</button>
       </div>
@@ -14,11 +22,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { announcement } from '../data/announcement.js'
+import { usePoolStore } from '../stores/pool.js'
+import MatchCard from './MatchCard.vue'
 
+const store = usePoolStore()
 const STORAGE_KEY = `announcement_seen_${announcement.id}`
 const visible = ref(false)
+
+function todayStr() {
+  const t = new Date()
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`
+}
+
+const todayMatches = computed(() =>
+  store.enrichedMatches.filter(m => m.date === todayStr())
+)
 
 onMounted(() => {
   if (announcement.enabled && !sessionStorage.getItem(STORAGE_KEY)) visible.value = true
@@ -40,44 +60,44 @@ function dismiss() {
 }
 
 .modal-card {
-  width: 100%; max-width: 400px;
+  width: 100%; max-width: 420px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
+  max-height: 85dvh;
+  display: flex; flex-direction: column;
   box-shadow: 0 0 0 1px rgba(255,45,120,0.2), 0 24px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,45,120,0.08);
 }
 
-.modal-image {
-  width: 100%; display: block;
-  max-height: 220px; object-fit: cover;
-}
+.modal-image { width: 100%; display: block; max-height: 220px; object-fit: cover; }
 
-.modal-body {
-  padding: 24px 22px 8px;
-}
+.modal-body { padding: 20px 18px 12px; flex-shrink: 0; }
 
 .modal-title {
   font-family: 'Orbitron', system-ui, sans-serif;
-  font-size: 15px; font-weight: 800;
+  font-size: 14px; font-weight: 800;
   letter-spacing: .08em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 12px;
+  color: var(--accent); margin-bottom: 6px;
 }
 
-.modal-text {
-  font-size: 16px; line-height: 1.6;
-  color: var(--text); margin: 0;
+.modal-text { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0; }
+
+.modal-matches {
+  flex: 1; overflow-y: auto; border-radius: 0;
+  border-left: none; border-right: none;
+  scrollbar-width: thin; scrollbar-color: #2e2060 #100c20;
 }
 
 .modal-btn {
-  display: block; width: calc(100% - 44px);
-  margin: 20px 22px 22px;
+  display: block; width: calc(100% - 36px);
+  margin: 16px 18px 18px;
   padding: 13px;
   background: var(--accent); color: var(--bg);
   border: none; border-radius: 10px;
   font-size: 15px; font-weight: 800;
   letter-spacing: .06em; text-transform: uppercase;
-  cursor: pointer;
+  cursor: pointer; flex-shrink: 0;
   transition: opacity .15s;
 }
 .modal-btn:active { opacity: 0.8; }
