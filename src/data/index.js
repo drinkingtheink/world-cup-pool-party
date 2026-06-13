@@ -83,6 +83,69 @@ export const tiers = [
   { team: 'Haiti',                tier: 4, odds: 250000, fifaRank: 83 },
 ]
 
+export const GROUP_MAP = {
+  // Group A
+  'Mexico':               'A',
+  'South Korea':          'A',
+  'Czechia':              'A',
+  'South Africa':         'A',
+  // Group B
+  'Switzerland':          'B',
+  'Canada':               'B',
+  'Qatar':                'B',
+  'Bosnia & Herzegovina': 'B',
+  // Group C
+  'Morocco':              'C',
+  'Brazil':               'C',
+  'Scotland':             'C',
+  'Haiti':                'C',
+  // Group D
+  'USA':                  'D',
+  'Turkey':               'D',
+  'Australia':            'D',
+  'Paraguay':             'D',
+  // Group E
+  'Germany':              'E',
+  'Curaçao':              'E',
+  "Côte d'Ivoire":        'E',
+  'Ecuador':              'E',
+  // Group F
+  'Netherlands':          'F',
+  'Japan':                'F',
+  'Sweden':               'F',
+  'Tunisia':              'F',
+  // Group G
+  'Belgium':              'G',
+  'Egypt':                'G',
+  'Iran':                 'G',
+  'New Zealand':          'G',
+  // Group H
+  'Spain':                'H',
+  'Cape Verde':           'H',
+  'Saudi Arabia':         'H',
+  'Uruguay':              'H',
+  // Group I
+  'France':               'I',
+  'Senegal':              'I',
+  'Iraq':                 'I',
+  'Norway':               'I',
+  // Group J
+  'Argentina':            'J',
+  'Algeria':              'J',
+  'Austria':              'J',
+  'Jordan':               'J',
+  // Group K
+  'Portugal':             'K',
+  'DR Congo':             'K',
+  'Uzbekistan':           'K',
+  'Colombia':             'K',
+  // Group L
+  'England':              'L',
+  'Croatia':              'L',
+  'Ghana':                'L',
+  'Panama':               'L',
+}
+
 export const FLAG_MAP = {
   'Spain':                '🇪🇸',
   'France':               '🇫🇷',

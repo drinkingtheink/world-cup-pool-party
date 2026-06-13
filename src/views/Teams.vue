@@ -13,6 +13,7 @@
           <div class="tl-left">
             <span class="tl-name">{{ t.team }}</span>
             <span v-if="store.fifaRankMap[t.team]" class="tl-rank" :class="`tl-rank-t${t.tier}`">#{{ store.fifaRankMap[t.team] }}</span>
+            <span v-if="GROUP_MAP[t.team]" class="tl-group">Grp {{ GROUP_MAP[t.team] }}</span>
           </div>
           <span class="pill" :class="`pill-t${t.tier}`">Tier {{ t.tier }}</span>
           <span class="tl-owners">{{ ownersOf(t.team) }}</span>
@@ -33,6 +34,7 @@
             <div class="tl-left">
               <span class="tl-name">{{ team }}</span>
               <span v-if="store.fifaRankMap[team]" class="tl-rank" :class="`tl-rank-t${tier}`">#{{ store.fifaRankMap[team] }}</span>
+              <span v-if="GROUP_MAP[team]" class="tl-group">Grp {{ GROUP_MAP[team] }}</span>
             </div>
             <span class="tl-owners">{{ ownersOf(team) }}</span>
           </div>
@@ -46,6 +48,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { usePoolStore } from '../stores/pool.js'
+import { GROUP_MAP } from '../data/index.js'
 
 const store = usePoolStore()
 const query = ref('')
@@ -91,6 +94,7 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .tl-left { flex: 1; display: flex; align-items: baseline; gap: 6px; min-width: 0; }
 .tl-name { font-size: 17px; font-weight: 500; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tl-rank { font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.tl-group { font-size: 11px; font-weight: 700; letter-spacing: .04em; color: var(--text-dim); background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; white-space: nowrap; flex-shrink: 0; }
 .tl-rank-t1 { color: #ff6fa0; }
 .tl-rank-t2 { color: var(--cyan); }
 .tl-rank-t3 { color: var(--green); }

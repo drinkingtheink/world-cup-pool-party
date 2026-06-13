@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
-import { players as rawPlayers, matches as rawMatches, tiers as rawTiers } from '../data/index.js'
+import { players as rawPlayers, matches as rawMatches, tiers as rawTiers, GROUP_MAP } from '../data/index.js'
 import { buildLeaderboard, enrichMatches } from '../services/points.js'
 
 export const usePoolStore = defineStore('pool', () => {
@@ -66,31 +66,7 @@ export const usePoolStore = defineStore('pool', () => {
     return ranked.map(p => ({ ...p, pct: p.score / max }))
   })
 
-  const groupOf = computed(() => {
-    const edges = {}
-    rawMatches.filter(m => m.stage === 'Group Stage').forEach(m => {
-      if (!edges[m.home]) edges[m.home] = new Set()
-      if (!edges[m.away]) edges[m.away] = new Set()
-      edges[m.home].add(m.away)
-      edges[m.away].add(m.home)
-    })
-    const visited = new Set()
-    const map = {}
-    let gi = 0
-    Object.keys(edges).sort().forEach(team => {
-      if (visited.has(team)) return
-      const letter = String.fromCharCode(65 + gi++)
-      const queue = [team]
-      while (queue.length) {
-        const t = queue.shift()
-        if (visited.has(t)) continue
-        visited.add(t)
-        map[t] = letter
-        edges[t].forEach(n => { if (!visited.has(n)) queue.push(n) })
-      }
-    })
-    return map
-  })
+  const groupOf = computed(() => GROUP_MAP)
 
   const tierGroups = computed(() => {
     const groups = { 1: [], 2: [], 3: [], 4: [] }
