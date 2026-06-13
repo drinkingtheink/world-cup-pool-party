@@ -49,11 +49,11 @@
           <div v-if="m.played && matchEvents(m).length" class="goal-list">
             <div v-for="(e, ei) in matchEvents(m)" :key="ei" class="goal-item">
               <span class="goal-item__home">
-                <template v-if="e.team === 'home'">{{ e.minute }}' {{ eventIcon(e) }}</template>
+                <template v-if="e.team === 'home'">{{ e.scorer ? e.scorer + ' ' : '' }}{{ eventIcon(e) }} {{ e.minute }}'</template>
               </span>
               <span class="goal-item__gap"></span>
               <span class="goal-item__away">
-                <template v-if="e.team === 'away'">{{ eventIcon(e) }} {{ e.minute }}'</template>
+                <template v-if="e.team === 'away'">{{ e.minute }}' {{ eventIcon(e) }}{{ e.scorer ? ' ' + e.scorer : '' }}</template>
               </span>
             </div>
           </div>
