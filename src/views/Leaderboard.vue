@@ -12,6 +12,11 @@
         <span class="stat-value">{{ matchesPlayed }} <span class="stat-of">/ {{ totalMatches }}</span></span>
         <span class="stat-label">Matches Played</span>
       </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">{{ goalsPerGame }}</span>
+        <span class="stat-label">Goals / Game</span>
+      </div>
     </div>
 
     <button class="schedule-btn" @click="router.push('/matches')">
@@ -199,6 +204,7 @@ const playerGoals = computed(() => {
 })
 const matchesPlayed = computed(() => store.matches.filter(m => m.home_score !== '' && !m.snapshot_minute).length)
 const totalMatches  = computed(() => store.matches.length)
+const goalsPerGame  = computed(() => matchesPlayed.value ? (totalGoals.value / matchesPlayed.value).toFixed(2) : '—')
 
 function playerTeams(p) {
   return [p.team1, p.team2, p.team3, p.team4, p.team5, p.team6].filter(Boolean)
