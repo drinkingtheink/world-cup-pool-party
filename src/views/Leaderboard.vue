@@ -190,6 +190,42 @@
         </div>
       </div>
     </div>
+
+    <!-- Pool Matchups -->
+    <p class="view-title" style="margin-top:28px">Pool Matchups</p>
+    <p class="strength-sub">Group stage matches where players have skin in the game on both sides</p>
+    <div class="mu-summary">
+      <div v-for="type in matchupStats.sortedTypes" :key="type" class="mu-chip" :class="`mu-intensity-${matchupStats.intensity[type]}`">
+        <span class="mu-chip-type">{{ type.replace('v', ' v ') }}</span>
+        <span class="mu-chip-count">{{ matchupStats.tally[type] }}</span>
+      </div>
+    </div>
+    <div v-for="type in matchupStats.sortedTypes" :key="type" class="mu-group">
+      <div class="mu-group-header">
+        <span class="mu-badge" :class="`mu-intensity-${matchupStats.intensity[type]}`">{{ type.replace('v', ' v ') }}</span>
+        <span class="mu-group-sub">{{ matchupStats.byType[type].length }} match{{ matchupStats.byType[type].length !== 1 ? 'es' : '' }}</span>
+      </div>
+      <div class="card mu-list">
+        <div v-for="(m, i) in matchupStats.byType[type]" :key="m.home + m.date"
+          class="mu-row" :class="{ 'mu-row--div': i > 0 }">
+          <div class="mu-side">
+            <span class="mu-flag">{{ FLAG_MAP[m.home] ?? '🏳' }}</span>
+            <div class="mu-info">
+              <span class="mu-team">{{ m.home }}</span>
+              <span class="mu-players">{{ m.homePlayers.join(', ') }}</span>
+            </div>
+          </div>
+          <span class="mu-vs">vs</span>
+          <div class="mu-side mu-side--right">
+            <div class="mu-info mu-info--right">
+              <span class="mu-team">{{ m.away }}</span>
+              <span class="mu-players">{{ m.awayPlayers.join(', ') }}</span>
+            </div>
+            <span class="mu-flag">{{ FLAG_MAP[m.away] ?? '🏳' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -349,6 +385,40 @@ const avgFifaRank = computed(() => {
   return ranked.map(p => ({ ...p, pct: 0.15 + 0.85 * (1 - (p.avg - min) / spread) }))
 })
 
+
+const matchupStats = computed(() => {
+  const tally = {}
+  const byType = {}
+
+  store.enrichedMatches
+    .filter(m => m.stage === 'Group Stage')
+    .forEach(m => {
+      const h = m.homePlayers.length
+      const a = m.awayPlayers.length
+      if (h === 0 || a === 0) return
+      const [big, small] = h >= a ? [h, a] : [a, h]
+      const key = `${big}v${small}`
+      tally[key] = (tally[key] || 0) + 1
+      if (!byType[key]) byType[key] = []
+      byType[key].push(m)
+    })
+
+  const sortedTypes = Object.keys(tally).sort((a, b) => {
+    const [a1, a2] = a.split('v').map(Number)
+    const [b1, b2] = b.split('v').map(Number)
+    return (b1 + b2) - (a1 + a2) || b1 - a1
+  })
+
+  const intensityOrder = ['low', 'low', 'medium', 'medium', 'high', 'max']
+  const intensity = {}
+  sortedTypes.forEach((type, i) => {
+    const [a, b] = type.split('v').map(Number)
+    const total = a + b
+    intensity[type] = total >= 6 ? 'max' : total >= 5 ? 'high' : total >= 4 ? 'medium' : 'low'
+  })
+
+  return { tally, byType, sortedTypes, intensity }
+})
 
 function chipScale(count) {
   const maxCount = Math.max(...sharedPicks.value.map(s => s.count))
@@ -708,4 +778,46 @@ function rankClass(r) {
   font-size: 11px; font-weight: 800; letter-spacing: .06em;
   color: var(--text-dim); opacity: 0.4;
 }
+
+/* ── Pool Matchups ────────────────────────────────────────────── */
+.mu-summary { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+
+.mu-chip {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 12px; border-radius: 99px; border: 1px solid;
+}
+.mu-chip-type { font-size: 14px; font-weight: 800; letter-spacing: .04em; }
+.mu-chip-count {
+  font-size: 13px; font-weight: 800;
+  background: rgba(255,255,255,0.1); border-radius: 99px;
+  padding: 1px 7px; color: #fff;
+}
+
+.mu-intensity-low    { background: rgba(255,255,255,0.05); color: var(--text-dim); border-color: var(--border); }
+.mu-intensity-medium { background: rgba(0,229,255,0.08);   color: #00e5ff;         border-color: rgba(0,229,255,0.3); }
+.mu-intensity-high   { background: rgba(189,95,255,0.10);  color: var(--purple);   border-color: rgba(189,95,255,0.35); }
+.mu-intensity-max    { background: rgba(255,45,120,0.10);  color: #ff6fa0;         border-color: rgba(255,45,120,0.35); }
+
+.mu-group { margin-bottom: 16px; }
+.mu-group-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.mu-badge {
+  font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 6px; border: 1px solid;
+}
+.mu-group-sub { font-size: 13px; color: var(--text-dim); }
+
+.mu-list {}
+.mu-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+}
+.mu-row--div { border-top: 1px solid var(--border); }
+.mu-side { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.mu-side--right { justify-content: flex-end; text-align: right; }
+.mu-flag { font-size: 20px; line-height: 1; flex-shrink: 0; }
+.mu-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.mu-info--right { align-items: flex-end; }
+.mu-team { font-size: 14px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mu-players { font-size: 11px; font-weight: 600; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mu-vs { font-size: 11px; font-weight: 800; color: var(--text-dim); flex-shrink: 0; letter-spacing: .06em; }
 </style>
