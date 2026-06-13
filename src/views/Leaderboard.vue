@@ -39,18 +39,11 @@
               <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
             </div>
             <span class="lb-goals"><span class="lb-goals-label">Total Group Goals:</span> {{ playerGoals[entry.name] }}</span>
-            <div class="lb-days">
-              <div
-                v-for="day in playerMatchDays[entry.name]"
-                :key="day.date"
-                class="lb-day"
-                :class="{ 'lb-day--today': day.date === today, 'lb-day--past': day.date < today }"
-                :title="formatDate(day.date)"
-              >
-                <span class="lb-day-num">{{ day.date.slice(8) }}</span>
-                <span class="lb-day-ct">×{{ day.count }}</span>
-              </div>
-            </div>
+            <span class="lb-today-tomorrow">
+              <span class="lb-tt-label">Games Today:</span> {{ playerMatchDays[entry.name].today }}
+              <span class="lb-tt-sep">|</span>
+              <span class="lb-tt-label">Tomorrow:</span> {{ playerMatchDays[entry.name].tomorrow }}
+            </span>
           </div>
           <span class="lb-pts">{{ entry.total }} <span class="lb-pts-label">pts</span></span>
         </div>
@@ -210,26 +203,23 @@ function playerTeams(p) {
 }
 
 const playerMatchDays = computed(() => {
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const tomorrowStr = tomorrow.toISOString().slice(0, 10)
   const result = {}
   store.players.forEach(p => {
     const teams = new Set(playerTeams(p))
-    const days = {}
+    let todayCount = 0, tomorrowCount = 0
     store.matches.forEach(m => {
-      if (teams.has(m.home) || teams.has(m.away)) {
-        days[m.date] = (days[m.date] || 0) + 1
-      }
+      if (!teams.has(m.home) && !teams.has(m.away)) return
+      if (m.date === today) todayCount++
+      else if (m.date === tomorrowStr) tomorrowCount++
     })
-    result[p.name] = Object.entries(days)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([date, count]) => ({ date, count }))
+    result[p.name] = { today: todayCount, tomorrow: tomorrowCount }
   })
   return result
 })
 
-function formatDate(d) {
-  const dt = new Date(d + 'T12:00:00')
-  return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-}
 
 // Tier mix per player
 const tierMix = computed(() =>
@@ -352,31 +342,12 @@ function rankClass(r) {
 .lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
 .lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
 
-.lb-days {
-  display: flex; gap: 4px; overflow-x: auto;
-  scrollbar-width: none; padding-bottom: 1px;
+.lb-today-tomorrow {
+  font-size: 11px; font-weight: 600; color: var(--text-dim);
+  letter-spacing: .02em;
 }
-.lb-days::-webkit-scrollbar { display: none; }
-
-.lb-day {
-  flex-shrink: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 26px; padding: 3px 0;
-  border-radius: 5px; gap: 1px;
-  background: var(--surface2); border: 1px solid var(--border);
-}
-.lb-day--today { background: rgba(0,255,159,0.1); border-color: rgba(0,255,159,0.4); }
-.lb-day--past  { opacity: 0.3; }
-.lb-day-num {
-  font-size: 11px; font-weight: 700; line-height: 1;
-  color: var(--text-dim);
-}
-.lb-day--today .lb-day-num { color: var(--accent); }
-.lb-day-ct {
-  font-size: 9px; font-weight: 800; line-height: 1;
-  color: var(--text-dim); opacity: 0.7;
-}
-.lb-day--today .lb-day-ct { color: var(--accent); opacity: 1; }
+.lb-tt-label { text-transform: uppercase; letter-spacing: .06em; font-size: 10px; }
+.lb-tt-sep { margin: 0 5px; opacity: 0.4; }
 
 .lb-breakdown {
   border-top: 1px solid var(--border);
