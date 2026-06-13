@@ -183,7 +183,10 @@ body {
 .view { padding: 16px; }
 
 @media (min-width: 768px) {
-  .view { max-width: 1000px; margin: 0 auto; }
+  .header-inner { max-width: 800px; margin: 0 auto; }
+  .view { max-width: 800px; margin: 0 auto; }
+  .tab-bar { justify-content: center; }
+  .tab { flex: 0 1 160px; }
 }
 .view-title {
   font-family: 'Orbitron', system-ui, sans-serif;
