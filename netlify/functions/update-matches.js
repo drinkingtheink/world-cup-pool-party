@@ -1,15 +1,14 @@
 'use strict'
 
 // Netlify Function: update-matches
-// Fetches today's ESPN match data, asks Claude to map it to our schema,
+// Fetches today's ESPN match data, parses it directly into our schema,
 // then commits the updated matches.json back to GitHub (triggering a redeploy).
 //
 // Required env vars (set in Netlify dashboard):
-//   ANTHROPIC_API_KEY   — Claude API key
-//   GITHUB_TOKEN        — Personal access token with repo write scope
-//   GITHUB_OWNER        — GitHub username/org (e.g. "drinkingtheink")
-//   GITHUB_REPO         — Repo name (e.g. "world-cup-pool-party")
-//   UPDATE_SECRET       — Random string; callers must pass ?secret=<this>
+//   GITHUB_TOKEN   — Personal access token with repo write scope
+//   GITHUB_OWNER   — GitHub username/org (e.g. "drinkingtheink")
+//   GITHUB_REPO    — Repo name (e.g. "world-cup-pool-party")
+//   UPDATE_SECRET  — Random string; callers must pass ?secret=<this>
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -30,133 +29,175 @@ function todayESPN() {
 }
 
 function todayISO() {
-  const t = new Date()
-  const y = t.getUTCFullYear()
-  const m = String(t.getUTCMonth() + 1).padStart(2, '0')
-  const d = String(t.getUTCDate()).padStart(2, '0')
-  return `${y}-${m}-${d}`
+  const d = todayESPN()
+  return `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}`
 }
 
-// Keep matches.json compact — one match object per line, matching existing format
+// Preserve compact single-line-per-match format of existing file
 function serializeMatches(matches) {
   return '[\n' + matches.map(m => '  ' + JSON.stringify(m)).join(',\n') + '\n]\n'
 }
 
-async function fetchESPN(dateStr) {
-  const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${dateStr}`
-  const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } })
-  if (!res.ok) throw new Error(`ESPN scoreboard failed: ${res.status}`)
-  return res.json()
+// ─── Team name normalization ───────────────────────────────────────────────────
+// ESPN uses different names than we do for some teams. We normalize both sides
+// and apply explicit overrides for the known mismatches.
+
+const ESPN_OVERRIDE = {
+  'united states': 'USA',
+  'usa': 'USA',
+  'korea republic': 'South Korea',
+  'republic of korea': 'South Korea',
+  'czech republic': 'Czechia',
+  "cote divoire": 'Ivory Coast',
+  "cote d ivoire": 'Ivory Coast',
+  'ivory coast': 'Ivory Coast',
+  'dr congo': 'DR Congo',
+  'democratic republic of congo': 'DR Congo',
+  'congo dr': 'DR Congo',
+  'trinidad and tobago': 'Trinidad & Tobago',
+  'bosnia and herzegovina': 'Bosnia & Herzegovina',
+  'north macedonia': 'North Macedonia',
+  'cape verde': 'Cape Verde',
 }
 
-async function fetchESPNSummary(eventId) {
-  const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=${eventId}`
-  const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } })
-  if (!res.ok) return null
-  return res.json()
+function normalize(s) {
+  return s.toLowerCase()
+    .replace(/&/g, 'and')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ').trim()
 }
+
+function resolveTeamName(espnName, ourTeams) {
+  const norm = normalize(espnName)
+  if (ESPN_OVERRIDE[norm]) return ESPN_OVERRIDE[norm]
+  for (const t of ourTeams) {
+    if (normalize(t) === norm) return t
+  }
+  // partial fallback
+  for (const t of ourTeams) {
+    const nt = normalize(t)
+    if (norm.includes(nt) || nt.includes(norm)) return t
+  }
+  return espnName
+}
+
+// ─── Clock parsing ─────────────────────────────────────────────────────────────
+// ESPN gives clock as elapsed seconds. Math.ceil(value/60) = display minute.
+// 1020s → 17', 5580s → 93' (handles stoppage time naturally).
+
+function secondsToMinute(seconds) {
+  if (seconds == null) return null
+  return Math.ceil(seconds / 60) || null
+}
+
+// ─── ESPN event parser ─────────────────────────────────────────────────────────
+
+function parseESPNEvent(event, ourTeams) {
+  const comp = event.competitions?.[0]
+  if (!comp) return null
+
+  const homeComp = comp.competitors?.find(c => c.homeAway === 'home')
+  const awayComp = comp.competitors?.find(c => c.homeAway === 'away')
+  if (!homeComp || !awayComp) return null
+
+  const homeName = resolveTeamName(homeComp.team?.displayName || homeComp.team?.name || '', ourTeams)
+  const awayName = resolveTeamName(awayComp.team?.displayName || awayComp.team?.name || '', ourTeams)
+  const homeTeamId = homeComp.team?.id
+  const awayTeamId = awayComp.team?.id
+
+  const state = comp.status?.type?.state         // 'pre' | 'in' | 'post'
+  const completed = comp.status?.type?.completed  // boolean
+  const started = state !== 'pre'
+  const finished = completed || state === 'post'
+  const snapshotMinute = finished ? null : (started ? secondsToMinute(comp.status?.clock) : null)
+
+  const homeScore = started ? (homeComp.score ?? '') : ''
+  const awayScore = started ? (awayComp.score ?? '') : ''
+
+  const goals = []
+  const cards = []
+
+  for (const detail of (comp.details || [])) {
+    const teamId = detail.team?.id
+    const side = teamId === homeTeamId ? 'home' : teamId === awayTeamId ? 'away' : null
+    if (!side) continue
+
+    const eventMinute = secondsToMinute(detail.clock?.value)
+    const detailType = detail.type?.text
+
+    const isGoal = detailType === 'Goal' || detail.scoringPlay === true
+    const isYellow = detail.yellowCard || detailType === 'Yellow Card'
+    const isRed = detail.redCard || detailType === 'Red Card' || detailType === 'Yellow-Red Card'
+
+    if (isGoal) {
+      const athlete = detail.athletesInvolved?.[0]
+      // Use short name's surname, falling back to full name's last word
+      const lastName = athlete
+        ? (athlete.shortName?.split('. ').pop() || athlete.displayName?.split(' ').pop() || 'Unknown')
+        : 'Unknown'
+
+      if (detail.ownGoal) {
+        // OG: credited to the side that benefits (opposite of who scored it)
+        goals.push({ team: side === 'home' ? 'away' : 'home', minute: eventMinute, scorer: `${lastName} (OG)` })
+      } else {
+        const scorer = detail.penaltyKick ? `${lastName} (P)` : lastName
+        goals.push({ team: side, minute: eventMinute, scorer })
+      }
+    } else if (isYellow || isRed) {
+      cards.push({ team: side, minute: eventMinute, type: isRed ? 'red' : 'yellow' })
+    }
+  }
+
+  goals.sort((a, b) => a.minute - b.minute)
+  cards.sort((a, b) => a.minute - b.minute)
+
+  return { homeName, awayName, homeScore, awayScore, snapshotMinute, goals, cards }
+}
+
+// ─── GitHub helpers ────────────────────────────────────────────────────────────
 
 async function readGitHubFile(owner, repo, path, token) {
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'User-Agent': 'netlify-update-matches',
-      Accept: 'application/vnd.github.v3+json',
-    },
-  })
-  if (!res.ok) throw new Error(`GitHub read failed: ${res.status} ${await res.text()}`)
+  const res = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+    { headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'netlify-update-matches', Accept: 'application/vnd.github.v3+json' } }
+  )
+  if (!res.ok) throw new Error(`GitHub read failed: ${res.status}`)
   return res.json()
 }
 
 async function writeGitHubFile(owner, repo, path, content, sha, message, token) {
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
-  const encoded = Buffer.from(content, 'utf-8').toString('base64')
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'User-Agent': 'netlify-update-matches',
-      Accept: 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ message, content: encoded, sha }),
-  })
+  const res = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'User-Agent': 'netlify-update-matches',
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message, content: Buffer.from(content, 'utf-8').toString('base64'), sha }),
+    }
+  )
   if (!res.ok) throw new Error(`GitHub write failed: ${res.status} ${await res.text()}`)
-  return res.json()
 }
 
-async function callClaude(apiKey, prompt) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  })
-  if (!res.ok) throw new Error(`Claude API failed: ${res.status} ${await res.text()}`)
-  const data = await res.json()
-  return data.content[0].text
-}
-
-function buildPrompt(todayMatches, scoreboard, summaries) {
-  return `You are updating match data for a World Cup 2026 fantasy pool app.
-
-## Our current match records for today:
-${JSON.stringify(todayMatches, null, 2)}
-
-## ESPN scoreboard data for today:
-${JSON.stringify(scoreboard, null, 2)}
-
-## ESPN match summaries (detailed events):
-${JSON.stringify(summaries, null, 2)}
-
-## Your task:
-Update our match records to reflect the latest ESPN data.
-Return ONLY a JSON array — no markdown fences, no explanation, just the raw JSON array.
-
-## Rules:
-- Match ESPN teams to our team names. Examples: "United States" → "USA", "Korea Republic" → "South Korea", "Bosnia and Herzegovina" → "Bosnia & Herzegovina", "Iran" → "IR Iran" etc. Use fuzzy matching.
-- Only update these fields: home_score, away_score, goals, cards, snapshot_minute, penalties_winner
-- Keep ALL other fields exactly as-is (date, stage, home, away, time, etc.)
-- goals format: [{ "team": "home"|"away", "minute": <integer>, "scorer": "<LastName>" }]
-  - Penalty goals: scorer = "LastName (P)"
-  - Own goals: scorer = "LastName (OG)" and team = the side that benefits (opposite of the scorer's team)
-  - Stoppage time: convert to total minutes (90+3 → 93, 45+2 → 47)
-- cards format: [{ "team": "home"|"away", "minute": <integer>, "type": "yellow"|"red" }]
-  - Second yellow resulting in red: record as type "red"
-- snapshot_minute: integer (current match minute) if in progress, null if final or not yet started
-- If match not yet started: keep home_score and away_score as ""
-- Return the complete updated match objects (all fields), not just changed fields
-- If a match has no ESPN data (not found), return it unchanged`
-}
+// ─── Handler ───────────────────────────────────────────────────────────────────
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 200, headers: CORS_HEADERS, body: '' }
   }
 
-  // Auth check
   const secret = event.queryStringParameters?.secret
   if (!process.env.UPDATE_SECRET || secret !== process.env.UPDATE_SECRET) {
     return json(401, { error: 'Unauthorized' })
   }
 
-  const {
-    ANTHROPIC_API_KEY,
-    GITHUB_TOKEN,
-    GITHUB_OWNER,
-    GITHUB_REPO,
-  } = process.env
-
-  if (!ANTHROPIC_API_KEY || !GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
-    return json(500, { error: 'Missing required environment variables' })
+  const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO } = process.env
+  if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
+    return json(500, { error: 'Missing GITHUB_TOKEN / GITHUB_OWNER / GITHUB_REPO env vars' })
   }
 
   try {
@@ -164,77 +205,82 @@ exports.handler = async (event) => {
     const espnDate = todayESPN()
 
     // 1. Fetch ESPN scoreboard for today
-    const scoreboard = await fetchESPN(espnDate)
-    const events = scoreboard.events || []
+    const espnRes = await fetch(
+      `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${espnDate}`,
+      { headers: { 'User-Agent': 'Mozilla/5.0' } }
+    )
+    if (!espnRes.ok) throw new Error(`ESPN fetch failed: ${espnRes.status}`)
+    const { events = [] } = await espnRes.json()
 
-    if (events.length === 0) {
-      return json(200, { message: `No ESPN events found for ${today}`, updated: [] })
+    if (!events.length) {
+      return json(200, { message: `ESPN has no events for ${today}`, updated: [] })
     }
 
-    // 2. Fetch individual match summaries for detail (goal scorers, cards)
-    const summaries = {}
-    await Promise.all(
-      events.map(async (evt) => {
-        const summary = await fetchESPNSummary(evt.id)
-        if (summary) summaries[evt.id] = summary
-      })
-    )
-
-    // 3. Read current matches.json from GitHub
+    // 2. Read current matches.json from GitHub
     const ghFile = await readGitHubFile(GITHUB_OWNER, GITHUB_REPO, 'src/data/matches.json', GITHUB_TOKEN)
     const allMatches = JSON.parse(Buffer.from(ghFile.content, 'base64').toString('utf-8'))
     const fileSha = ghFile.sha
 
-    // 4. Extract today's matches
     const todayMatches = allMatches.filter(m => m.date === today)
-    if (todayMatches.length === 0) {
-      return json(200, { message: `No matches scheduled for ${today} in our data`, updated: [] })
+    if (!todayMatches.length) {
+      return json(200, { message: `No matches for ${today} in our data`, updated: [] })
     }
 
-    // 5. Ask Claude to parse and update
-    const prompt = buildPrompt(todayMatches, scoreboard, summaries)
-    const claudeText = await callClaude(ANTHROPIC_API_KEY, prompt)
+    // 3. Get all team names we use today for normalization
+    const ourTeams = [...new Set(todayMatches.flatMap(m => [m.home, m.away]))]
 
-    // 6. Parse Claude's JSON response
-    let updatedToday
-    try {
-      // Claude might wrap in markdown fences despite instructions — strip them
-      const cleaned = claudeText.replace(/^```(?:json)?\n?/m, '').replace(/\n?```$/m, '').trim()
-      updatedToday = JSON.parse(cleaned)
-    } catch {
-      return json(500, { error: 'Claude returned invalid JSON', raw: claudeText.slice(0, 500) })
-    }
+    // 4. Parse ESPN events
+    const espnParsed = events.map(evt => parseESPNEvent(evt, ourTeams)).filter(Boolean)
 
-    if (!Array.isArray(updatedToday)) {
-      return json(500, { error: 'Claude response was not an array', raw: claudeText.slice(0, 500) })
-    }
-
-    // 7. Merge updated today's matches back into the full list
+    // 5. Merge updates into full match list
+    let changed = 0
     const updatedAll = allMatches.map(m => {
       if (m.date !== today) return m
-      const updated = updatedToday.find(u => u.home === m.home && u.away === m.away)
-      return updated || m
+
+      const espn = espnParsed.find(e =>
+        normalize(e.homeName) === normalize(m.home) &&
+        normalize(e.awayName) === normalize(m.away)
+      )
+      if (!espn) return m
+
+      // If ESPN has a non-zero score but no goal events yet, preserve our existing goal data
+      const totalGoals = Number(espn.homeScore || 0) + Number(espn.awayScore || 0)
+      const goals = (totalGoals > 0 && espn.goals.length === 0) ? (m.goals || []) : espn.goals
+      const cards = (espn.cards.length === 0 && (m.cards || []).length > 0) ? m.cards : espn.cards
+
+      const updated = {
+        ...m,
+        home_score: espn.homeScore,
+        away_score: espn.awayScore,
+        goals,
+        cards,
+        snapshot_minute: espn.snapshotMinute,
+      }
+
+      if (JSON.stringify(updated) !== JSON.stringify(m)) changed++
+      return updated
     })
 
-    // 8. Serialize and commit to GitHub
-    const newContent = serializeMatches(updatedAll)
-    const commitDate = new Date().toISOString().slice(0, 10)
+    if (!changed) {
+      return json(200, { message: 'Scores checked — no changes', updated: [] })
+    }
+
+    // 6. Commit updated file to GitHub
     await writeGitHubFile(
-      GITHUB_OWNER,
-      GITHUB_REPO,
-      'src/data/matches.json',
-      newContent,
-      fileSha,
-      `chore: update match data ${commitDate}`,
+      GITHUB_OWNER, GITHUB_REPO, 'src/data/matches.json',
+      serializeMatches(updatedAll), fileSha,
+      `chore: update match data ${today}`,
       GITHUB_TOKEN
     )
 
-    const summary = updatedToday.map(m => {
-      const status = m.snapshot_minute ? `${m.snapshot_minute}'` : (m.home_score !== '' ? 'FT' : 'NS')
-      return `${m.home} ${m.home_score || '-'}:${m.away_score || '-'} ${m.away} [${status}]`
-    })
+    const summary = updatedAll
+      .filter(m => m.date === today)
+      .map(m => {
+        const status = m.snapshot_minute ? `${m.snapshot_minute}'` : (m.home_score !== '' ? 'FT' : 'NS')
+        return `${m.home} ${m.home_score || '-'}:${m.away_score || '-'} ${m.away} [${status}]`
+      })
 
-    return json(200, { message: 'Match data updated and committed', date: today, updated: summary })
+    return json(200, { message: `Updated ${changed} match(es)`, date: today, updated: summary })
 
   } catch (err) {
     console.error('update-matches error:', err)
