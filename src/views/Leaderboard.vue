@@ -215,23 +215,31 @@
       <div class="card mu-list">
         <div v-for="(m, i) in matchupStats.byType[type]" :key="m.home + m.date"
           class="mu-row" :class="{ 'mu-row--div': i > 0 }">
-          <div class="mu-side">
-            <span class="mu-flag">{{ FLAG_MAP[m.home] ?? '🏳' }}</span>
-            <div class="mu-info">
-              <span class="mu-team">{{ m.home }}</span>
-              <span class="mu-players">{{ m.homePlayers.join(', ') }}</span>
+          <span class="mu-date">{{ fmtDate(m.date) }}</span>
+          <div class="mu-sides">
+            <div class="mu-side">
+              <span class="mu-flag">{{ FLAG_MAP[m.home] ?? '🏳' }}</span>
+              <div class="mu-info">
+                <span class="mu-team">{{ m.home }}</span>
+                <span class="mu-players">
+                  <span v-for="(name, ni) in m.homePlayers" :key="name"
+                    :class="{ 'mu-player-both': m.awayPlayers.includes(name) }"
+                  >{{ name }}{{ ni < m.homePlayers.length - 1 ? ', ' : '' }}</span>
+                </span>
+              </div>
             </div>
-          </div>
-          <div class="mu-center">
             <span class="mu-vs">vs</span>
-            <span class="mu-date">{{ fmtDate(m.date) }}</span>
-          </div>
-          <div class="mu-side mu-side--right">
-            <div class="mu-info mu-info--right">
-              <span class="mu-team">{{ m.away }}</span>
-              <span class="mu-players">{{ m.awayPlayers.join(', ') }}</span>
+            <div class="mu-side mu-side--right">
+              <div class="mu-info mu-info--right">
+                <span class="mu-team">{{ m.away }}</span>
+                <span class="mu-players">
+                  <span v-for="(name, ni) in m.awayPlayers" :key="name"
+                    :class="{ 'mu-player-both': m.homePlayers.includes(name) }"
+                  >{{ name }}{{ ni < m.awayPlayers.length - 1 ? ', ' : '' }}</span>
+                </span>
+              </div>
+              <span class="mu-flag">{{ FLAG_MAP[m.away] ?? '🏳' }}</span>
             </div>
-            <span class="mu-flag">{{ FLAG_MAP[m.away] ?? '🏳' }}</span>
           </div>
         </div>
       </div>
@@ -859,10 +867,15 @@ function rankClass(r) {
 
 .mu-list {}
 .mu-row {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 10px;
   padding: 10px 14px;
 }
 .mu-row--div { border-top: 1px solid var(--border); }
+.mu-date {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  color: var(--cyan); white-space: nowrap; flex-shrink: 0; width: 42px;
+}
+.mu-sides { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
 .mu-side { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
 .mu-side--right { justify-content: flex-end; text-align: right; }
 .mu-flag { font-size: 20px; line-height: 1; flex-shrink: 0; }
@@ -870,7 +883,6 @@ function rankClass(r) {
 .mu-info--right { align-items: flex-end; }
 .mu-team { font-size: 14px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mu-players { font-size: 11px; font-weight: 600; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mu-center { display: flex; flex-direction: column; align-items: center; gap: 3px; flex-shrink: 0; }
-.mu-vs { font-size: 11px; font-weight: 800; color: var(--text-dim); letter-spacing: .06em; }
-.mu-date { font-size: 10px; font-weight: 700; color: var(--text-dim); opacity: 0.55; letter-spacing: .04em; white-space: nowrap; }
+.mu-vs { font-size: 11px; font-weight: 800; color: var(--text-dim); letter-spacing: .06em; flex-shrink: 0; }
+.mu-player-both { color: var(--accent); font-weight: 800; }
 </style>
