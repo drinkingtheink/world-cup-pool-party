@@ -1,5 +1,5 @@
 <template>
-  <div class="match-row" :class="{ 'match-row--divider': showDivider, 'match-row--orphan': isOrphan }">
+  <div class="match-row" :class="{ 'match-row--divider': showDivider, 'match-row--orphan': isOrphan, 'match-row--live': match.snapshot_minute }">
     <div class="match-stage-pill">
       <span class="pill" :class="stagePillClass">{{ match.stage }}</span>
       <span v-if="match.snapshot_minute" class="match-time match-time--live">● LIVE</span>
@@ -110,10 +110,21 @@ const awayBonuses = computed(() => allBonuses.value.filter(b => b.side === 'away
 <style scoped>
 .match-row { padding: 12px 14px; }
 .match-row--divider { border-top: 1px solid var(--border); }
+.match-row--live {
+  background: rgba(0,255,159,0.04);
+  box-shadow: inset 3px 0 0 rgba(0,255,159,0.5);
+}
 
 .match-stage-pill { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .match-time { font-size: 13px; color: var(--text-dim); }
-.match-time--live { color: var(--green); font-weight: 700; }
+.match-time--live {
+  color: var(--green); font-weight: 700;
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
 
 .orphan-tag { font-size: 12px; color: var(--text-dim); margin-left: auto; }
 
