@@ -138,8 +138,8 @@ function parseESPNEvent(event, ourTeams) {
         : 'Unknown'
 
       if (detail.ownGoal) {
-        // OG: credited to the side that benefits (opposite of who scored it)
-        goals.push({ team: side === 'home' ? 'away' : 'home', minute: eventMinute, scorer: `${lastName} (OG)` })
+        // ESPN's team on an OG event = the benefiting team (already correct — don't flip)
+        goals.push({ team: side, minute: eventMinute, scorer: `${lastName} (OG)` })
       } else {
         const scorer = detail.penaltyKick ? `${lastName} (P)` : lastName
         goals.push({ team: side, minute: eventMinute, scorer })
