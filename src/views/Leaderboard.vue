@@ -312,9 +312,14 @@ const playerGoals = computed(() => {
   })
   return map
 })
-const matchesPlayed = computed(() => store.matches.filter(m => m.home_score !== '' && !m.snapshot_minute).length)
+const completedMatches = computed(() => store.matches.filter(m => m.home_score !== '' && !m.snapshot_minute))
+const matchesPlayed = computed(() => completedMatches.value.length)
 const totalMatches  = computed(() => store.matches.length)
-const goalsPerGame  = computed(() => matchesPlayed.value ? (totalGoals.value / matchesPlayed.value).toFixed(2) : '—')
+const goalsPerGame  = computed(() => {
+  if (!matchesPlayed.value) return '—'
+  const goals = completedMatches.value.reduce((sum, m) => sum + (m.goals?.length ?? 0), 0)
+  return (goals / matchesPlayed.value).toFixed(2)
+})
 
 function playerTeams(p) {
   return [p.team1, p.team2, p.team3, p.team4, p.team5, p.team6].filter(Boolean)
