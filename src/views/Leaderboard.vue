@@ -190,26 +190,6 @@
         </div>
       </div>
     </div>
-
-    <!-- H2H Overlap Matrix -->
-    <p class="view-title" style="margin-top:28px">Head-to-Head Overlap</p>
-    <p class="strength-sub">Teams in common between any two players — more overlap means correlated fate</p>
-    <div class="matrix-scroll">
-      <div class="matrix-grid" :style="`grid-template-columns: auto repeat(${store.players.length}, 40px)`">
-        <div class="matrix-corner"></div>
-        <div v-for="p in store.players" :key="'h-'+p.name" class="matrix-col-label">{{ p.name.slice(0,3) }}</div>
-        <template v-for="(row, i) in overlapMatrix" :key="i">
-          <div class="matrix-row-label">{{ store.players[i].name }}</div>
-          <div
-            v-for="(count, j) in row"
-            :key="j"
-            class="matrix-cell"
-            :class="i === j ? 'matrix-self' : `overlap-${count}`"
-            :title="i !== j ? `${store.players[i].name} & ${store.players[j].name}: ${count} shared team${count !== 1 ? 's' : ''}` : ''"
-          >{{ i === j ? '·' : count }}</div>
-        </template>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -369,13 +349,6 @@ const avgFifaRank = computed(() => {
   return ranked.map(p => ({ ...p, pct: 0.15 + 0.85 * (1 - (p.avg - min) / spread) }))
 })
 
-
-const overlapMatrix = computed(() =>
-  store.players.map(p1 => {
-    const s = new Set(playerTeams(p1))
-    return store.players.map(p2 => playerTeams(p2).filter(t => s.has(t)).length)
-  })
-)
 
 function chipScale(count) {
   const maxCount = Math.max(...sharedPicks.value.map(s => s.count))
@@ -735,36 +708,4 @@ function rankClass(r) {
   font-size: 11px; font-weight: 800; letter-spacing: .06em;
   color: var(--text-dim); opacity: 0.4;
 }
-
-/* ── H2H Overlap Matrix ───────────────────────────────────────── */
-.matrix-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.matrix-grid { display: grid; gap: 3px; min-width: fit-content; }
-.matrix-corner { }
-.matrix-col-label {
-  width: 40px; text-align: center;
-  font-size: 11px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: .04em; color: var(--text-dim); padding: 4px 0 6px;
-}
-.matrix-row-label {
-  font-size: 14px; font-weight: 700; color: #fff;
-  display: flex; align-items: center;
-  padding-right: 10px; white-space: nowrap;
-}
-.matrix-cell {
-  width: 40px; height: 40px;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 7px;
-  font-size: 15px; font-weight: 800;
-  transition: transform .12s;
-  cursor: default;
-}
-.matrix-cell:hover { transform: scale(1.18); position: relative; z-index: 1; }
-.matrix-self   { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.12); font-size: 18px; }
-.overlap-0 { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.18); }
-.overlap-1 { background: rgba(0,229,255,0.10);  color: rgba(0,229,255,0.65); }
-.overlap-2 { background: rgba(0,229,255,0.22);  color: #00e5ff; }
-.overlap-3 { background: rgba(0,229,255,0.40);  color: #fff; }
-.overlap-4 { background: rgba(255,45,120,0.28); color: #ff6fa0; }
-.overlap-5 { background: rgba(255,45,120,0.48); color: #fff; }
-.overlap-6 { background: rgba(255,45,120,0.70); color: #fff; }
 </style>
