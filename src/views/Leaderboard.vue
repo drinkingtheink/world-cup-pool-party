@@ -214,7 +214,7 @@
       </div>
       <div class="card mu-list">
         <div v-for="(m, i) in matchupStats.byType[type]" :key="m.home + m.date"
-          class="mu-row" :class="{ 'mu-row--div': i > 0 }">
+          class="mu-row" :class="{ 'mu-row--div': i > 0, 'mu-row--done': m.home_score !== '' && !m.snapshot_minute }">
           <span class="mu-date">{{ fmtDate(m.date) }}</span>
           <div class="mu-sides">
             <div class="mu-side">
@@ -228,7 +228,13 @@
                 </span>
               </div>
             </div>
-            <span class="mu-vs">vs</span>
+            <div class="mu-center">
+              <template v-if="m.home_score !== '' && !m.snapshot_minute">
+                <span class="mu-score">{{ m.home_score }}–{{ m.away_score }}</span>
+                <span class="mu-ft">FT</span>
+              </template>
+              <span v-else class="mu-vs">vs</span>
+            </div>
             <div class="mu-side mu-side--right">
               <div class="mu-info mu-info--right">
                 <span class="mu-team">{{ m.away }}</span>
@@ -883,6 +889,10 @@ function rankClass(r) {
 .mu-info--right { align-items: flex-end; }
 .mu-team { font-size: 14px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mu-players { font-size: 11px; font-weight: 600; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mu-vs { font-size: 11px; font-weight: 800; color: var(--text-dim); letter-spacing: .06em; flex-shrink: 0; }
+.mu-row--done { opacity: 0.5; }
+.mu-center { display: flex; flex-direction: column; align-items: center; gap: 1px; flex-shrink: 0; }
+.mu-vs { font-size: 11px; font-weight: 800; color: var(--text-dim); letter-spacing: .06em; }
+.mu-score { font-size: 13px; font-weight: 800; color: #fff; letter-spacing: .04em; }
+.mu-ft { font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); }
 .mu-player-both { color: var(--green); font-weight: 800; }
 </style>
