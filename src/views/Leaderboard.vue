@@ -37,9 +37,9 @@
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
               <span class="lb-today-tomorrow">
-                <span class="lb-tt-label">Games Today:</span> {{ playerMatchDays[entry.name].today }}
-                <span class="lb-tt-sep">|</span>
-                <span class="lb-tt-label">Games Tomorrow:</span> {{ playerMatchDays[entry.name].tomorrow }}
+                <span class="lb-tt-label">Games:</span> {{ playerMatchDays[entry.name].today }} Today
+                <span class="lb-tt-sep">/</span>
+                {{ playerMatchDays[entry.name].tomorrow }} Tomorrow
               </span>
             </div>
             <div class="lb-flags">
