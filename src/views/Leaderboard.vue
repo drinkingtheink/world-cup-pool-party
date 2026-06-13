@@ -165,6 +165,14 @@
     </div>
     <p v-else class="strength-sub" style="font-style:italic">No same-group picks</p>
 
+    <div v-if="noConflictPlayers.length" class="clash-clean">
+      <span class="clash-clean-trophy">🏆</span>
+      <div class="clash-clean-body">
+        <span class="clash-clean-names">{{ noConflictPlayers.join(', ') }}</span>
+        <span class="clash-clean-label">No group conflicts — every team in a different group</span>
+      </div>
+    </div>
+
     <!-- Avg FIFA Rank -->
     <p class="view-title" style="margin-top:28px">Avg. FIFA Rank</p>
     <p class="strength-sub">Mean FIFA ranking across each player's 6 teams (lower = stronger)</p>
@@ -312,6 +320,16 @@ const groupClashes = computed(() =>
       return { name: p.name, clashes }
     })
     .filter(p => p.clashes.length > 0)
+)
+
+const noConflictPlayers = computed(() =>
+  store.players
+    .filter(p => {
+      const teams = playerTeams(p)
+      const groups = teams.map(t => store.groupOf[t]).filter(Boolean)
+      return groups.length === new Set(groups).size
+    })
+    .map(p => p.name)
 )
 
 // Average FIFA rank per player
@@ -645,6 +663,18 @@ function rankClass(r) {
 }
 
 /* ── Same-Group Picks ─────────────────────────────────────────── */
+.clash-clean {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 10px; padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255,210,0,0.06);
+  border: 1px solid rgba(255,210,0,0.2);
+}
+.clash-clean-trophy { font-size: 28px; line-height: 1; flex-shrink: 0; }
+.clash-clean-body { display: flex; flex-direction: column; gap: 2px; }
+.clash-clean-names { font-size: 16px; font-weight: 700; color: #ffd200; }
+.clash-clean-label { font-size: 12px; color: var(--text-dim); }
+
 .clash-list { display: flex; flex-direction: column; gap: 10px; }
 
 .clash-row {
