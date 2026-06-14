@@ -10,6 +10,7 @@
     <div class="match-score-row">
       <span class="team-name" :class="{ winner: match.result === 'home' }">{{ match.home }}</span>
       <div class="score-box">
+        <span v-if="match.played && !match.snapshot_minute" class="score-check">✓</span>
         <span v-if="match.home_score !== '' || match.away_score !== ''" class="score">
           <span :class="{ 'score-winner': match.result === 'home' }">{{ match.home_score !== '' ? match.home_score : 0 }}</span>
           –
@@ -147,6 +148,7 @@ const awayBonuses = computed(() => allBonuses.value.filter(b => b.side === 'away
 .score--upcoming { color: var(--text-dim); font-size: 16px; }
 .score-winner { color: var(--green); }
 .score-minute { font-size: 12px; font-weight: 700; color: var(--green); letter-spacing: .03em; }
+.score-check { font-size: 18px; font-weight: 900; color: var(--green); line-height: 1; }
 
 .goal-list { margin-top: 6px; display: flex; flex-direction: column; gap: 2px; }
 .goal-item { display: grid; grid-template-columns: 1fr 60px 1fr; font-size: 13px; color: var(--text-dim); }
