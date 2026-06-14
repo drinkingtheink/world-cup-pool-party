@@ -35,9 +35,17 @@
     </div>
 
     <div v-if="match.homePlayers?.length || match.awayPlayers?.length" class="rivalry">
-      <span class="rivalry-side">{{ match.homePlayers?.join(', ') }}</span>
+      <span class="rivalry-side">
+        <template v-for="(name, i) in match.homePlayers" :key="name">
+          <span :class="match.awayPlayers?.includes(name) ? 'rivalry-both' : ''">{{ name }}</span><template v-if="i < match.homePlayers.length - 1">, </template>
+        </template>
+      </span>
       <span class="rivalry-vs">vs</span>
-      <span class="rivalry-side">{{ match.awayPlayers?.join(', ') }}</span>
+      <span class="rivalry-side">
+        <template v-for="(name, i) in match.awayPlayers" :key="name">
+          <span :class="match.homePlayers?.includes(name) ? 'rivalry-both' : ''">{{ name }}</span><template v-if="i < match.awayPlayers.length - 1">, </template>
+        </template>
+      </span>
     </div>
 
     <div v-if="match.played && match.bonusFlags?.size" class="bonus-row">
@@ -165,6 +173,7 @@ const awayBonuses = computed(() => allBonuses.value.filter(b => b.side === 'away
 .rivalry-side { font-size: 13px; font-weight: 700; color: var(--green); flex: 1; }
 .rivalry-side:last-child { text-align: right; }
 .rivalry-vs { font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--green); flex-shrink: 0; opacity: 0.5; }
+.rivalry-both { color: var(--purple); font-weight: 800; }
 
 .bonus-row { display: grid; grid-template-columns: 1fr 60px 1fr; margin-top: 8px; gap: 4px 0; }
 .bonus-col { display: flex; flex-direction: column; gap: 4px; }
