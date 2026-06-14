@@ -42,6 +42,10 @@
               {{ team.groupConflict ? '⚠️ ' : '' }}Grp {{ team.group }}
             </span>
           </div>
+          <div v-if="sharedWithMap[team.name]" class="team-shared">
+            <span class="team-shared-label">Also picked by</span>
+            <span v-for="name in sharedWithMap[team.name]" :key="name" class="team-shared-chip">{{ name }}</span>
+          </div>
           <div class="team-card-pts">{{ team.pts }} pts</div>
           <div v-if="upcomingByTeam[team.name]?.length" class="sched-list">
             <div v-for="m in upcomingByTeam[team.name]" :key="m.date + m.opponent" class="sched-row">
@@ -118,6 +122,23 @@ const teams = computed(() => {
   }).sort((a, b) => b.pts - a.pts || a.fifaRank - b.fifaRank)
 })
 
+const sharedWithMap = computed(() => {
+  const map = {}
+  store.players.forEach(p => {
+    [p.team1,p.team2,p.team3,p.team4,p.team5,p.team6].filter(Boolean).forEach(t => {
+      if (!map[t]) map[t] = []
+      map[t].push(p.name)
+    })
+  })
+  // For the selected player, return only the OTHER owners per team
+  const out = {}
+  teams.value.forEach(({ name }) => {
+    const others = (map[name] ?? []).filter(n => n !== selected.value)
+    if (others.length) out[name] = others
+  })
+  return out
+})
+
 const upcomingByTeam = computed(() => {
   const out = {}
   teams.value.forEach(({ name }) => {
@@ -184,6 +205,20 @@ function fmtDate(d) {
 .team-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 .team-card-flag { font-size: 22px; line-height: 1; flex-shrink: 0; }
 .team-card-name { flex: 1; font-size: 17px; font-weight: 600; color: #ffffff; }
+.team-shared {
+  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+  margin-top: 5px; margin-bottom: 2px;
+}
+.team-shared-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-dim); opacity: 0.6; white-space: nowrap;
+}
+.team-shared-chip {
+  font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 99px;
+  background: rgba(189,95,255,0.12); color: var(--purple);
+  border: 1px solid rgba(189,95,255,0.25); white-space: nowrap;
+}
+
 .team-card-pts { font-size: 24px; font-weight: 800; color: var(--accent); }
 
 .group-badge {
