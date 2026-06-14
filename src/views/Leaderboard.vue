@@ -34,7 +34,7 @@
         class="lb-row card"
         :class="{ 'lb-row--first': entry.rank === 1 }"
         :style="{ '--i': i }"
-        @click="expanded = expanded === entry.name ? null : entry.name"
+        @click="expanded === entry.name ? router.push({ path: '/my-teams', query: { player: entry.name } }) : (expanded = entry.name)"
       >
         <div class="lb-main">
           <span class="lb-rank" :class="rankClass(entry.rank)">{{ entry.rank }}</span>

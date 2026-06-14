@@ -47,12 +47,18 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import { FLAG_MAP } from '../data/index.js'
 
+const route = useRoute()
 const store = usePoolStore()
 const selected = ref(null)
+
+onMounted(() => {
+  if (route.query.player) selected.value = route.query.player
+})
 
 const sortedPlayers = computed(() => [...store.players].sort((a, b) => a.name.localeCompare(b.name)))
 
