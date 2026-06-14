@@ -34,7 +34,7 @@
         class="lb-row card"
         :class="{ 'lb-row--first': entry.rank === 1 }"
         :style="{ '--i': i }"
-        @click="expanded === entry.name ? router.push({ path: '/my-teams', query: { player: entry.name } }) : (expanded = entry.name)"
+        @click="expanded = expanded === entry.name ? null : entry.name"
       >
         <div class="lb-main">
           <span class="lb-rank" :class="rankClass(entry.rank)">{{ entry.rank }}</span>
@@ -57,7 +57,8 @@
 
         <!-- Expanded team breakdown -->
         <transition name="expand">
-          <div v-if="expanded === entry.name" class="lb-breakdown">
+          <div v-if="expanded === entry.name" class="lb-breakdown"
+            @click.stop="router.push({ path: '/my-teams', query: { player: entry.name } })">
             <div v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-team-row">
               <span class="lb-team-flag">{{ FLAG_MAP[team] ?? '🏳' }}</span>
               <span class="lb-team-name">{{ team }}</span>
@@ -552,7 +553,9 @@ function rankClass(r) {
   border-top: 1px solid var(--border);
   padding: 10px 16px 14px;
   display: flex; flex-direction: column; gap: 6px;
+  cursor: pointer;
 }
+.lb-breakdown:hover { background: rgba(255,255,255,0.03); }
 .lb-team-row {
   display: flex; align-items: center; justify-content: space-between;
   font-size: 16px;
