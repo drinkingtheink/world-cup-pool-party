@@ -38,8 +38,16 @@
 </template>
 
 <script setup>
+import { watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { BarChart2, Swords, ShieldCheck, Globe, ScrollText } from 'lucide-vue-next'
 import AnnouncementModal from './components/AnnouncementModal.vue'
+
+const route = useRoute()
+watch(() => route.path, () => {
+  const main = document.querySelector('.app-main')
+  if (main) main.scrollTop = 0
+})
 </script>
 
 <style>
