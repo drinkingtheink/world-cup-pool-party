@@ -41,6 +41,18 @@
           <div class="lb-center">
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
+              <button
+                v-if="playerLiveMatches[entry.name]?.length"
+                class="lb-live-btn"
+                @click.stop="router.push('/matches')"
+                :title="playerLiveMatches[entry.name].map(m => `${m.home} vs ${m.away}`).join(', ')"
+              >
+                <span class="lb-live-dot"></span>
+                <span v-for="m in playerLiveMatches[entry.name]" :key="m.home + m.away" class="lb-live-flag">
+                  {{ FLAG_MAP[entry.teams.find(t => t === m.home || t === m.away)] ?? '🏳' }}
+                </span>
+                LIVE
+              </button>
               <span class="lb-today-tomorrow">
                 <span class="lb-tt-label">Games:</span> {{ playerMatchDays[entry.name].today }} Today
                 <span class="lb-tt-sep">/</span>
@@ -491,6 +503,19 @@ function rankedTeams(teams) {
   return [...teams].sort((a, b) => (store.fifaRankMap[a] ?? 999) - (store.fifaRankMap[b] ?? 999))
 }
 
+const playerLiveMatches = computed(() => {
+  const map = {}
+  store.leaderboard.forEach(entry => {
+    const teamSet = new Set(entry.teams)
+    const lives = store.enrichedMatches.filter(m =>
+      (m.snapshot_minute || m.autoLive) &&
+      (teamSet.has(m.home) || teamSet.has(m.away))
+    )
+    if (lives.length) map[entry.name] = lives
+  })
+  return map
+})
+
 function rankClass(r) {
   if (r === 1) return 'rank-gold'
   if (r === 2) return 'rank-silver'
@@ -540,7 +565,26 @@ function rankClass(r) {
 .lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
 
 .lb-name-row {
-  display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+
+.lb-live-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px 2px 6px; border-radius: 99px;
+  background: rgba(0,255,159,0.10); border: 1px solid rgba(0,255,159,0.35);
+  color: var(--green); font-size: 10px; font-weight: 800; letter-spacing: .08em;
+  cursor: pointer; text-transform: uppercase; flex-shrink: 0;
+  transition: background .15s, border-color .15s;
+}
+.lb-live-btn:hover { background: rgba(0,255,159,0.18); border-color: rgba(0,255,159,0.6); }
+.lb-live-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0;
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+.lb-live-flag { font-size: 14px; line-height: 1; }
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
 }
 .lb-today-tomorrow {
   font-size: 11px; font-weight: 600; color: var(--text-dim);
