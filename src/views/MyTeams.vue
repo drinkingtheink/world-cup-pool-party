@@ -41,6 +41,10 @@
           </div>
           <div class="team-card-pts">{{ team.pts }} pts</div>
           <div v-if="teamBreakdowns[team.name]?.length" class="td-list">
+            <div class="td-header">
+              <span class="td-label">Points breakdown</span>
+              <router-link to="/rules" class="td-rules-link">Scoring guide ↗</router-link>
+            </div>
             <div v-for="bd in teamBreakdowns[team.name]" :key="bd.date" class="td-row">
               <span class="td-date">{{ fmtDate(bd.date) }}</span>
               <span class="td-opp">vs {{ bd.opponent }}</span>
@@ -180,6 +184,10 @@ function fmtDate(d) {
   margin-top: 10px; border-top: 1px solid var(--border);
   padding-top: 8px; display: flex; flex-direction: column; gap: 5px;
 }
+.td-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+.td-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
+.td-rules-link { font-size: 11px; font-weight: 700; color: var(--cyan); opacity: 0.7; text-decoration: none; }
+.td-rules-link:hover { opacity: 1; }
 .td-row {
   display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
   font-size: 12px;
