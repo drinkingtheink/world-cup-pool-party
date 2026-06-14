@@ -7,7 +7,7 @@
         :key="p.name"
         class="player-chip"
         :class="{ active: selected === p.name }"
-        @click="selected = p.name"
+        @click="selectPlayer(p.name)"
       >{{ p.name }}</button>
     </div>
 
@@ -80,14 +80,20 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import { FLAG_MAP } from '../data/index.js'
 import { matchBreakdownForTeam } from '../services/points.js'
 
-const route = useRoute()
-const store = usePoolStore()
+const route  = useRoute()
+const router = useRouter()
+const store  = usePoolStore()
 const selected = ref(null)
+
+function selectPlayer(name) {
+  selected.value = name
+  router.replace({ path: '/my-teams', query: name ? { player: name } : {} })
+}
 
 onMounted(() => {
   if (route.query.player) selected.value = route.query.player
