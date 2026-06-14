@@ -16,6 +16,7 @@
             <span v-if="GROUP_MAP[t.team]" class="tl-group">Grp {{ GROUP_MAP[t.team] }}</span>
           </div>
           <span class="pill" :class="`pill-t${t.tier}`">Tier {{ t.tier }}</span>
+          <button v-if="liveMatchByTeam[t.team]" class="tl-live" @click="goToLiveMatch(t.team)">● LIVE</button>
           <span class="tl-owners">{{ ownersOf(t.team) }}</span>
         </div>
         <div v-if="!searchResults.length" class="tl-empty">No teams found</div>
@@ -37,6 +38,7 @@
               <span v-if="store.fifaRankMap[team]" class="tl-rank" :class="`tl-rank-t${tier}`">#{{ store.fifaRankMap[team] }}</span>
               <span v-if="GROUP_MAP[team]" class="tl-group">Grp {{ GROUP_MAP[team] }}</span>
             </div>
+            <button v-if="liveMatchByTeam[team]" class="tl-live" @click="goToLiveMatch(team)">● LIVE</button>
             <span class="tl-owners">{{ ownersOf(team) }}</span>
           </div>
           <div v-if="!store.tierGroups[tier]?.length" class="tl-empty">No teams in this tier</div>
@@ -49,11 +51,31 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import { GROUP_MAP } from '../data/index.js'
+import { matchSlug } from '../utils.js'
 
 const store = usePoolStore()
+const router = useRouter()
 const query = ref('')
+
+const liveMatchByTeam = computed(() => {
+  const map = {}
+  store.enrichedMatches.forEach(m => {
+    if (m.snapshot_minute || m.autoLive) {
+      map[m.home] = m
+      map[m.away] = m
+    }
+  })
+  return map
+})
+
+function goToLiveMatch(team) {
+  const m = liveMatchByTeam.value[team]
+  if (!m) return
+  router.push({ path: '/matches', hash: '#' + matchSlug(m) })
+}
 
 const searchResults = computed(() => {
   const q = query.value.toLowerCase()
@@ -110,6 +132,17 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .tl-rank-t2 { color: var(--cyan); }
 .tl-rank-t3 { color: var(--green); }
 .tl-rank-t4 { color: var(--purple); }
+.tl-live {
+  flex-shrink: 0; font-size: 11px; font-weight: 800; letter-spacing: .04em;
+  color: var(--green); background: rgba(0,255,159,0.1);
+  border: 1px solid rgba(0,255,159,0.3); border-radius: 99px;
+  padding: 2px 8px; cursor: pointer; white-space: nowrap;
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
 .tl-owners { font-size: 12px; color: var(--text-dim); text-align: right; max-width: 110px; }
 .tl-empty { padding: 16px; text-align: center; color: var(--text-dim); font-size: 16px; }
 </style>

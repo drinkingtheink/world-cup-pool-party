@@ -36,6 +36,7 @@
           <div class="team-card-top">
             <span class="team-card-flag">{{ FLAG_MAP[team.name] ?? '🏳' }}</span>
             <span class="team-card-name">{{ team.name }}</span>
+            <button v-if="liveMatchByTeam[team.name]" class="team-live-btn" @click="goToLiveMatch(team.name)">● LIVE</button>
             <span class="pill" :class="`pill-t${team.tier}`">T{{ team.tier }}</span>
             <span v-if="store.fifaRankMap[team.name]" class="fifa-badge">FIFA #{{ store.fifaRankMap[team.name] }}</span>
             <span v-if="team.group" class="group-badge" :class="{ 'group-badge--conflict': team.groupConflict }">
@@ -84,6 +85,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import { FLAG_MAP } from '../data/index.js'
 import { matchBreakdownForTeam } from '../services/points.js'
+import { matchSlug } from '../utils.js'
 
 const route  = useRoute()
 const router = useRouter()
@@ -173,6 +175,23 @@ const teamBreakdowns = computed(() => {
   return out
 })
 
+const liveMatchByTeam = computed(() => {
+  const map = {}
+  store.enrichedMatches.forEach(m => {
+    if (m.snapshot_minute || m.autoLive) {
+      map[m.home] = m
+      map[m.away] = m
+    }
+  })
+  return map
+})
+
+function goToLiveMatch(team) {
+  const m = liveMatchByTeam.value[team]
+  if (!m) return
+  router.push({ path: '/matches', hash: '#' + matchSlug(m) })
+}
+
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 function fmtDate(d) {
   const [, m, day] = d.split('-')
@@ -223,6 +242,18 @@ function fmtDate(d) {
   font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 99px;
   background: rgba(189,95,255,0.12); color: var(--purple);
   border: 1px solid rgba(189,95,255,0.25); white-space: nowrap;
+}
+
+.team-live-btn {
+  flex-shrink: 0; font-size: 11px; font-weight: 800; letter-spacing: .04em;
+  color: var(--green); background: rgba(0,255,159,0.1);
+  border: 1px solid rgba(0,255,159,0.3); border-radius: 99px;
+  padding: 2px 8px; cursor: pointer; white-space: nowrap;
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
 }
 
 .team-card-pts { font-size: 24px; font-weight: 800; color: var(--accent); }
