@@ -17,16 +17,25 @@ const MATCHES_URL = import.meta.env.DEV
   ? '/matches.json'
   : 'https://raw.githubusercontent.com/drinkingtheink/world-cup-pool-party/main/src/data/matches.json'
 
+// Module-scope ref so both HMR and the poll can update it
+const rawMatches = ref(staticMatches)
+
+async function pollMatchData() {
+  try {
+    const res = await fetch(`${MATCHES_URL}?t=${Date.now()}`, { cache: 'no-store' })
+    if (res.ok) rawMatches.value = await res.json()
+  } catch {}
+}
+
+// In dev, update instantly when matches.json is saved — no page reload needed
+if (import.meta.hot) {
+  import.meta.hot.accept('../data/index.js', (newModule) => {
+    if (newModule?.matches) rawMatches.value = newModule.matches
+  })
+}
+
 export const usePoolStore = defineStore('pool', () => {
   const now = ref(new Date())
-  const rawMatches = ref(staticMatches)
-
-  async function pollMatchData() {
-    try {
-      const res = await fetch(`${MATCHES_URL}?t=${Date.now()}`, { cache: 'no-store' })
-      if (res.ok) rawMatches.value = await res.json()
-    } catch {}
-  }
 
   setInterval(async () => {
     now.value = new Date()
@@ -34,7 +43,6 @@ export const usePoolStore = defineStore('pool', () => {
       if (m.home_score !== '' || m.snapshot_minute) return false
       const start = parseMatchTime(m.date, m.time)
       if (!start) return false
-      // poll during window + 15 min buffer to catch final score
       const pollEnd = new Date(start.getTime() + 130 * 60 * 1000)
       return now.value >= start && now.value < pollEnd
     })
