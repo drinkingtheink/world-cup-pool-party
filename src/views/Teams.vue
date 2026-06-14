@@ -23,6 +23,7 @@
     </template>
 
     <template v-else>
+      <div class="tiers-grid">
       <div v-for="tier in [1,2,3,4]" :key="tier" class="tier-section">
         <div class="tier-header">
           <span class="pill" :class="`pill-t${tier}`">Tier {{ tier }}</span>
@@ -41,6 +42,7 @@
           <div v-if="!store.tierGroups[tier]?.length" class="tl-empty">No teams in this tier</div>
         </div>
       </div>
+      </div><!-- /tiers-grid -->
     </template>
   </div>
 </template>
@@ -84,7 +86,16 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .search-input::placeholder { color: var(--text-dim); }
 .search-input:focus { outline: none; border-color: var(--accent); }
 
-.tier-section { margin-bottom: 16px; }
+.tiers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 540px) {
+  .tiers-grid { grid-template-columns: 1fr; }
+}
+
+.tier-section { margin-bottom: 0; }
 .tier-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .tier-sub { font-size: 13px; color: var(--text-dim); }
 
@@ -99,6 +110,6 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .tl-rank-t2 { color: var(--cyan); }
 .tl-rank-t3 { color: var(--green); }
 .tl-rank-t4 { color: var(--purple); }
-.tl-owners { font-size: 13px; color: var(--text-dim); text-align: right; max-width: 140px; }
+.tl-owners { font-size: 12px; color: var(--text-dim); text-align: right; max-width: 110px; }
 .tl-empty { padding: 16px; text-align: center; color: var(--text-dim); font-size: 16px; }
 </style>
