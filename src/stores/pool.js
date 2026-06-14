@@ -57,13 +57,19 @@ export const usePoolStore = defineStore('pool', () => {
   })
 
   const leaderboard = computed(() => {
-    const strengthMap = {}
+    const goalsMap = {}
     rawPlayers.forEach(p => {
-      const teams = [p.team1, p.team2, p.team3, p.team4, p.team5, p.team6].filter(Boolean)
-      strengthMap[p.name] = teams.reduce((sum, t) => sum + (oddsMap.value[t] ?? 0), 0)
+      const teams = new Set([p.team1,p.team2,p.team3,p.team4,p.team5,p.team6].filter(Boolean))
+      let g = 0
+      rawMatches.value.forEach(m => {
+        ;(m.goals ?? []).forEach(goal => {
+          if (teams.has(goal.team === 'home' ? m.home : m.away)) g++
+        })
+      })
+      goalsMap[p.name] = g
     })
     return buildLeaderboard(rawPlayers, rawMatches.value)
-      .sort((a, b) => b.total - a.total || (strengthMap[b.name] ?? 0) - (strengthMap[a.name] ?? 0))
+      .sort((a, b) => b.total - a.total || (goalsMap[b.name] ?? 0) - (goalsMap[a.name] ?? 0))
       .map((entry, i) => ({ ...entry, rank: i + 1 }))
   })
 
