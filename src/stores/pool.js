@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { players as rawPlayers, matches as rawMatches, tiers as rawTiers, GROUP_MAP } from '../data/index.js'
+import { players as rawPlayers, matches as staticMatches, tiers as rawTiers, GROUP_MAP } from '../data/index.js'
 import { buildLeaderboard, enrichMatches } from '../services/points.js'
 
 // CT = CDT (UTC-5) during tournament months
@@ -13,9 +13,34 @@ function parseMatchTime(date, timeStr) {
   return new Date(`${date}T${String(hour).padStart(2, '0')}:${m[2]}:00-05:00`)
 }
 
+const MATCHES_URL = import.meta.env.DEV
+  ? '/matches.json'
+  : 'https://raw.githubusercontent.com/drinkingtheink/world-cup-pool-party/main/src/data/matches.json'
+
 export const usePoolStore = defineStore('pool', () => {
   const now = ref(new Date())
-  setInterval(() => { now.value = new Date() }, 60_000)
+  const rawMatches = ref(staticMatches)
+
+  async function pollMatchData() {
+    try {
+      const res = await fetch(`${MATCHES_URL}?t=${Date.now()}`, { cache: 'no-store' })
+      if (res.ok) rawMatches.value = await res.json()
+    } catch {}
+  }
+
+  setInterval(async () => {
+    now.value = new Date()
+    const shouldPoll = rawMatches.value.some(m => {
+      if (m.home_score !== '' || m.snapshot_minute) return false
+      const start = parseMatchTime(m.date, m.time)
+      if (!start) return false
+      // poll during window + 15 min buffer to catch final score
+      const pollEnd = new Date(start.getTime() + 130 * 60 * 1000)
+      return now.value >= start && now.value < pollEnd
+    })
+    if (shouldPoll) await pollMatchData()
+  }, 60_000)
+
   // implied win probability = 100 / (americanOdds + 100)
   const oddsMap = computed(() => {
     const map = {}
@@ -29,7 +54,7 @@ export const usePoolStore = defineStore('pool', () => {
       const teams = [p.team1, p.team2, p.team3, p.team4, p.team5, p.team6].filter(Boolean)
       strengthMap[p.name] = teams.reduce((sum, t) => sum + (oddsMap.value[t] ?? 0), 0)
     })
-    return buildLeaderboard(rawPlayers, rawMatches)
+    return buildLeaderboard(rawPlayers, rawMatches.value)
       .sort((a, b) => b.total - a.total || (strengthMap[b.name] ?? 0) - (strengthMap[a.name] ?? 0))
       .map((entry, i) => ({ ...entry, rank: i + 1 }))
   })
@@ -46,7 +71,7 @@ export const usePoolStore = defineStore('pool', () => {
   })
 
   const enrichedMatches = computed(() =>
-    enrichMatches(rawMatches).map(m => {
+    enrichMatches(rawMatches.value).map(m => {
       const base = {
         ...m,
         homePlayers: teamPlayerMap.value[m.home] ?? [],

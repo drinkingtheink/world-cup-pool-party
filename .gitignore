@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Dev polling test file (mirrors src/data/matches.json for local fetch testing)
+public/matches.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
