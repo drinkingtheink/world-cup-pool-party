@@ -19,7 +19,10 @@
     <template v-for="(group, i) in grouped" :key="group.date">
       <div class="date-header" :ref="el => { if (isToday(group.date)) todayEl = el }" :class="{ 'date-header--first': i === 0, 'date-header--today': isToday(group.date), 'date-header--past': isPast(group.date) }">
         <span class="date-header__text">{{ formatDate(group.date) }}</span>
-        <span class="pill" :class="stagePillClass(group.matches[0]?.stage)">{{ group.matches[0]?.stage }}</span>
+        <span class="pill date-stage-pill" :class="stagePillClass(group.matches[0]?.stage)">
+          <span class="stage-full">{{ group.matches[0]?.stage }}</span>
+          <span class="stage-short">{{ stageShort(group.matches[0]?.stage) }}</span>
+        </span>
         <div class="date-header__right">
           <span class="date-header__count">{{ group.matches.length }} match{{ group.matches.length !== 1 ? 'es' : '' }}</span>
           <span v-if="isToday(group.date)" class="date-header__badge date-header__badge--today">Today</span>
@@ -131,6 +134,17 @@ function todayStr() {
 function isToday(d) { return d === todayStr() }
 function isPast(d)  { return d < todayStr() }
 
+function stageShort(stage) {
+  if (stage === 'Group Stage')  return 'GRP'
+  if (stage === 'Round of 32')  return 'R32'
+  if (stage === 'Round of 16')  return 'R16'
+  if (stage?.includes('Quarter')) return 'QF'
+  if (stage?.includes('Semi'))    return 'SF'
+  if (stage === 'Third Place')  return '3rd'
+  if (stage === 'Final')        return 'Final'
+  return stage ?? ''
+}
+
 function stagePillClass(stage) {
   if (stage === 'Final') return 'pill-t1'
   if (stage?.includes('Semi')) return 'pill-t2'
@@ -178,6 +192,11 @@ function stagePillClass(stage) {
 }
 .date-header__right {
   flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+}
+.stage-short { display: none; }
+@media (max-width: 440px) {
+  .stage-full  { display: none; }
+  .stage-short { display: inline; }
 }
 .date-header--today .date-header__text { color: #fff; }
 .date-header__count { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
