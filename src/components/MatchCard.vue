@@ -47,7 +47,7 @@
       </span>
     </div>
 
-    <div v-if="match.played && match.bonusFlags?.size" class="bonus-row">
+    <div v-if="match.played && match.bonusFlags?.size && !isOrphan" class="bonus-row">
       <div class="bonus-col bonus-col--home">
         <span v-for="b in homeBonuses" :key="b.label" class="bonus-tag">{{ b.label }}</span>
       </div>
