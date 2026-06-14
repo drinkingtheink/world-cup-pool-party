@@ -17,8 +17,11 @@
       <!-- Points summary -->
       <div class="pts-banner card">
         <span class="pts-name">{{ player.name }}</span>
-        <span class="pts-total">{{ playerEntry?.total ?? 0 }} <span class="pts-label">pts</span></span>
-        <span class="pts-rank" v-if="playerEntry">Rank #{{ playerEntry.rank }}</span>
+        <div class="pts-right">
+          <span class="pts-total">{{ playerEntry?.total ?? 0 }}</span>
+          <span class="pts-label">pts</span>
+          <span class="pts-rank" v-if="playerEntry">Rank #{{ playerEntry.rank }}</span>
+        </div>
       </div>
 
       <!-- Team cards -->
@@ -145,9 +148,10 @@ function fmtDate(d) {
   display: flex; align-items: center; gap: 10px; padding: 14px 16px;
 }
 .pts-name { flex: 1; font-size: 19px; font-weight: 700; color: #ffffff; }
-.pts-total { font-size: 26px; font-weight: 800; color: var(--accent); }
-.pts-label { font-size: 14px; color: var(--text-dim); }
-.pts-rank { font-size: 14px; color: var(--text-dim); }
+.pts-right { display: flex; align-items: baseline; gap: 5px; }
+.pts-total { font-size: 26px; font-weight: 800; color: var(--accent); line-height: 1; }
+.pts-label { font-size: 13px; color: var(--text-dim); }
+.pts-rank { font-size: 13px; color: var(--text-dim); padding-left: 4px; border-left: 1px solid var(--border); }
 
 .team-grid { display: flex; flex-direction: column; gap: 8px; }
 
