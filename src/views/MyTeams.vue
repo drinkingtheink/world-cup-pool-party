@@ -40,6 +40,20 @@
             </span>
           </div>
           <div class="team-card-pts">{{ team.pts }} pts</div>
+          <div v-if="teamBreakdowns[team.name]?.length" class="td-list">
+            <div v-for="bd in teamBreakdowns[team.name]" :key="bd.date" class="td-row">
+              <span class="td-date">{{ fmtDate(bd.date) }}</span>
+              <span class="td-opp">vs {{ bd.opponent }}</span>
+              <span class="td-score">{{ bd.scoreStr }}</span>
+              <span class="td-chips">
+                <span v-for="item in bd.items" :key="item.key"
+                  class="td-chip" :class="`td-chip--${item.key.replace(/\d/g,'n')}`"
+                >{{ item.key }} +{{ item.pts }}</span>
+                <span v-if="bd.mul > 1" class="td-mul">×{{ bd.mul }}</span>
+              </span>
+              <span class="td-total">= {{ bd.total }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </template>
@@ -51,6 +65,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import { FLAG_MAP } from '../data/index.js'
+import { matchBreakdownForTeam } from '../services/points.js'
 
 const route = useRoute()
 const store = usePoolStore()
@@ -88,6 +103,23 @@ const teams = computed(() => {
     }
   }).sort((a, b) => b.pts - a.pts || a.fifaRank - b.fifaRank)
 })
+
+const teamBreakdowns = computed(() => {
+  if (!player.value) return {}
+  const out = {}
+  teams.value.forEach(({ name }) => {
+    out[name] = store.matches
+      .map(m => matchBreakdownForTeam(name, m))
+      .filter(Boolean)
+  })
+  return out
+})
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+function fmtDate(d) {
+  const [, m, day] = d.split('-')
+  return `${MONTHS[+m - 1]} ${+day}`
+}
 </script>
 
 <style scoped>
@@ -142,4 +174,31 @@ const teams = computed(() => {
 }
 
 .empty-msg { padding: 40px 24px; text-align: center; color: var(--text-dim); font-size: 17px; }
+
+/* ── Per-match point breakdown ──────────────────────────────── */
+.td-list {
+  margin-top: 10px; border-top: 1px solid var(--border);
+  padding-top: 8px; display: flex; flex-direction: column; gap: 5px;
+}
+.td-row {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  font-size: 12px;
+}
+.td-date { color: var(--text-dim); font-weight: 600; white-space: nowrap; }
+.td-opp  { color: var(--text-dim); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.td-score { font-weight: 700; color: #fff; white-space: nowrap; }
+.td-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.td-chip {
+  font-size: 11px; font-weight: 800; padding: 1px 5px;
+  border-radius: 4px; white-space: nowrap;
+}
+.td-chip--W   { background: rgba(0,255,159,0.15); color: var(--green); }
+.td-chip--D   { background: rgba(0,229,255,0.12); color: var(--cyan); }
+.td-chip--nG  { background: rgba(255,255,255,0.08); color: #fff; }
+.td-chip--CS  { background: rgba(0,229,255,0.10); color: var(--cyan); }
+.td-chip--FG  { background: rgba(255,210,0,0.12); color: #ffd200; }
+.td-chip--CB  { background: rgba(255,140,0,0.14); color: #ff9d3a; }
+.td-chip--PEN { background: rgba(189,95,255,0.14); color: var(--purple); }
+.td-mul  { font-size: 11px; font-weight: 800; color: var(--accent); }
+.td-total { font-size: 12px; font-weight: 800; color: var(--accent); white-space: nowrap; margin-left: auto; }
 </style>

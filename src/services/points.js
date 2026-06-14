@@ -98,6 +98,41 @@ function matchPointsForTeam(team, match) {
   return pts * multiplierFor(stage)
 }
 
+// Point-by-point breakdown for a single team in a single match
+export function matchBreakdownForTeam(team, match) {
+  const isHome = match.home === team
+  const isAway = match.away === team
+  if (!isHome && !isAway) return null
+  if (match.home_score === '' || match.away_score === '' || match.snapshot_minute) return null
+
+  const hs = Number(match.home_score)
+  const as = Number(match.away_score)
+  const side = isHome ? 'home' : 'away'
+  const scored   = isHome ? hs : as
+  const conceded = isHome ? as : hs
+  const mul = multiplierFor(match.stage)
+  const bonuses = deriveBonuses(match)
+
+  const items = []
+  if (scored > conceded)      items.push({ key: 'W',           pts: 3 })
+  else if (scored === conceded) items.push({ key: 'D',          pts: 1 })
+  if (scored > 0)              items.push({ key: `${scored}G`,  pts: scored })
+  if (conceded === 0)          items.push({ key: 'CS',          pts: 1 })
+  if (bonuses.has(`${side}_first_goal`)) items.push({ key: 'FG', pts: 1 })
+  if (bonuses.has(`${side}_comeback`))   items.push({ key: 'CB', pts: 2 })
+  if (bonuses.has(`${side}_penalties`))  items.push({ key: 'PEN', pts: 2 })
+
+  const raw = items.reduce((s, i) => s + i.pts, 0)
+  return {
+    opponent: isHome ? match.away : match.home,
+    date: match.date,
+    scoreStr: `${hs}–${as}`,
+    items,
+    mul,
+    total: Math.round(raw * mul * 10) / 10,
+  }
+}
+
 // All points for a player across all matches
 export function calcPlayerPoints(player, matches) {
   const teams = [
