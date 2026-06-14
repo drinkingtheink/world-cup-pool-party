@@ -3,7 +3,7 @@
 // Set `image` to a path like '/images/matchday.jpg' or null to omit.
 
 export const announcement = {
-  enabled: true,
+  enabled: false,
   id: '2026-06-13-matchday',
   title: "Today's Matches",
   body: null,
