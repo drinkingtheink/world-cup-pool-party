@@ -46,13 +46,16 @@ const store = usePoolStore()
 const activeStage = ref(null)
 const todayEl = ref(null)
 
+function scrollTo(el) {
+  const main = document.querySelector('.app-main')
+  if (!el || !main) return
+  const top = el.getBoundingClientRect().top - main.getBoundingClientRect().top + main.scrollTop
+  main.scrollTo({ top: top - 16, behavior: 'smooth' })
+}
+
 function scrollToMatch(hash) {
   if (!hash) return
-  nextTick(() => {
-    const el   = document.querySelector(hash)
-    const main = document.querySelector('.app-main')
-    if (el && main) main.scrollTo({ top: el.offsetTop - 16, behavior: 'smooth' })
-  })
+  nextTick(() => scrollTo(document.querySelector(hash)))
 }
 
 watch(() => route.hash, scrollToMatch)
@@ -79,8 +82,16 @@ async function updateScores() {
 }
 
 onMounted(() => nextTick(() => {
-  if (route.hash) scrollToMatch(route.hash)
-  else todayEl.value?.scrollIntoView({ block: 'start' })
+  if (route.hash) {
+    scrollToMatch(route.hash)
+  } else {
+    const liveMatch = store.enrichedMatches.find(m => m.snapshot_minute || m.autoLive)
+    if (liveMatch) {
+      scrollTo(document.querySelector('#' + matchSlug(liveMatch)))
+    } else {
+      scrollTo(todayEl.value)
+    }
+  }
 }))
 
 const stages = computed(() => {

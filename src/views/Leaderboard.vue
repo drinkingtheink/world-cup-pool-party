@@ -295,7 +295,9 @@ function scrollToHash(hash) {
   nextTick(() => {
     const el   = document.querySelector(hash)
     const main = document.querySelector('.app-main')
-    if (el && main) main.scrollTo({ top: el.offsetTop - 16, behavior: 'smooth' })
+    if (!el || !main) return
+    const top = el.getBoundingClientRect().top - main.getBoundingClientRect().top + main.scrollTop
+    main.scrollTo({ top: top - 16, behavior: 'smooth' })
   })
 }
 
