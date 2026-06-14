@@ -43,6 +43,13 @@
             </span>
           </div>
           <div class="team-card-pts">{{ team.pts }} pts</div>
+          <div v-if="upcomingByTeam[team.name]?.length" class="sched-list">
+            <div v-for="m in upcomingByTeam[team.name]" :key="m.date + m.opponent" class="sched-row">
+              <span class="sched-date">{{ m.date }}</span>
+              <span class="sched-opp">{{ m.oppFlag }} {{ m.opponent }}</span>
+              <span class="sched-time">{{ m.time }}</span>
+            </div>
+          </div>
           <div v-if="teamBreakdowns[team.name]?.length" class="td-list">
             <div class="td-header">
               <span class="td-label">Points breakdown</span>
@@ -109,6 +116,23 @@ const teams = computed(() => {
       groupConflict: group ? groupCount[group] > 1 : false,
     }
   }).sort((a, b) => b.pts - a.pts || a.fifaRank - b.fifaRank)
+})
+
+const upcomingByTeam = computed(() => {
+  const out = {}
+  teams.value.forEach(({ name }) => {
+    out[name] = store.matches
+      .filter(m => (m.home === name || m.away === name) && m.home_score === '' && !m.snapshot_minute)
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .slice(0, 3)
+      .map(m => ({
+        date: fmtDate(m.date),
+        time: m.time?.replace(' CT', '') ?? '',
+        opponent: m.home === name ? m.away : m.home,
+        oppFlag: FLAG_MAP[m.home === name ? m.away : m.home] ?? '🏳',
+      }))
+  })
+  return out
 })
 
 const teamBreakdowns = computed(() => {
@@ -182,6 +206,30 @@ function fmtDate(d) {
 }
 
 .empty-msg { padding: 40px 24px; text-align: center; color: var(--text-dim); font-size: 17px; }
+
+/* ── Upcoming schedule ──────────────────────────────────────── */
+.sched-list {
+  margin-top: 8px; padding: 7px 10px;
+  background: rgba(0,229,255,0.04);
+  border: 1px solid rgba(0,229,255,0.12);
+  border-radius: 6px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.sched-row {
+  display: flex; align-items: center; gap: 8px; font-size: 11px;
+}
+.sched-date {
+  color: var(--cyan); font-weight: 700; white-space: nowrap; min-width: 40px;
+  letter-spacing: .02em;
+}
+.sched-opp {
+  flex: 1; color: var(--text-dim); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.sched-time {
+  color: var(--accent); font-weight: 600; white-space: nowrap;
+  font-size: 10px; opacity: 0.75;
+}
 
 /* ── Per-match point breakdown ──────────────────────────────── */
 .td-list {
