@@ -35,6 +35,15 @@
       </router-link>
     </nav>
 
+    <!-- New version banner -->
+    <Transition name="banner-slide">
+      <div v-if="newVersionAvailable" class="update-banner" @click="location.reload()">
+        <span class="update-banner-dot"></span>
+        <span class="update-banner-text">New scores available</span>
+        <span class="update-banner-cta">Reload ↗</span>
+      </div>
+    </Transition>
+
     <!-- Hidden admin modal: triple-tap MATCHES tab to open -->
     <Transition name="admin-fade">
       <div v-if="adminOpen" class="admin-overlay" @click.self="closeAdmin">
@@ -63,7 +72,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { BarChart2, Swords, ShieldCheck, Globe, ScrollText } from 'lucide-vue-next'
 import AnnouncementModal from './components/AnnouncementModal.vue'
@@ -72,6 +81,29 @@ const route = useRoute()
 watch(() => route.path, () => {
   const main = document.querySelector('.app-main')
   if (main) main.scrollTop = 0
+})
+
+// ── Background deploy polling (notifies all users of new builds) ─
+const newVersionAvailable = ref(false)
+let seenDeployId = null
+
+async function checkForNewDeploy() {
+  try {
+    const res = await fetch('/.netlify/functions/deploy-status')
+    if (!res.ok) return
+    const data = await res.json()
+    if (data.state !== 'ready' || !data.id) return
+    if (seenDeployId === null) {
+      seenDeployId = data.id
+    } else if (data.id !== seenDeployId) {
+      newVersionAvailable.value = true
+    }
+  } catch {}
+}
+
+onMounted(() => {
+  checkForNewDeploy()
+  setInterval(checkForNewDeploy, 60_000)
 })
 
 // ── Triple-tap MATCHES tab to open admin modal ──────────────────
@@ -325,6 +357,36 @@ body {
 .pill-t4 { background: rgba(189,95,255,0.12); color: #bd5fff; border: 1px solid rgba(189,95,255,0.3); }
 .pill-gold { background: rgba(255,210,0,0.12); color: #ffd200; border: 1px solid rgba(255,210,0,0.3); }
 .pill-chosen { background: rgba(0,229,255,0.1); color: #00e5ff; border: 1px solid rgba(0,229,255,0.25); }
+
+/* ── New version banner ──────────────────────────────────────────── */
+.update-banner {
+  position: fixed;
+  bottom: calc(var(--tab-h) + env(safe-area-inset-bottom) + 10px);
+  left: 50%; transform: translateX(-50%);
+  z-index: 190;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: 99px;
+  background: rgba(8,6,18,0.92);
+  border: 1px solid rgba(0,255,159,0.45);
+  box-shadow: 0 0 20px rgba(0,255,159,0.15);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: box-shadow .2s;
+}
+.update-banner:hover { box-shadow: 0 0 28px rgba(0,255,159,0.28); }
+.update-banner-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  background: var(--green);
+  animation: building-pulse 1.5s ease-in-out infinite;
+}
+.update-banner-text { font-size: 13px; font-weight: 700; color: #fff; }
+.update-banner-cta  { font-size: 12px; font-weight: 800; color: var(--green); letter-spacing: .04em; }
+
+.banner-slide-enter-active { transition: opacity .3s, transform .3s; }
+.banner-slide-leave-active { transition: opacity .2s, transform .2s; }
+.banner-slide-enter-from, .banner-slide-leave-to {
+  opacity: 0; transform: translateX(-50%) translateY(12px);
+}
 
 /* ── Admin modal ─────────────────────────────────────────────────── */
 .admin-overlay {
