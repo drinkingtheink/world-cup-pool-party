@@ -17,7 +17,7 @@
         <BarChart2 class="tab-icon" />
         <span class="tab-label">Standings</span>
       </router-link>
-      <router-link to="/matches"  class="tab" active-class="tab--active">
+      <router-link to="/matches"  class="tab" active-class="tab--active" @click="onMatchesTab">
         <Swords class="tab-icon" />
         <span class="tab-label">Matches</span>
       </router-link>
@@ -34,11 +34,36 @@
         <span class="tab-label">Rules</span>
       </router-link>
     </nav>
+
+    <!-- Hidden admin modal: triple-tap MATCHES tab to open -->
+    <Transition name="admin-fade">
+      <div v-if="adminOpen" class="admin-overlay" @click.self="closeAdmin">
+        <div class="admin-modal card">
+          <div class="admin-header">
+            <span class="admin-title">Admin</span>
+            <button class="admin-close" @click="closeAdmin">✕</button>
+          </div>
+          <button
+            class="update-btn"
+            :class="{ loading: updating || building }"
+            :disabled="updating || building"
+            @click="updateScores"
+          >
+            <span v-if="updating">Updating…</span>
+            <span v-else-if="building" class="update-building">
+              <span class="building-dot"></span>Building…
+            </span>
+            <span v-else-if="updateMsg" class="update-msg">{{ updateMsg }}</span>
+            <span v-else>Update Scores</span>
+          </button>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { BarChart2, Swords, ShieldCheck, Globe, ScrollText } from 'lucide-vue-next'
 import AnnouncementModal from './components/AnnouncementModal.vue'
@@ -48,6 +73,82 @@ watch(() => route.path, () => {
   const main = document.querySelector('.app-main')
   if (main) main.scrollTop = 0
 })
+
+// ── Triple-tap MATCHES tab to open admin modal ──────────────────
+const adminOpen = ref(false)
+const matchesTaps = []
+
+function onMatchesTab() {
+  const now = Date.now()
+  matchesTaps.push(now)
+  const recent = matchesTaps.filter(t => now - t < 800)
+  matchesTaps.length = 0
+  matchesTaps.push(...recent)
+  if (recent.length >= 3) {
+    matchesTaps.length = 0
+    adminOpen.value = true
+  }
+}
+
+function closeAdmin() {
+  adminOpen.value = false
+  updateMsg.value = ''
+  building.value = false
+}
+
+// ── Update scores logic ─────────────────────────────────────────
+const updating = ref(false)
+const building = ref(false)
+const updateMsg = ref('')
+
+async function updateScores() {
+  updating.value = true
+  building.value = false
+  updateMsg.value = ''
+  try {
+    const secret = import.meta.env.VITE_UPDATE_SECRET
+    if (!secret) throw new Error('VITE_UPDATE_SECRET not set')
+    const res = await fetch(`/.netlify/functions/update-matches?secret=${encodeURIComponent(secret)}`)
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
+    if (data.updated?.length) {
+      building.value = true
+      updateMsg.value = 'Building…'
+      pollForDeploy(Date.now())
+    } else {
+      updateMsg.value = 'No changes'
+      setTimeout(() => { updateMsg.value = '' }, 4000)
+    }
+  } catch (err) {
+    updateMsg.value = `Error: ${err.message}`
+    setTimeout(() => { updateMsg.value = '' }, 6000)
+  } finally {
+    updating.value = false
+  }
+}
+
+function pollForDeploy(since, attempt = 0) {
+  const MAX = 24
+  if (attempt >= MAX) {
+    building.value = false
+    updateMsg.value = 'Taking longer than usual — reload manually'
+    setTimeout(() => { updateMsg.value = '' }, 8000)
+    return
+  }
+  setTimeout(async () => {
+    try {
+      const res = await fetch('/.netlify/functions/deploy-status')
+      const data = await res.json()
+      if (data.state === 'ready' && new Date(data.createdAt).getTime() > since) {
+        location.reload()
+      } else {
+        pollForDeploy(since, attempt + 1)
+      }
+    } catch {
+      pollForDeploy(since, attempt + 1)
+    }
+  }, 8000)
+}
 </script>
 
 <style>
@@ -224,4 +325,60 @@ body {
 .pill-t4 { background: rgba(189,95,255,0.12); color: #bd5fff; border: 1px solid rgba(189,95,255,0.3); }
 .pill-gold { background: rgba(255,210,0,0.12); color: #ffd200; border: 1px solid rgba(255,210,0,0.3); }
 .pill-chosen { background: rgba(0,229,255,0.1); color: #00e5ff; border: 1px solid rgba(0,229,255,0.25); }
+
+/* ── Admin modal ─────────────────────────────────────────────────── */
+.admin-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(8,6,18,0.75);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: calc(var(--tab-h) + env(safe-area-inset-bottom) + 12px);
+}
+.admin-modal {
+  width: min(340px, calc(100vw - 32px));
+  padding: 16px;
+  border-color: rgba(255,45,120,0.3);
+}
+.admin-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.admin-title {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 11px; font-weight: 800; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--text-dim);
+}
+.admin-close {
+  background: none; border: none; color: var(--text-dim);
+  font-size: 16px; cursor: pointer; padding: 2px 6px;
+  transition: color .15s;
+}
+.admin-close:hover { color: var(--text); }
+
+.update-btn {
+  width: 100%; padding: 11px 16px; border-radius: 8px;
+  border: 1px solid rgba(0,255,159,0.3);
+  background: rgba(0,255,159,0.07);
+  color: var(--green); font-size: 13px; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase;
+  cursor: pointer; white-space: nowrap;
+  transition: opacity .15s, background .15s;
+}
+.update-btn:disabled { cursor: default; opacity: 0.6; }
+.update-btn.loading  { opacity: 0.6; }
+.update-msg      { color: var(--text); font-weight: 600; }
+.update-building {
+  display: inline-flex; align-items: center; gap: 6px; color: var(--cyan);
+}
+.building-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--cyan);
+  animation: building-pulse 1.2s ease-in-out infinite;
+}
+@keyframes building-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+.admin-fade-enter-active, .admin-fade-leave-active { transition: opacity .2s; }
+.admin-fade-enter-from,   .admin-fade-leave-to    { opacity: 0; }
 </style>

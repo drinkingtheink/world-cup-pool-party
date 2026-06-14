@@ -1,6 +1,6 @@
 <template>
   <div class="view">
-    <!-- Stage filter + update button -->
+    <!-- Stage filter -->
     <div class="filter-row">
       <button
         v-for="s in stages"
@@ -9,14 +9,6 @@
         :class="{ active: activeStage === s }"
         @click="activeStage = activeStage === s ? null : s"
       >{{ s }}</button>
-      <button class="update-btn" :class="{ loading: updating || building }" @click="updateScores" :disabled="updating || building">
-        <span v-if="updating">Updating…</span>
-        <span v-else-if="building" class="update-building">
-          <span class="building-dot"></span>Building…
-        </span>
-        <span v-else-if="updateMsg" class="update-msg">{{ updateMsg }}</span>
-        <span v-else>Update Scores</span>
-      </button>
     </div>
 
     <template v-for="(group, i) in grouped" :key="group.date">
@@ -68,59 +60,6 @@ function scrollToMatch(hash) {
 }
 
 watch(() => route.hash, scrollToMatch)
-const updating = ref(false)
-const building = ref(false)
-const updateMsg = ref('')
-let pollTimer = null
-
-async function updateScores() {
-  updating.value = true
-  building.value = false
-  updateMsg.value = ''
-  try {
-    const secret = import.meta.env.VITE_UPDATE_SECRET
-    if (!secret) throw new Error('VITE_UPDATE_SECRET not set')
-    const res = await fetch(`/.netlify/functions/update-matches?secret=${encodeURIComponent(secret)}`)
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
-    if (data.updated?.length) {
-      building.value = true
-      updateMsg.value = 'Building…'
-      pollForDeploy(Date.now())
-    } else {
-      updateMsg.value = 'No changes'
-      setTimeout(() => { updateMsg.value = '' }, 4000)
-    }
-  } catch (err) {
-    updateMsg.value = `Error: ${err.message}`
-    setTimeout(() => { updateMsg.value = '' }, 6000)
-  } finally {
-    updating.value = false
-  }
-}
-
-function pollForDeploy(since, attempt = 0) {
-  const MAX = 24 // ~3 min at 8s intervals
-  if (attempt >= MAX) {
-    building.value = false
-    updateMsg.value = 'Build taking longer than usual — reload manually'
-    setTimeout(() => { updateMsg.value = '' }, 8000)
-    return
-  }
-  pollTimer = setTimeout(async () => {
-    try {
-      const res = await fetch('/.netlify/functions/deploy-status')
-      const data = await res.json()
-      if (data.state === 'ready' && new Date(data.createdAt).getTime() > since) {
-        location.reload()
-      } else {
-        pollForDeploy(since, attempt + 1)
-      }
-    } catch {
-      pollForDeploy(since, attempt + 1)
-    }
-  }, 8000)
-}
 
 onMounted(() => nextTick(() => {
   if (route.hash) {
@@ -197,32 +136,6 @@ function stagePillClass(stage) {
 }
 .filter-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
-.update-btn {
-  margin-left: auto;
-  padding: 5px 12px; border-radius: 99px;
-  border: 1px solid rgba(0,255,159,0.3);
-  background: rgba(0,255,159,0.07);
-  color: var(--accent); font-size: 12px; font-weight: 700;
-  letter-spacing: .04em; text-transform: uppercase;
-  cursor: pointer; white-space: nowrap;
-  transition: opacity .15s, background .15s;
-}
-.update-btn:disabled { cursor: default; opacity: 0.6; }
-.update-btn.loading { opacity: 0.6; }
-.update-msg { color: var(--text); font-weight: 600; }
-.update-building {
-  display: inline-flex; align-items: center; gap: 6px;
-  color: var(--cyan);
-}
-.building-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--cyan);
-  animation: live-pulse 1.2s ease-in-out infinite;
-}
-@keyframes live-pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.2; }
-}
 
 .date-header {
   display: flex; align-items: center; gap: 8px;
