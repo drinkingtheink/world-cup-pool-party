@@ -19,6 +19,7 @@
     <template v-for="(group, i) in grouped" :key="group.date">
       <div class="date-header" :ref="el => { if (isToday(group.date)) todayEl = el }" :class="{ 'date-header--first': i === 0, 'date-header--today': isToday(group.date), 'date-header--past': isPast(group.date) }">
         <span class="date-header__text">{{ formatDate(group.date) }}</span>
+        <span class="date-header__stage">{{ group.matches[0]?.stage }}</span>
         <span class="date-header__count">{{ group.matches.length }} match{{ group.matches.length !== 1 ? 'es' : '' }}</span>
         <span v-if="isToday(group.date)" class="date-header__badge date-header__badge--today">Today</span>
         <span v-else-if="isPast(group.date)" class="date-header__badge date-header__badge--done">Done</span>
@@ -166,6 +167,10 @@ function isPast(d)  { return d < todayStr() }
   color: var(--text); white-space: nowrap; flex: 1;
 }
 .date-header--today .date-header__text { color: #fff; }
+.date-header__stage {
+  font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-dim); opacity: 0.7; white-space: nowrap;
+}
 .date-header__count { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
 .date-header__badge {
   font-size: 11px; font-weight: 700; letter-spacing: .04em;
