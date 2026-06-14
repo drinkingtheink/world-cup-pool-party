@@ -1,8 +1,8 @@
 <template>
-  <div class="match-row" :class="{ 'match-row--divider': showDivider, 'match-row--orphan': isOrphan, 'match-row--live': match.snapshot_minute, 'match-row--played': match.played && !match.snapshot_minute }">
+  <div class="match-row" :class="{ 'match-row--divider': showDivider, 'match-row--orphan': isOrphan, 'match-row--live': match.snapshot_minute || match.autoLive, 'match-row--played': match.played && !match.snapshot_minute }">
     <div class="match-stage-pill">
       <span class="pill" :class="stagePillClass">{{ match.stage }}</span>
-      <span v-if="match.snapshot_minute" class="match-time match-time--live">● LIVE</span>
+      <span v-if="match.snapshot_minute || match.autoLive" class="match-time match-time--live">● LIVE</span>
       <span v-else-if="match.time && !match.played" class="match-time">{{ match.time }}</span>
       <span v-if="isOrphan" class="orphan-tag">🍿 Popcorn game</span>
     </div>

@@ -1,9 +1,21 @@
 import { defineStore } from 'pinia'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { players as rawPlayers, matches as rawMatches, tiers as rawTiers, GROUP_MAP } from '../data/index.js'
 import { buildLeaderboard, enrichMatches } from '../services/points.js'
 
+// CT = CDT (UTC-5) during tournament months
+function parseMatchTime(date, timeStr) {
+  const m = timeStr?.match(/(\d+):(\d+)\s*(AM|PM)/i)
+  if (!m) return null
+  let hour = Number(m[1])
+  if (m[3].toUpperCase() === 'PM' && hour !== 12) hour += 12
+  if (m[3].toUpperCase() === 'AM' && hour === 12) hour = 0
+  return new Date(`${date}T${String(hour).padStart(2, '0')}:${m[2]}:00-05:00`)
+}
+
 export const usePoolStore = defineStore('pool', () => {
+  const now = ref(new Date())
+  setInterval(() => { now.value = new Date() }, 60_000)
   // implied win probability = 100 / (americanOdds + 100)
   const oddsMap = computed(() => {
     const map = {}
@@ -34,11 +46,18 @@ export const usePoolStore = defineStore('pool', () => {
   })
 
   const enrichedMatches = computed(() =>
-    enrichMatches(rawMatches).map(m => ({
-      ...m,
-      homePlayers: teamPlayerMap.value[m.home] ?? [],
-      awayPlayers: teamPlayerMap.value[m.away] ?? [],
-    }))
+    enrichMatches(rawMatches).map(m => {
+      const base = {
+        ...m,
+        homePlayers: teamPlayerMap.value[m.home] ?? [],
+        awayPlayers: teamPlayerMap.value[m.away] ?? [],
+      }
+      if (base.played || base.snapshot_minute || !m.time) return base
+      const start = parseMatchTime(m.date, m.time)
+      if (!start) return base
+      const end = new Date(start.getTime() + 115 * 60 * 1000)
+      return { ...base, autoLive: now.value >= start && now.value < end }
+    })
   )
 
   const tierMap = computed(() => {
