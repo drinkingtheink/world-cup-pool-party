@@ -24,12 +24,9 @@
         <span v-else-if="isPast(group.date)" class="date-header__badge date-header__badge--done">Done</span>
       </div>
       <div class="match-list card" :class="{ 'match-list--today': isToday(group.date) }" :style="{ '--i': i }">
-        <MatchCard
-          v-for="(m, j) in group.matches"
-          :key="j"
-          :match="m"
-          :show-divider="j > 0"
-        />
+        <div v-for="(m, j) in group.matches" :key="j" :id="matchSlug(m)">
+          <MatchCard :match="m" :show-divider="j > 0" />
+        </div>
       </div>
     </template>
 
@@ -38,13 +35,27 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import MatchCard from '../components/MatchCard.vue'
+import { matchSlug } from '../utils.js'
 
+const route = useRoute()
 const store = usePoolStore()
 const activeStage = ref(null)
 const todayEl = ref(null)
+
+function scrollToMatch(hash) {
+  if (!hash) return
+  nextTick(() => {
+    const el   = document.querySelector(hash)
+    const main = document.querySelector('.app-main')
+    if (el && main) main.scrollTo({ top: el.offsetTop - 16, behavior: 'smooth' })
+  })
+}
+
+watch(() => route.hash, scrollToMatch)
 const updating = ref(false)
 const updateMsg = ref('')
 
@@ -67,7 +78,10 @@ async function updateScores() {
   }
 }
 
-onMounted(() => nextTick(() => todayEl.value?.scrollIntoView({ block: 'start' })))
+onMounted(() => nextTick(() => {
+  if (route.hash) scrollToMatch(route.hash)
+  else todayEl.value?.scrollIntoView({ block: 'start' })
+}))
 
 const stages = computed(() => {
   const s = new Set(store.enrichedMatches.map(m => m.stage))

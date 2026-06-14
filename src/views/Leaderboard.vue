@@ -44,7 +44,7 @@
               <button
                 v-if="playerLiveMatches[entry.name]?.length"
                 class="lb-live-btn"
-                @click.stop="router.push('/matches')"
+                @click.stop="router.push({ path: '/matches', hash: '#' + matchSlug(playerLiveMatches[entry.name][0]) })"
                 :title="playerLiveMatches[entry.name].map(m => `${m.home} vs ${m.away}`).join(', ')"
               >
                 <span class="lb-live-dot"></span>
@@ -272,6 +272,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { CalendarDays, ChevronRight, Link2, Check } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
 import { quotes, FLAG_MAP } from '../data/index.js'
+import { matchSlug } from '../utils.js'
 
 const router = useRouter()
 const route  = useRoute()
