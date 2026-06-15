@@ -64,6 +64,7 @@
               <router-link to="/rules" class="td-rules-link">Scoring guide ↗</router-link>
             </div>
             <div v-for="bd in teamBreakdowns[team.name]" :key="bd.date" class="td-row">
+              <span class="td-total">{{ bd.total }} pts</span>
               <span class="td-wld" :class="`td-wld--${wld(bd)}`">{{ wld(bd) }}</span>
               <span class="td-date">{{ fmtDate(bd.date) }}</span>
               <span class="td-opp">vs {{ bd.opponent }}</span>
@@ -74,7 +75,6 @@
                 >{{ item.key }} +{{ item.pts }}</span>
                 <span v-if="bd.mul > 1" class="td-mul">×{{ bd.mul }}</span>
               </span>
-              <span class="td-total">{{ bd.total }} pts</span>
             </div>
           </div>
         </div>
@@ -363,5 +363,5 @@ function fmtDate(d) {
 .td-chip--CB  { background: rgba(255,140,0,0.14); color: #ff9d3a; }
 .td-chip--PEN { background: rgba(189,95,255,0.14); color: var(--purple); }
 .td-mul   { font-size: 11px; font-weight: 800; color: var(--accent); }
-.td-total { font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; margin-left: auto; }
+.td-total { font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; }
 </style>
