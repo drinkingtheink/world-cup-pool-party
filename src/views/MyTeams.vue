@@ -49,7 +49,7 @@
           </div>
           <div class="team-card-stat-row">
             <span class="team-card-pts">{{ team.pts }} pts</span>
-            <span class="team-card-goals">{{ teamGoals[team.name] ?? 0 }} goals scored</span>
+            <span class="team-card-goals">{{ teamGoals[team.name] ?? 0 }} {{ (teamGoals[team.name] ?? 0) === 1 ? 'goal' : 'goals' }} scored</span>
           </div>
           <div v-if="upcomingByTeam[team.name]?.length" class="sched-list">
             <div v-for="m in upcomingByTeam[team.name]" :key="m.date + m.opponent" class="sched-row">
