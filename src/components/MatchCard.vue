@@ -3,12 +3,12 @@
     <div class="match-stage-pill">
       <span v-if="match.snapshot_minute || match.autoLive" class="match-time match-time--live">● LIVE</span>
       <span v-else-if="match.time && !match.played" class="match-time">{{ match.time }}</span>
-      <span v-if="isOrphan" class="orphan-tag">🍿 Popcorn game</span>
     </div>
 
     <div class="match-score-row">
       <span class="team-name" :class="{ winner: match.result === 'home' }">{{ match.home }}</span>
       <div class="score-box">
+        <span v-if="isOrphan" class="orphan-tag">🍿 Popcorn</span>
         <span v-if="match.played && !match.snapshot_minute" class="score-check">✓</span>
         <span v-if="match.home_score !== '' || match.away_score !== ''" class="score">
           <span :class="{ 'score-winner': match.result === 'home' }">{{ match.home_score !== '' ? match.home_score : 0 }}</span>
@@ -140,7 +140,7 @@ const awayBonuses = computed(() => allBonuses.value.filter(b => b.side === 'away
   50%       { opacity: 0.45; }
 }
 
-.orphan-tag { font-size: 12px; color: var(--text-dim); margin-left: auto; }
+.orphan-tag { font-size: 11px; color: var(--text-dim); text-align: center; white-space: nowrap; }
 
 .match-score-row { display: flex; align-items: center; gap: 6px; }
 .team-name {
