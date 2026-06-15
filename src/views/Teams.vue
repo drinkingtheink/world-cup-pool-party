@@ -220,7 +220,7 @@ function tierLabel(t) { return TIER_LABELS[t] }
 }
 .tg-header { margin-bottom: 2px; }
 .td-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
-.td-row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; font-size: 18px; }
+.td-row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; font-size: 16px; }
 .td-wld { font-size: 15px; font-weight: 900; padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; letter-spacing: .04em; }
 .td-wld--W { background: rgba(0,255,159,0.15); color: var(--green); }
 .td-wld--D { background: rgba(0,229,255,0.12); color: var(--cyan); }
