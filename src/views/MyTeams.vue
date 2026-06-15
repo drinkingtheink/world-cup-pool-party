@@ -49,7 +49,7 @@
           </div>
           <div class="team-card-stat-row">
             <span class="team-card-pts">{{ team.pts }} pts</span>
-            <span class="team-card-goals">⚽ {{ teamGoals[team.name] ?? 0 }} goals</span>
+            <span class="team-card-goals">{{ teamGoals[team.name] ?? 0 }} goals scored</span>
           </div>
           <div v-if="upcomingByTeam[team.name]?.length" class="sched-list">
             <div v-for="m in upcomingByTeam[team.name]" :key="m.date + m.opponent" class="sched-row">
@@ -278,7 +278,7 @@ function fmtDate(d) {
 
 .team-card-stat-row { display: flex; align-items: baseline; gap: 10px; }
 .team-card-pts { font-size: 24px; font-weight: 800; color: var(--accent); }
-.team-card-goals { font-size: 13px; font-weight: 600; color: var(--text-dim); }
+.team-card-goals { font-size: 13px; font-weight: 600; color: var(--cyan); }
 
 .group-badge {
   font-size: 12px; font-weight: 700; letter-spacing: .04em;
