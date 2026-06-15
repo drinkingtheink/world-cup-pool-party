@@ -47,7 +47,10 @@
             <span class="team-shared-label">Also picked by</span>
             <span v-for="name in sharedWithMap[team.name]" :key="name" class="team-shared-chip">{{ name }}</span>
           </div>
-          <div class="team-card-pts">{{ team.pts }} pts</div>
+          <div class="team-card-stat-row">
+            <span class="team-card-pts">{{ team.pts }} pts</span>
+            <span class="team-card-goals">⚽ {{ teamGoals[team.name] ?? 0 }} goals</span>
+          </div>
           <div v-if="upcomingByTeam[team.name]?.length" class="sched-list">
             <div v-for="m in upcomingByTeam[team.name]" :key="m.date + m.opponent" class="sched-row">
               <span class="sched-date">{{ m.date }}</span>
@@ -175,6 +178,17 @@ const teamBreakdowns = computed(() => {
   return out
 })
 
+const teamGoals = computed(() => {
+  const map = {}
+  store.matches.forEach(m => {
+    ;(m.goals ?? []).forEach(g => {
+      const team = g.team === 'home' ? m.home : m.away
+      map[team] = (map[team] ?? 0) + 1
+    })
+  })
+  return map
+})
+
 const liveMatchByTeam = computed(() => {
   const map = {}
   store.enrichedMatches.forEach(m => {
@@ -262,7 +276,9 @@ function fmtDate(d) {
   50%       { opacity: 0.45; }
 }
 
+.team-card-stat-row { display: flex; align-items: baseline; gap: 10px; }
 .team-card-pts { font-size: 24px; font-weight: 800; color: var(--accent); }
+.team-card-goals { font-size: 13px; font-weight: 600; color: var(--text-dim); }
 
 .group-badge {
   font-size: 12px; font-weight: 700; letter-spacing: .04em;
