@@ -34,19 +34,33 @@ if (import.meta.hot) {
   })
 }
 
+async function autoUpdateScores() {
+  const secret = import.meta.env.VITE_UPDATE_SECRET
+  if (!secret) return
+  try {
+    await fetch(`/.netlify/functions/update-matches?secret=${encodeURIComponent(secret)}`, { cache: 'no-store' })
+  } catch {}
+}
+
 export const usePoolStore = defineStore('pool', () => {
   const now = ref(new Date())
+  let lastAutoUpdate = 0
 
   setInterval(async () => {
     now.value = new Date()
-    const shouldPoll = rawMatches.value.some(m => {
-      if (m.home_score !== '' || m.snapshot_minute) return false
+    const inMatchWindow = rawMatches.value.some(m => {
+      if (m.home_score !== '' && !m.snapshot_minute) return false
       const start = parseMatchTime(m.date, m.time)
       if (!start) return false
-      const pollEnd = new Date(start.getTime() + 130 * 60 * 1000)
-      return now.value >= start && now.value < pollEnd
+      const end = new Date(start.getTime() + 130 * 60 * 1000)
+      return now.value >= start && now.value < end
     })
-    if (shouldPoll) await pollMatchData()
+    if (!inMatchWindow) return
+    await pollMatchData()
+    if (Date.now() - lastAutoUpdate > 3 * 60 * 1000) {
+      lastAutoUpdate = Date.now()
+      autoUpdateScores()
+    }
   }, 60_000)
 
   // implied win probability = 100 / (americanOdds + 100)
