@@ -74,6 +74,7 @@
                 >{{ item.key }} +{{ item.pts }}</span>
                 <span v-if="bd.mul > 1" class="td-mul">×{{ bd.mul }}</span>
               </span>
+              <span class="td-total">{{ bd.total }} pts</span>
             </div>
           </div>
         </div>
@@ -361,5 +362,6 @@ function fmtDate(d) {
 .td-chip--FG  { background: rgba(255,210,0,0.12); color: #ffd200; }
 .td-chip--CB  { background: rgba(255,140,0,0.14); color: #ff9d3a; }
 .td-chip--PEN { background: rgba(189,95,255,0.14); color: var(--purple); }
-.td-mul  { font-size: 11px; font-weight: 800; color: var(--accent); }
+.td-mul   { font-size: 11px; font-weight: 800; color: var(--accent); }
+.td-total { font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; margin-left: auto; }
 </style>
