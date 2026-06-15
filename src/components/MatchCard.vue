@@ -8,7 +8,7 @@
     <div class="match-score-row">
       <span class="team-name" :class="{ winner: match.result === 'home' }">{{ match.home }}</span>
       <div class="score-box">
-        <span v-if="isOrphan" class="orphan-tag">🍿 Popcorn</span>
+        <span v-if="isOrphan" class="orphan-tag">🍿 Popcorn Game</span>
         <span v-if="match.played && !match.snapshot_minute" class="score-check">✓</span>
         <span v-if="match.home_score !== '' || match.away_score !== ''" class="score">
           <span :class="{ 'score-winner': match.result === 'home' }">{{ match.home_score !== '' ? match.home_score : 0 }}</span>
