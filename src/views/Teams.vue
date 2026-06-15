@@ -1,5 +1,37 @@
 <template>
   <div class="view">
+    <!-- Top single-game performances -->
+    <template v-if="topSingleGamePerformers.length">
+      <p class="view-title">Best single game</p>
+      <div class="card team-list">
+        <div v-for="(item, i) in topSingleGamePerformers" :key="item.team"
+          class="team-search-result" :class="{ 'team-list-row--div': i > 0 }">
+          <div class="team-list-row">
+            <div class="tl-left">
+              <span class="tl-name">{{ item.team }}</span>
+              <span v-if="store.fifaRankMap[item.team]" class="tl-rank" :class="`tl-rank-t${store.tierMap[item.team]}`">#{{ store.fifaRankMap[item.team] }}</span>
+            </div>
+            <span class="pill" :class="`pill-t${store.tierMap[item.team]}`">Tier {{ store.tierMap[item.team] }}</span>
+          </div>
+          <div class="tg-list">
+            <div class="td-row">
+              <span class="td-total">+{{ item.bd.total }} pts</span>
+              <span class="td-wld" :class="`td-wld--${wld(item.bd)}`">{{ wld(item.bd) }}</span>
+              <span class="td-date">{{ fmtDate(item.bd.date) }}</span>
+              <span class="td-opp">vs {{ item.bd.opponent }}</span>
+              <span class="td-score">{{ item.bd.scoreStr }}</span>
+              <span class="td-chips">
+                <span v-for="chip in item.bd.items" :key="chip.key"
+                  class="td-chip" :class="`td-chip--${chip.key.replace(/\d/g,'n')}`"
+                >{{ chip.key }} +{{ chip.pts }}</span>
+                <span v-if="item.bd.mul > 1" class="td-mul">×{{ item.bd.mul }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
     <!-- Search -->
     <div class="search-wrap">
       <input v-model="query" class="search-input" placeholder="Search teams…" />
@@ -9,33 +41,15 @@
       <p class="view-title">Results</p>
       <div class="card team-list">
         <div v-for="(t, i) in searchResults" :key="t.team"
-          class="team-search-result" :class="{ 'team-list-row--div': i > 0 }">
-          <div class="team-list-row">
-            <div class="tl-left">
-              <span class="tl-name">{{ t.team }}</span>
-              <span v-if="store.fifaRankMap[t.team]" class="tl-rank" :class="`tl-rank-t${t.tier}`">#{{ store.fifaRankMap[t.team] }}</span>
-              <span v-if="GROUP_MAP[t.team]" class="tl-group">Grp {{ GROUP_MAP[t.team] }}</span>
-            </div>
-            <span class="pill" :class="`pill-t${t.tier}`">Tier {{ t.tier }}</span>
-            <button v-if="liveMatchByTeam[t.team]" class="tl-live" @click="goToLiveMatch(t.team)">● LIVE</button>
-            <span class="tl-owners">{{ ownersOf(t.team) }}</span>
+          class="team-list-row" :class="{ 'team-list-row--div': i > 0 }">
+          <div class="tl-left">
+            <span class="tl-name">{{ t.team }}</span>
+            <span v-if="store.fifaRankMap[t.team]" class="tl-rank" :class="`tl-rank-t${t.tier}`">#{{ store.fifaRankMap[t.team] }}</span>
+            <span v-if="GROUP_MAP[t.team]" class="tl-group">Grp {{ GROUP_MAP[t.team] }}</span>
           </div>
-          <div v-if="topGamesByTeam[t.team]?.length" class="tg-list">
-            <div class="tg-header"><span class="td-label">Top games</span></div>
-            <div v-for="bd in topGamesByTeam[t.team]" :key="bd.date" class="td-row">
-              <span class="td-total">+{{ bd.total }} pts</span>
-              <span class="td-wld" :class="`td-wld--${wld(bd)}`">{{ wld(bd) }}</span>
-              <span class="td-date">{{ fmtDate(bd.date) }}</span>
-              <span class="td-opp">vs {{ bd.opponent }}</span>
-              <span class="td-score">{{ bd.scoreStr }}</span>
-              <span class="td-chips">
-                <span v-for="item in bd.items" :key="item.key"
-                  class="td-chip" :class="`td-chip--${item.key.replace(/\d/g,'n')}`"
-                >{{ item.key }} +{{ item.pts }}</span>
-                <span v-if="bd.mul > 1" class="td-mul">×{{ bd.mul }}</span>
-              </span>
-            </div>
-          </div>
+          <span class="pill" :class="`pill-t${t.tier}`">Tier {{ t.tier }}</span>
+          <button v-if="liveMatchByTeam[t.team]" class="tl-live" @click="goToLiveMatch(t.team)">● LIVE</button>
+          <span class="tl-owners">{{ ownersOf(t.team) }}</span>
         </div>
         <div v-if="!searchResults.length" class="tl-empty">No teams found</div>
       </div>
@@ -108,16 +122,17 @@ function ownersOf(team) {
   return owners.length ? owners.join(', ') : '—'
 }
 
-const topGamesByTeam = computed(() => {
-  const out = {}
-  searchResults.value.forEach(t => {
-    out[t.team] = store.matches
-      .map(m => matchBreakdownForTeam(t.team, m))
+const topSingleGamePerformers = computed(() => {
+  const best = []
+  store.tiers.forEach(({ team }) => {
+    const breakdowns = store.matches
+      .map(m => matchBreakdownForTeam(team, m))
       .filter(Boolean)
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 3)
+    if (!breakdowns.length) return
+    const top = breakdowns.reduce((a, b) => b.total > a.total ? b : a)
+    best.push({ team, bd: top })
   })
-  return out
+  return best.sort((a, b) => b.bd.total - a.bd.total).slice(0, 3)
 })
 
 function wld(bd) {
