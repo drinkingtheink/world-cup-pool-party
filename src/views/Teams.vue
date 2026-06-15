@@ -33,6 +33,7 @@
     </template>
 
     <!-- Search -->
+    <p class="view-title" style="margin-top:24px">Explore teams</p>
     <div class="search-wrap">
       <input v-model="query" class="search-input" placeholder="Search teams…" />
     </div>
