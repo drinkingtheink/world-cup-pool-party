@@ -64,7 +64,7 @@
               <router-link to="/rules" class="td-rules-link">Scoring guide ↗</router-link>
             </div>
             <div v-for="bd in teamBreakdowns[team.name]" :key="bd.date" class="td-row">
-              <span class="td-total">{{ bd.total }} pts</span>
+              <span class="td-total">+{{ bd.total }} pts</span>
               <span class="td-wld" :class="`td-wld--${wld(bd)}`">{{ wld(bd) }}</span>
               <span class="td-date">{{ fmtDate(bd.date) }}</span>
               <span class="td-opp">vs {{ bd.opponent }}</span>
