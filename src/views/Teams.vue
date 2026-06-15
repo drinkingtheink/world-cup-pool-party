@@ -11,11 +11,11 @@
               <span class="tl-name">{{ item.team }}</span>
               <span v-if="store.fifaRankMap[item.team]" class="tl-rank" :class="`tl-rank-t${store.tierMap[item.team]}`">#{{ store.fifaRankMap[item.team] }}</span>
             </div>
+            <span class="tg-pts">+{{ item.bd.total }} pts</span>
             <span class="pill" :class="`pill-t${store.tierMap[item.team]}`">Tier {{ store.tierMap[item.team] }}</span>
           </div>
           <div class="tg-list">
             <div class="td-row">
-              <span class="td-total">+{{ item.bd.total }} pts</span>
               <span class="td-wld" :class="`td-wld--${wld(item.bd)}`">{{ wld(item.bd) }}</span>
               <span class="td-date">{{ fmtDate(item.bd.date) }}</span>
               <span class="td-opp">vs {{ item.bd.opponent }}</span>
@@ -206,6 +206,8 @@ function tierLabel(t) { return TIER_LABELS[t] }
 
 .team-search-result { display: flex; flex-direction: column; }
 .team-search-result > .team-list-row { padding: 11px 14px; }
+
+.tg-pts { font-size: 17px; font-weight: 800; color: var(--accent); white-space: nowrap; flex-shrink: 0; }
 
 .tg-list {
   margin: 0 14px 10px;
