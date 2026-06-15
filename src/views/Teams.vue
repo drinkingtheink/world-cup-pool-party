@@ -217,16 +217,16 @@ function tierLabel(t) { return TIER_LABELS[t] }
 }
 .tg-header { margin-bottom: 2px; }
 .td-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
-.td-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; }
-.td-wld { font-size: 10px; font-weight: 900; padding: 1px 5px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; letter-spacing: .04em; }
+.td-row { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; font-size: 18px; }
+.td-wld { font-size: 15px; font-weight: 900; padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; letter-spacing: .04em; }
 .td-wld--W { background: rgba(0,255,159,0.15); color: var(--green); }
 .td-wld--D { background: rgba(0,229,255,0.12); color: var(--cyan); }
 .td-wld--L { background: rgba(255,255,255,0.06); color: var(--text-dim); }
 .td-date { color: var(--text-dim); font-weight: 600; white-space: nowrap; }
 .td-opp { color: var(--text-dim); white-space: nowrap; }
 .td-score { font-weight: 700; color: #fff; white-space: nowrap; }
-.td-chips { display: flex; gap: 4px; flex-wrap: wrap; }
-.td-chip { font-size: 11px; font-weight: 800; padding: 1px 5px; border-radius: 4px; white-space: nowrap; }
+.td-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.td-chip { font-size: 17px; font-weight: 800; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
 .td-chip--W   { background: rgba(0,255,159,0.15); color: var(--green); }
 .td-chip--D   { background: rgba(0,229,255,0.12); color: var(--cyan); }
 .td-chip--nG  { background: rgba(255,255,255,0.08); color: #fff; }
@@ -234,6 +234,6 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .td-chip--FG  { background: rgba(255,210,0,0.12); color: #ffd200; }
 .td-chip--CB  { background: rgba(255,140,0,0.14); color: #ff9d3a; }
 .td-chip--PEN { background: rgba(189,95,255,0.14); color: var(--purple); }
-.td-mul { font-size: 11px; font-weight: 800; color: var(--accent); }
-.td-total { font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; }
+.td-mul { font-size: 17px; font-weight: 800; color: var(--accent); }
+.td-total { font-size: 18px; font-weight: 800; color: #fff; white-space: nowrap; }
 </style>
