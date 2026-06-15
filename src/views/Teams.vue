@@ -9,15 +9,33 @@
       <p class="view-title">Results</p>
       <div class="card team-list">
         <div v-for="(t, i) in searchResults" :key="t.team"
-          class="team-list-row" :class="{ 'team-list-row--div': i > 0 }">
-          <div class="tl-left">
-            <span class="tl-name">{{ t.team }}</span>
-            <span v-if="store.fifaRankMap[t.team]" class="tl-rank" :class="`tl-rank-t${t.tier}`">#{{ store.fifaRankMap[t.team] }}</span>
-            <span v-if="GROUP_MAP[t.team]" class="tl-group">Grp {{ GROUP_MAP[t.team] }}</span>
+          class="team-search-result" :class="{ 'team-list-row--div': i > 0 }">
+          <div class="team-list-row">
+            <div class="tl-left">
+              <span class="tl-name">{{ t.team }}</span>
+              <span v-if="store.fifaRankMap[t.team]" class="tl-rank" :class="`tl-rank-t${t.tier}`">#{{ store.fifaRankMap[t.team] }}</span>
+              <span v-if="GROUP_MAP[t.team]" class="tl-group">Grp {{ GROUP_MAP[t.team] }}</span>
+            </div>
+            <span class="pill" :class="`pill-t${t.tier}`">Tier {{ t.tier }}</span>
+            <button v-if="liveMatchByTeam[t.team]" class="tl-live" @click="goToLiveMatch(t.team)">● LIVE</button>
+            <span class="tl-owners">{{ ownersOf(t.team) }}</span>
           </div>
-          <span class="pill" :class="`pill-t${t.tier}`">Tier {{ t.tier }}</span>
-          <button v-if="liveMatchByTeam[t.team]" class="tl-live" @click="goToLiveMatch(t.team)">● LIVE</button>
-          <span class="tl-owners">{{ ownersOf(t.team) }}</span>
+          <div v-if="topGamesByTeam[t.team]?.length" class="tg-list">
+            <div class="tg-header"><span class="td-label">Top games</span></div>
+            <div v-for="bd in topGamesByTeam[t.team]" :key="bd.date" class="td-row">
+              <span class="td-total">+{{ bd.total }} pts</span>
+              <span class="td-wld" :class="`td-wld--${wld(bd)}`">{{ wld(bd) }}</span>
+              <span class="td-date">{{ fmtDate(bd.date) }}</span>
+              <span class="td-opp">vs {{ bd.opponent }}</span>
+              <span class="td-score">{{ bd.scoreStr }}</span>
+              <span class="td-chips">
+                <span v-for="item in bd.items" :key="item.key"
+                  class="td-chip" :class="`td-chip--${item.key.replace(/\d/g,'n')}`"
+                >{{ item.key }} +{{ item.pts }}</span>
+                <span v-if="bd.mul > 1" class="td-mul">×{{ bd.mul }}</span>
+              </span>
+            </div>
+          </div>
         </div>
         <div v-if="!searchResults.length" class="tl-empty">No teams found</div>
       </div>
@@ -55,6 +73,7 @@ import { useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import { GROUP_MAP } from '../data/index.js'
 import { matchSlug } from '../utils.js'
+import { matchBreakdownForTeam } from '../services/points.js'
 
 const store = usePoolStore()
 const router = useRouter()
@@ -87,6 +106,30 @@ function ownersOf(team) {
     .filter(p => [p.team1,p.team2,p.team3,p.team4,p.team5,p.team6].includes(team))
     .map(p => p.name)
   return owners.length ? owners.join(', ') : '—'
+}
+
+const topGamesByTeam = computed(() => {
+  const out = {}
+  searchResults.value.forEach(t => {
+    out[t.team] = store.matches
+      .map(m => matchBreakdownForTeam(t.team, m))
+      .filter(Boolean)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 3)
+  })
+  return out
+})
+
+function wld(bd) {
+  if (bd.items.some(i => i.key === 'W')) return 'W'
+  if (bd.items.some(i => i.key === 'D')) return 'D'
+  return 'L'
+}
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+function fmtDate(d) {
+  const [, m, day] = d.split('-')
+  return `${MONTHS[+m - 1]} ${+day}`
 }
 
 const TIER_LABELS = {
@@ -145,4 +188,35 @@ function tierLabel(t) { return TIER_LABELS[t] }
 }
 .tl-owners { font-size: 12px; color: var(--text-dim); text-align: right; max-width: 110px; }
 .tl-empty { padding: 16px; text-align: center; color: var(--text-dim); font-size: 16px; }
+
+.team-search-result { display: flex; flex-direction: column; }
+.team-search-result > .team-list-row { padding: 11px 14px; }
+
+.tg-list {
+  margin: 0 14px 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 5px;
+}
+.tg-header { margin-bottom: 2px; }
+.td-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
+.td-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; }
+.td-wld { font-size: 10px; font-weight: 900; padding: 1px 5px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; letter-spacing: .04em; }
+.td-wld--W { background: rgba(0,255,159,0.15); color: var(--green); }
+.td-wld--D { background: rgba(0,229,255,0.12); color: var(--cyan); }
+.td-wld--L { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+.td-date { color: var(--text-dim); font-weight: 600; white-space: nowrap; }
+.td-opp { color: var(--text-dim); white-space: nowrap; }
+.td-score { font-weight: 700; color: #fff; white-space: nowrap; }
+.td-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.td-chip { font-size: 11px; font-weight: 800; padding: 1px 5px; border-radius: 4px; white-space: nowrap; }
+.td-chip--W   { background: rgba(0,255,159,0.15); color: var(--green); }
+.td-chip--D   { background: rgba(0,229,255,0.12); color: var(--cyan); }
+.td-chip--nG  { background: rgba(255,255,255,0.08); color: #fff; }
+.td-chip--CS  { background: rgba(0,229,255,0.10); color: var(--cyan); }
+.td-chip--FG  { background: rgba(255,210,0,0.12); color: #ffd200; }
+.td-chip--CB  { background: rgba(255,140,0,0.14); color: #ff9d3a; }
+.td-chip--PEN { background: rgba(189,95,255,0.14); color: var(--purple); }
+.td-mul { font-size: 11px; font-weight: 800; color: var(--accent); }
+.td-total { font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; }
 </style>
