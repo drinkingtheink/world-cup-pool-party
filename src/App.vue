@@ -37,7 +37,7 @@
 
     <!-- New version banner -->
     <Transition name="banner-slide">
-      <div v-if="newVersionAvailable" class="update-banner" @click="location.reload()">
+      <div v-if="newVersionAvailable" class="update-banner" @click="reload()">
         <span class="update-banner-dot"></span>
         <span class="update-banner-text">New scores available</span>
         <span class="update-banner-cta">Reload ↗</span>
@@ -100,6 +100,8 @@ async function checkForNewDeploy() {
     }
   } catch {}
 }
+
+function reload() { window.location.reload() }
 
 onMounted(() => {
   checkForNewDeploy()
