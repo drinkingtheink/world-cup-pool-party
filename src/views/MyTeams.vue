@@ -61,6 +61,7 @@
               <router-link to="/rules" class="td-rules-link">Scoring guide ↗</router-link>
             </div>
             <div v-for="bd in teamBreakdowns[team.name]" :key="bd.date" class="td-row">
+              <span class="td-wld" :class="`td-wld--${wld(bd)}`">{{ wld(bd) }}</span>
               <span class="td-date">{{ fmtDate(bd.date) }}</span>
               <span class="td-opp">vs {{ bd.opponent }}</span>
               <span class="td-score">{{ bd.scoreStr }}</span>
@@ -70,7 +71,6 @@
                 >{{ item.key }} +{{ item.pts }}</span>
                 <span v-if="bd.mul > 1" class="td-mul">×{{ bd.mul }}</span>
               </span>
-              <span class="td-total">= {{ bd.total }}</span>
             </div>
           </div>
         </div>
@@ -190,6 +190,12 @@ function goToLiveMatch(team) {
   const m = liveMatchByTeam.value[team]
   if (!m) return
   router.push({ path: '/matches', hash: '#' + matchSlug(m) })
+}
+
+function wld(bd) {
+  if (bd.items.some(i => i.key === 'W')) return 'W'
+  if (bd.items.some(i => i.key === 'D')) return 'D'
+  return 'L'
 }
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -316,6 +322,14 @@ function fmtDate(d) {
   display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
   font-size: 12px;
 }
+.td-wld {
+  font-size: 10px; font-weight: 900; padding: 1px 5px;
+  border-radius: 4px; white-space: nowrap; flex-shrink: 0; letter-spacing: .04em;
+}
+.td-wld--W { background: rgba(0,255,159,0.15); color: var(--green); }
+.td-wld--D { background: rgba(0,229,255,0.12); color: var(--cyan); }
+.td-wld--L { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+
 .td-date { color: var(--text-dim); font-weight: 600; white-space: nowrap; }
 .td-opp  { color: var(--text-dim); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .td-score { font-weight: 700; color: #fff; white-space: nowrap; }
@@ -332,5 +346,4 @@ function fmtDate(d) {
 .td-chip--CB  { background: rgba(255,140,0,0.14); color: #ff9d3a; }
 .td-chip--PEN { background: rgba(189,95,255,0.14); color: var(--purple); }
 .td-mul  { font-size: 11px; font-weight: 800; color: var(--accent); }
-.td-total { font-size: 12px; font-weight: 800; color: var(--accent); white-space: nowrap; margin-left: auto; }
 </style>
