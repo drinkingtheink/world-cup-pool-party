@@ -148,7 +148,7 @@ const awayBonuses = computed(() => allBonuses.value.filter(b => b.side === 'away
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
 }
 .team-name--right { text-align: right; }
-.team-name.winner { color: var(--text); font-weight: 700; }
+.team-name.winner { color: var(--green); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 
 .score-box { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .score { font-size: 19px; font-weight: 700; white-space: nowrap; color: var(--text); }
