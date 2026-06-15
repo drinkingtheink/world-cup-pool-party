@@ -7,6 +7,7 @@
         <div v-for="(item, i) in topSingleGamePerformers" :key="item.team"
           class="team-search-result" :class="{ 'team-list-row--div': i > 0 }">
           <div class="team-list-row">
+            <span class="tg-flag">{{ FLAG_MAP[item.team] ?? '🏳' }}</span>
             <div class="tl-left">
               <span class="tl-name">{{ item.team }}</span>
               <span v-if="store.fifaRankMap[item.team]" class="tl-rank" :class="`tl-rank-t${store.tierMap[item.team]}`">#{{ store.fifaRankMap[item.team] }}</span>
@@ -86,7 +87,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
-import { GROUP_MAP } from '../data/index.js'
+import { GROUP_MAP, FLAG_MAP } from '../data/index.js'
 import { matchSlug } from '../utils.js'
 import { matchBreakdownForTeam } from '../services/points.js'
 
@@ -208,6 +209,7 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .team-search-result { display: flex; flex-direction: column; }
 .team-search-result > .team-list-row { padding: 11px 14px; }
 
+.tg-flag { font-size: 26px; line-height: 1; flex-shrink: 0; }
 .tg-pts { font-size: 17px; font-weight: 800; color: var(--accent); white-space: nowrap; flex-shrink: 0; }
 
 .tg-list {
