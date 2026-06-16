@@ -27,7 +27,7 @@
             <span class="mini-lb-pts">{{ entry.total }} <span class="mini-lb-pts-label">pts</span></span>
           </div>
           <div v-if="recentBreakdownByPlayer[entry.name]" class="mini-lb-recent">
-            <span class="mini-lb-recent-label">Last pts earned</span>
+            <span class="mini-lb-recent-label">Last pts earned:</span>
             <div class="mini-lb-recent-line">
               <span class="mini-lb-recent-flag">{{ FLAG_MAP[recentBreakdownByPlayer[entry.name].team] ?? '🏳' }}</span>
               <span class="mini-lb-recent-team">{{ recentBreakdownByPlayer[entry.name].team }}</span>
@@ -399,7 +399,6 @@ function fmtDate(d) {
 
 @media (max-width: 400px) {
   .mini-lb-recent { padding-left: 0; gap: 2px; }
-  .mini-lb-recent-label { display: none; }
   .mini-lb-recent-team { font-size: 11px; }
   .mini-lb-recent-chips .td-chip,
   .mini-lb-recent-chips .td-mul { font-size: 10px; padding: 1px 4px; }
