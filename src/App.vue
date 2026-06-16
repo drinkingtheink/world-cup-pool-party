@@ -52,6 +52,78 @@
             <span class="admin-title">Admin</span>
             <button class="admin-close" @click="closeAdmin">✕</button>
           </div>
+
+          <!-- Live edit -->
+          <div class="admin-section-label">Live Edit</div>
+          <select class="admin-select" v-model="selectedMatchKey" @change="onMatchSelect">
+            <option value="">— Today's matches —</option>
+            <option v-for="m in todayMatches" :key="m.home+'|'+m.away" :value="m.home+'|'+m.away">
+              {{ m.home }} vs {{ m.away }}
+            </option>
+          </select>
+
+          <template v-if="editMatch">
+            <div class="edit-score-row">
+              <span class="edit-team-abbr">{{ editMatch.home }}</span>
+              <input class="edit-score-input" type="number" min="0" v-model="editHomeScore" />
+              <span class="edit-score-sep">–</span>
+              <input class="edit-score-input" type="number" min="0" v-model="editAwayScore" />
+              <span class="edit-team-abbr edit-team-abbr--away">{{ editMatch.away }}</span>
+            </div>
+            <div class="edit-status-row">
+              <label class="edit-final-label">
+                <input type="checkbox" v-model="editIsFinal" /> Final
+              </label>
+              <input v-if="!editIsFinal" class="edit-minute-input" type="number" min="1" max="130" v-model="editMinute" placeholder="min" />
+            </div>
+
+            <div class="edit-events-label">Goals</div>
+            <div v-for="(g, i) in editGoals" :key="i" class="edit-event-chip">
+              <span class="chip-side" :class="g.team">{{ g.team === 'home' ? 'H' : 'A' }}</span>
+              <span class="chip-min">{{ g.minute }}'</span>
+              <span class="chip-name">{{ g.scorer || '—' }}</span>
+              <button class="chip-remove" @click="removeGoal(i)">✕</button>
+            </div>
+            <div class="edit-add-row">
+              <select class="edit-mini-select" v-model="newGoalTeam">
+                <option value="home">Home</option>
+                <option value="away">Away</option>
+              </select>
+              <input class="edit-mini-num" type="number" placeholder="min" v-model="newGoalMinute" />
+              <input class="edit-mini-text" type="text" placeholder="scorer" v-model="newGoalScorer" />
+              <button class="edit-add-btn" @click="addGoal" :disabled="!newGoalMinute">+</button>
+            </div>
+
+            <div class="edit-events-label">Cards</div>
+            <div v-for="(c, i) in editCards" :key="i" class="edit-event-chip">
+              <span class="chip-side" :class="c.team">{{ c.team === 'home' ? 'H' : 'A' }}</span>
+              <span class="chip-min">{{ c.minute }}'</span>
+              <span class="chip-card" :class="c.type">{{ c.type }}</span>
+              <button class="chip-remove" @click="removeCard(i)">✕</button>
+            </div>
+            <div class="edit-add-row">
+              <select class="edit-mini-select" v-model="newCardTeam">
+                <option value="home">Home</option>
+                <option value="away">Away</option>
+              </select>
+              <input class="edit-mini-num" type="number" placeholder="min" v-model="newCardMinute" />
+              <select class="edit-mini-select" v-model="newCardType">
+                <option value="yellow">Yellow</option>
+                <option value="red">Red</option>
+              </select>
+              <button class="edit-add-btn" @click="addCard" :disabled="!newCardMinute">+</button>
+            </div>
+
+            <button class="save-btn" :class="{ loading: saving || building }" :disabled="saving || building" @click="saveMatch">
+              <span v-if="saving">Saving…</span>
+              <span v-else-if="building" class="update-building"><span class="building-dot"></span>Building…</span>
+              <span v-else-if="saveMsg" class="update-msg">{{ saveMsg }}</span>
+              <span v-else>Save & Deploy</span>
+            </button>
+          </template>
+
+          <div class="admin-divider"></div>
+
           <button
             class="update-btn"
             :class="{ loading: updating || building }"
@@ -63,7 +135,7 @@
               <span class="building-dot"></span>Building…
             </span>
             <span v-else-if="updateMsg" class="update-msg">{{ updateMsg }}</span>
-            <span v-else>Update Scores</span>
+            <span v-else>Update Scores (ESPN)</span>
           </button>
         </div>
       </div>
@@ -72,10 +144,11 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { BarChart2, Swords, ShieldCheck, Globe, ScrollText } from 'lucide-vue-next'
 import AnnouncementModal from './components/AnnouncementModal.vue'
+import matchesData from './data/matches.json'
 
 const route = useRoute()
 watch(() => route.path, () => {
@@ -127,7 +200,108 @@ function onMatchesTab() {
 function closeAdmin() {
   adminOpen.value = false
   updateMsg.value = ''
+  saveMsg.value = ''
   building.value = false
+  selectedMatchKey.value = ''
+  editMatch.value = null
+}
+
+// ── Live match editor ───────────────────────────────────────────
+const todayMatches = computed(() => {
+  const d = new Date()
+  const today = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+  return matchesData.filter(m => m.date === today)
+})
+
+const selectedMatchKey = ref('')
+const editMatch = ref(null)
+const editHomeScore = ref(0)
+const editAwayScore = ref(0)
+const editMinute = ref(null)
+const editIsFinal = ref(false)
+const editGoals = ref([])
+const editCards = ref([])
+const newGoalTeam = ref('home')
+const newGoalMinute = ref(null)
+const newGoalScorer = ref('')
+const newCardTeam = ref('home')
+const newCardMinute = ref(null)
+const newCardType = ref('yellow')
+const saving = ref(false)
+const saveMsg = ref('')
+
+function onMatchSelect() {
+  if (!selectedMatchKey.value) { editMatch.value = null; return }
+  const [home, away] = selectedMatchKey.value.split('|')
+  const m = todayMatches.value.find(x => x.home === home && x.away === away)
+  if (!m) return
+  editMatch.value = m
+  editHomeScore.value = m.home_score === '' ? 0 : Number(m.home_score)
+  editAwayScore.value = m.away_score === '' ? 0 : Number(m.away_score)
+  editIsFinal.value = m.home_score !== '' && m.snapshot_minute === null
+  editMinute.value = m.snapshot_minute ?? null
+  editGoals.value = JSON.parse(JSON.stringify(m.goals || []))
+  editCards.value = JSON.parse(JSON.stringify(m.cards || []))
+  newGoalTeam.value = 'home'; newGoalMinute.value = null; newGoalScorer.value = ''
+  newCardTeam.value = 'home'; newCardMinute.value = null; newCardType.value = 'yellow'
+}
+
+function addGoal() {
+  if (!newGoalMinute.value) return
+  const g = { team: newGoalTeam.value, minute: Number(newGoalMinute.value) }
+  if (newGoalScorer.value.trim()) g.scorer = newGoalScorer.value.trim()
+  editGoals.value.push(g)
+  editGoals.value.sort((a, b) => a.minute - b.minute)
+  newGoalMinute.value = null; newGoalScorer.value = ''
+}
+
+function removeGoal(i) { editGoals.value.splice(i, 1) }
+
+function addCard() {
+  if (!newCardMinute.value) return
+  editCards.value.push({ team: newCardTeam.value, minute: Number(newCardMinute.value), type: newCardType.value })
+  editCards.value.sort((a, b) => a.minute - b.minute)
+  newCardMinute.value = null
+}
+
+function removeCard(i) { editCards.value.splice(i, 1) }
+
+async function saveMatch() {
+  if (!editMatch.value) return
+  saving.value = true; saveMsg.value = ''; building.value = false
+  try {
+    const secret = import.meta.env.VITE_UPDATE_SECRET
+    if (!secret) throw new Error('VITE_UPDATE_SECRET not set')
+    const res = await fetch('/.netlify/functions/patch-match', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        secret,
+        date: editMatch.value.date,
+        home: editMatch.value.home,
+        away: editMatch.value.away,
+        home_score: String(editHomeScore.value),
+        away_score: String(editAwayScore.value),
+        goals: editGoals.value,
+        cards: editCards.value,
+        snapshot_minute: editIsFinal.value ? null : (editMinute.value ? Number(editMinute.value) : null),
+      }),
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
+    if (data.message === 'No changes') {
+      saveMsg.value = 'No changes'
+      setTimeout(() => { saveMsg.value = '' }, 3000)
+    } else {
+      building.value = true
+      pollForDeploy(Date.now())
+    }
+  } catch (err) {
+    saveMsg.value = `Error: ${err.message}`
+    setTimeout(() => { saveMsg.value = '' }, 6000)
+  } finally {
+    saving.value = false
+  }
 }
 
 // ── Update scores logic ─────────────────────────────────────────
@@ -399,7 +573,9 @@ body {
   padding-bottom: calc(var(--tab-h) + env(safe-area-inset-bottom) + 12px);
 }
 .admin-modal {
-  width: min(340px, calc(100vw - 32px));
+  width: min(380px, calc(100vw - 32px));
+  max-height: calc(100dvh - var(--tab-h) - env(safe-area-inset-bottom) - 80px);
+  overflow-y: auto;
   padding: 16px;
   border-color: rgba(255,45,120,0.3);
 }
@@ -445,4 +621,99 @@ body {
 
 .admin-fade-enter-active, .admin-fade-leave-active { transition: opacity .2s; }
 .admin-fade-enter-from,   .admin-fade-leave-to    { opacity: 0; }
+
+/* ── Admin live edit ─────────────────────────────────────────────── */
+.admin-section-label, .edit-events-label {
+  font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-dim); margin: 10px 0 6px;
+}
+.admin-divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+.admin-select {
+  width: 100%;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-size: 12px; padding: 7px 8px; margin-bottom: 10px;
+}
+
+.edit-score-row {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
+}
+.edit-team-abbr {
+  flex: 1; font-size: 11px; font-weight: 700; color: var(--text-dim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.edit-team-abbr--away { text-align: right; }
+.edit-score-input {
+  width: 44px; text-align: center;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-size: 20px; font-weight: 700; padding: 4px;
+}
+.edit-score-sep { font-size: 18px; color: var(--text-dim); }
+
+.edit-status-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+}
+.edit-final-label {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 700; color: var(--text-dim); cursor: pointer;
+}
+.edit-minute-input {
+  width: 60px; text-align: center;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-size: 13px; padding: 5px 6px;
+}
+
+.edit-event-chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 6px; margin-bottom: 3px;
+  background: var(--surface2); border-radius: 6px; font-size: 12px;
+}
+.chip-side {
+  font-size: 10px; font-weight: 800; padding: 1px 5px; border-radius: 4px; flex-shrink: 0;
+}
+.chip-side.home { background: rgba(255,45,120,0.2); color: #ff6fa0; }
+.chip-side.away { background: rgba(0,229,255,0.15); color: var(--cyan); }
+.chip-min { color: var(--text-dim); font-size: 11px; min-width: 26px; flex-shrink: 0; }
+.chip-name { flex: 1; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chip-card { font-size: 11px; font-weight: 700; text-transform: uppercase; flex-shrink: 0; }
+.chip-card.yellow { color: #ffd200; }
+.chip-card.red    { color: var(--red); }
+.chip-remove {
+  background: none; border: none; color: var(--text-dim); cursor: pointer;
+  font-size: 11px; padding: 2px 4px; flex-shrink: 0;
+}
+.chip-remove:hover { color: var(--red); }
+
+.edit-add-row {
+  display: flex; align-items: center; gap: 4px; margin-top: 4px;
+}
+.edit-mini-select {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-size: 11px; padding: 5px 4px; flex-shrink: 0;
+}
+.edit-mini-num {
+  width: 46px; text-align: center;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-size: 12px; padding: 5px 4px; flex-shrink: 0;
+}
+.edit-mini-text {
+  flex: 1; min-width: 0;
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-size: 12px; padding: 5px 6px;
+}
+.edit-add-btn {
+  background: rgba(0,229,255,0.1); border: 1px solid rgba(0,229,255,0.3);
+  border-radius: 6px; color: var(--cyan); font-size: 16px; font-weight: 700;
+  padding: 3px 10px; cursor: pointer; flex-shrink: 0;
+}
+.edit-add-btn:disabled { opacity: 0.4; cursor: default; }
+
+.save-btn {
+  width: 100%; padding: 11px 16px; border-radius: 8px; margin-top: 12px;
+  border: 1px solid rgba(255,45,120,0.3); background: rgba(255,45,120,0.07);
+  color: var(--accent); font-size: 13px; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase; cursor: pointer;
+  transition: opacity .15s;
+}
+.save-btn:disabled { cursor: default; opacity: 0.6; }
 </style>
