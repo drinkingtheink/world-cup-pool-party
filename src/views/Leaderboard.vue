@@ -110,7 +110,7 @@
           />
         </svg>
         <div class="pot-axis">
-          <span>{{ fmtDate(chartGeom.dates[0]) }}</span>
+          <span>Start</span>
           <span>{{ fmtDate(chartGeom.dates[chartGeom.dates.length - 1]) }}</span>
         </div>
         <div class="pot-legend">
@@ -595,14 +595,15 @@ const playerColor = computed(() => {
 const highlighted = ref(null)
 
 const pointsOverTime = computed(() => {
-  const dates = [...new Set(
+  const matchDates = [...new Set(
     store.matches
       .filter(m => m.home_score !== '' && !m.snapshot_minute)
       .map(m => m.date)
   )].sort()
+  const dates = [null, ...matchDates]
   const series = {}
-  store.players.forEach(p => { series[p.name] = [] })
-  dates.forEach(d => {
+  store.players.forEach(p => { series[p.name] = [0] })
+  matchDates.forEach(d => {
     const upTo = store.matches.filter(m => m.date <= d && m.home_score !== '' && !m.snapshot_minute)
     store.players.forEach(p => {
       series[p.name].push(calcPlayerPoints(p, upTo).total)
