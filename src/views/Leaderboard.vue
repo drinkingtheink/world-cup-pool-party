@@ -62,8 +62,13 @@
             <div class="lb-flags">
               <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
             </div>
-            <span class="lb-goals"><span class="lb-goals-label">Total Group Goals:</span> {{ playerGoals[entry.name] }}</span>
-            <span class="lb-played"><span class="lb-played-label">Games Played:</span> {{ playerGamesPlayed[entry.name].played }} / {{ playerGamesPlayed[entry.name].total }}</span>
+            <div class="lb-stats-row">
+              <span class="lb-stat"><span class="lb-stat-value">{{ playerGamesPlayed[entry.name].played }}</span><span class="lb-stat-label">Games Played</span></span>
+              <span class="lb-stat-sep"></span>
+              <span class="lb-stat"><span class="lb-stat-value">{{ playerGoals[entry.name] }}</span><span class="lb-stat-label">Goals Scored</span></span>
+              <span class="lb-stat-sep"></span>
+              <span class="lb-stat"><span class="lb-stat-value">{{ playerGoalsPerGame[entry.name] }}</span><span class="lb-stat-label">Goals/Game</span></span>
+            </div>
           </div>
           <span class="lb-pts">{{ entry.total }} <span class="lb-pts-label">pts</span></span>
         </div>
@@ -329,6 +334,15 @@ const playerGoals = computed(() => {
   })
   return map
 })
+const playerGoalsPerGame = computed(() => {
+  const map = {}
+  store.players.forEach(p => {
+    const played = playerGamesPlayed.value[p.name].played
+    map[p.name] = played ? (playerGoals.value[p.name] / played).toFixed(2) : '—'
+  })
+  return map
+})
+
 const playerGamesPlayed = computed(() => {
   const map = {}
   store.players.forEach(p => {
@@ -577,10 +591,11 @@ function rankClass(r) {
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
 .lb-flags { display: flex; gap: 3px; flex-wrap: nowrap; }
 .lb-flag { font-size: 24px; line-height: 1; cursor: default; flex-shrink: 0; }
-.lb-goals { font-size: 12px; font-weight: 600; color: var(--text-dim); letter-spacing: .02em; }
-.lb-goals-label { text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
-.lb-played { font-size: 12px; font-weight: 600; color: var(--text-dim); letter-spacing: .02em; }
-.lb-played-label { text-transform: uppercase; letter-spacing: .06em; font-size: 11px; }
+.lb-stats-row { display: flex; align-items: center; gap: 10px; margin-top: 2px; }
+.lb-stat { display: flex; align-items: baseline; gap: 4px; }
+.lb-stat-value { font-size: 14px; font-weight: 800; color: #fff; }
+.lb-stat-label { font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-dim); }
+.lb-stat-sep { width: 1px; height: 11px; background: var(--border); }
 .lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
 .lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
 
