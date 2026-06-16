@@ -89,6 +89,42 @@
       <p v-if="!store.leaderboard.length" class="empty-msg">No data yet</p>
     </div>
 
+    <template v-if="chartGeom">
+      <p class="view-title" style="margin-top:20px">Points Over Time</p>
+      <div class="card pot-card">
+        <svg :viewBox="`0 0 ${chartGeom.W} ${chartGeom.H}`" class="pot-svg" preserveAspectRatio="none">
+          <line v-for="frac in [0, 0.25, 0.5, 0.75, 1]" :key="frac"
+            x1="0" :x2="chartGeom.W"
+            :y1="chartGeom.H - 10 - frac * (chartGeom.H - 20)" :y2="chartGeom.H - 10 - frac * (chartGeom.H - 20)"
+            class="pot-gridline" />
+          <polyline
+            v-for="p in store.players" :key="p.name"
+            :points="chartGeom.lines[p.name]"
+            class="pot-line"
+            :style="{ stroke: playerColor[p.name], opacity: highlighted && highlighted !== p.name ? 0.15 : 1, strokeWidth: highlighted === p.name ? 3 : 1.75 }"
+            fill="none"
+          />
+          <circle v-for="pt in chartGeom.lastPoints" :key="pt.name"
+            :cx="pt.x" :cy="pt.y" r="3"
+            :style="{ fill: playerColor[pt.name], opacity: highlighted && highlighted !== pt.name ? 0.15 : 1 }"
+          />
+        </svg>
+        <div class="pot-axis">
+          <span>{{ fmtDate(chartGeom.dates[0]) }}</span>
+          <span>{{ fmtDate(chartGeom.dates[chartGeom.dates.length - 1]) }}</span>
+        </div>
+        <div class="pot-legend">
+          <button v-for="entry in store.leaderboard" :key="entry.name"
+            class="pot-legend-item" :class="{ 'pot-legend-item--dim': highlighted && highlighted !== entry.name }"
+            @click="highlighted = highlighted === entry.name ? null : entry.name">
+            <span class="pot-dot" :style="{ background: playerColor[entry.name] }"></span>
+            <span class="pot-legend-name">{{ entry.name }}</span>
+            <span class="pot-legend-pts">{{ entry.total }}</span>
+          </button>
+        </div>
+      </div>
+    </template>
+
     <div class="quote-card">
       <span class="quote-mark">"</span>
       <p class="quote-text">{{ randomQuote.text }}</p>
@@ -279,6 +315,7 @@ import { CalendarDays, ChevronRight, Link2, Check } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
 import { quotes, FLAG_MAP } from '../data/index.js'
 import { matchSlug } from '../utils.js'
+import { calcPlayerPoints } from '../services/points.js'
 
 const router = useRouter()
 const route  = useRoute()
@@ -548,6 +585,49 @@ const playerLiveMatches = computed(() => {
   return map
 })
 
+// ── Points Over Time ─────────────────────────────────────────────
+const CHART_COLORS = ['#ff2d78', '#00e5ff', '#00ff9f', '#bd5fff', '#ffd200', '#ff8c00', '#5b8def', '#ff5d8f']
+const playerColor = computed(() => {
+  const map = {}
+  store.players.forEach((p, i) => { map[p.name] = CHART_COLORS[i % CHART_COLORS.length] })
+  return map
+})
+const highlighted = ref(null)
+
+const pointsOverTime = computed(() => {
+  const dates = [...new Set(
+    store.matches
+      .filter(m => m.home_score !== '' && !m.snapshot_minute)
+      .map(m => m.date)
+  )].sort()
+  const series = {}
+  store.players.forEach(p => { series[p.name] = [] })
+  dates.forEach(d => {
+    const upTo = store.matches.filter(m => m.date <= d && m.home_score !== '' && !m.snapshot_minute)
+    store.players.forEach(p => {
+      series[p.name].push(calcPlayerPoints(p, upTo).total)
+    })
+  })
+  return { dates, series }
+})
+
+const chartGeom = computed(() => {
+  const { dates, series } = pointsOverTime.value
+  if (dates.length < 2) return null
+  const W = 600, H = 180, padT = 10, padB = 10
+  const maxVal = Math.max(1, ...Object.values(series).flat())
+  const n = dates.length
+  const xFor = i => (i / (n - 1)) * W
+  const yFor = v => H - padB - (v / maxVal) * (H - padT - padB)
+  const lines = {}
+  const lastPoints = []
+  Object.entries(series).forEach(([name, vals]) => {
+    lines[name] = vals.map((v, i) => `${xFor(i)},${yFor(v)}`).join(' ')
+    lastPoints.push({ name, x: xFor(n - 1), y: yFor(vals[vals.length - 1]) })
+  })
+  return { W, H, lines, lastPoints, dates }
+})
+
 function rankClass(r) {
   if (r === 1) return 'rank-gold'
   if (r === 2) return 'rank-silver'
@@ -756,6 +836,23 @@ function rankClass(r) {
   box-shadow: 0 0 8px rgba(255,210,0,0.3);
   transition: width .6s cubic-bezier(.4,0,.2,1);
 }
+
+/* ── Points Over Time ─────────────────────────────────────────── */
+.pot-card { padding: 14px 14px 12px; margin-bottom: 16px; }
+.pot-svg { width: 100%; height: 180px; display: block; overflow: visible; }
+.pot-gridline { stroke: var(--border); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.pot-line { stroke-width: 1.75; vector-effect: non-scaling-stroke; transition: opacity .15s, stroke-width .15s; }
+.pot-axis { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-top: 6px; padding: 0 2px; }
+.pot-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.pot-legend-item {
+  display: flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 99px;
+  border: 1px solid var(--border); background: var(--surface2); cursor: pointer;
+  transition: opacity .15s, border-color .15s; font: inherit; color: inherit;
+}
+.pot-legend-item--dim { opacity: 0.35; }
+.pot-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.pot-legend-name { font-size: 12px; font-weight: 700; color: #fff; }
+.pot-legend-pts { font-size: 11px; font-weight: 800; color: var(--accent); }
 
 /* ── Match Schedule Button ────────────────────────────────────── */
 @keyframes btn-shimmer {
