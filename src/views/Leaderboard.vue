@@ -63,7 +63,7 @@
               <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
             </div>
             <div class="lb-stats-row">
-              <span class="lb-stat"><span class="lb-stat-value">{{ playerGamesPlayed[entry.name].played }}</span><span class="lb-stat-label">Games Played</span></span>
+              <span class="lb-stat"><span class="lb-stat-value">{{ playerGamesPlayed[entry.name].played }}</span><span class="lb-stat-label">Matches Played</span></span>
               <span class="lb-stat-sep"></span>
               <span class="lb-stat"><span class="lb-stat-value">{{ playerGoals[entry.name] }}</span><span class="lb-stat-label">Goals Scored</span></span>
               <span class="lb-stat-sep"></span>
