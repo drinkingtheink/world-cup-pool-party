@@ -11,7 +11,37 @@
       >{{ p.name }}</button>
     </div>
 
-    <div v-if="!selected" class="empty-msg">Select a player above</div>
+    <template v-if="!selected">
+      <p class="view-title">Leaderboard</p>
+      <div class="card mini-lb">
+        <button
+          v-for="(entry, i) in store.leaderboard"
+          :key="entry.name"
+          class="mini-lb-row"
+          :class="{ 'mini-lb-row--div': i > 0 }"
+          @click="selectPlayer(entry.name)"
+        >
+          <div class="mini-lb-top">
+            <span class="mini-lb-rank" :class="rankClass(entry.rank)">{{ entry.rank }}</span>
+            <span class="mini-lb-name">{{ entry.name }}</span>
+            <span class="mini-lb-pts">{{ entry.total }} <span class="mini-lb-pts-label">pts</span></span>
+          </div>
+          <div v-if="recentBreakdownByPlayer[entry.name]" class="mini-lb-recent">
+            <span class="mini-lb-recent-label">Last pts earned:</span>
+            <span class="mini-lb-recent-flag">{{ FLAG_MAP[recentBreakdownByPlayer[entry.name].team] ?? '🏳' }}</span>
+            <span class="mini-lb-recent-team">{{ recentBreakdownByPlayer[entry.name].team }}</span>
+            <span class="mini-lb-recent-score">{{ recentBreakdownByPlayer[entry.name].bd.scoreStr }}</span>
+            <span class="mini-lb-recent-chips">
+              <span v-for="item in recentBreakdownByPlayer[entry.name].bd.items" :key="item.key"
+                class="td-chip" :class="`td-chip--${item.key.replace(/\d/g,'n')}`"
+              >{{ item.key }} +{{ item.pts }}</span>
+              <span v-if="recentBreakdownByPlayer[entry.name].bd.mul > 1" class="td-mul">×{{ recentBreakdownByPlayer[entry.name].bd.mul }}</span>
+            </span>
+          </div>
+        </button>
+        <p v-if="!store.leaderboard.length" class="empty-msg">No data yet</p>
+      </div>
+    </template>
 
     <template v-else-if="player">
       <!-- Points summary -->
@@ -207,6 +237,31 @@ function goToLiveMatch(team) {
   router.push({ path: '/matches', hash: '#' + matchSlug(m) })
 }
 
+const recentBreakdownByPlayer = computed(() => {
+  const map = {}
+  store.players.forEach(p => {
+    const teams = [p.team1, p.team2, p.team3, p.team4, p.team5, p.team6].filter(Boolean)
+    let best = null
+    store.matches.forEach(m => {
+      if (m.home_score === '' || m.away_score === '' || m.snapshot_minute) return
+      const team = teams.includes(m.home) ? m.home : teams.includes(m.away) ? m.away : null
+      if (!team) return
+      const bd = matchBreakdownForTeam(team, m)
+      if (!bd) return
+      best = { team, bd }
+    })
+    map[p.name] = best
+  })
+  return map
+})
+
+function rankClass(r) {
+  if (r === 1) return 'rank-gold'
+  if (r === 2) return 'rank-silver'
+  if (r === 3) return 'rank-bronze'
+  return ''
+}
+
 function wld(bd) {
   if (bd.items.some(i => i.key === 'W')) return 'W'
   if (bd.items.some(i => i.key === 'D')) return 'D'
@@ -301,6 +356,40 @@ function fmtDate(d) {
 }
 
 .empty-msg { padding: 40px 24px; text-align: center; color: var(--text-dim); font-size: 17px; }
+
+/* ── Mini leaderboard (blank state) ───────────────────────────── */
+.mini-lb { display: flex; flex-direction: column; padding: 4px 0; }
+.mini-lb-row {
+  display: flex; flex-direction: column; gap: 6px;
+  width: 100%; padding: 12px 14px; border: none; background: none;
+  font: inherit; text-align: left; cursor: pointer; color: inherit;
+}
+.mini-lb-row--div { border-top: 1px solid var(--border); }
+.mini-lb-top { display: flex; align-items: center; gap: 12px; }
+.mini-lb-rank {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; background: var(--surface2); color: var(--text-dim);
+}
+.rank-gold   { background: #4a3a1a; color: #f0c060; }
+.rank-silver { background: #2a2e3a; color: #d0d8e8; }
+.rank-bronze { background: #2e2018; color: #e89060; }
+.mini-lb-name { flex: 1; font-size: 16px; font-weight: 600; color: #ffffff; }
+.mini-lb-pts { font-size: 17px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
+.mini-lb-pts-label { font-size: 12px; font-weight: 500; color: var(--text-dim); }
+
+.mini-lb-recent {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  padding-left: 36px; font-size: 12px;
+}
+.mini-lb-recent-label {
+  font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-dim); opacity: 0.6; white-space: nowrap; flex-shrink: 0;
+}
+.mini-lb-recent-flag { font-size: 14px; line-height: 1; flex-shrink: 0; }
+.mini-lb-recent-team { color: var(--text-dim); font-weight: 600; white-space: nowrap; }
+.mini-lb-recent-score { color: #fff; font-weight: 700; white-space: nowrap; }
+.mini-lb-recent-chips { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 
 /* ── Upcoming schedule ──────────────────────────────────────── */
 .sched-list {
