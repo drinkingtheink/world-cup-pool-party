@@ -28,6 +28,10 @@
                 <span v-if="item.bd.mul > 1" class="td-mul">×{{ item.bd.mul }}</span>
               </span>
             </div>
+            <div class="td-pickers">
+              <span class="td-picker-label">Picked by</span>
+              <span class="td-picker-names">{{ ownersOf(item.team) }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -239,4 +243,7 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .td-chip--PEN { background: rgba(189,95,255,0.14); color: var(--purple); }
 .td-mul { font-size: 17px; font-weight: 800; color: var(--accent); }
 .td-total { font-size: 18px; font-weight: 800; color: #fff; white-space: nowrap; }
+.td-pickers { display: flex; align-items: baseline; gap: 5px; margin-top: 6px; }
+.td-picker-label { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); flex-shrink: 0; }
+.td-picker-names { font-size: 13px; color: var(--text); }
 </style>
