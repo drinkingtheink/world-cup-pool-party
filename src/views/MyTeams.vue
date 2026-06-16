@@ -32,8 +32,6 @@
               <span class="mini-lb-recent-flag">{{ FLAG_MAP[recentBreakdownByPlayer[entry.name].team] ?? '🏳' }}</span>
               <span class="mini-lb-recent-team">{{ recentBreakdownByPlayer[entry.name].team }}</span>
               <span class="mini-lb-recent-score">{{ recentBreakdownByPlayer[entry.name].bd.scoreStr }}</span>
-            </div>
-            <div class="mini-lb-recent-chips">
               <span v-for="item in recentBreakdownByPlayer[entry.name].bd.items" :key="item.key"
                 class="td-chip" :class="`td-chip--${item.key.replace(/\d/g,'n')}`"
               >{{ item.key }} +{{ item.pts }}</span>
@@ -388,20 +386,16 @@ function fmtDate(d) {
   font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
   color: var(--text-dim); opacity: 0.6; white-space: nowrap;
 }
-.mini-lb-recent-line { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.mini-lb-recent-line { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }
 .mini-lb-recent-flag { font-size: 14px; line-height: 1; flex-shrink: 0; }
-.mini-lb-recent-team {
-  color: var(--text-dim); font-weight: 600; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; min-width: 0;
-}
-.mini-lb-recent-score { color: #fff; font-weight: 700; white-space: nowrap; flex-shrink: 0; margin-left: auto; }
-.mini-lb-recent-chips { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.mini-lb-recent-team { color: var(--text-dim); font-weight: 600; white-space: nowrap; }
+.mini-lb-recent-score { color: #fff; font-weight: 700; white-space: nowrap; }
 
 @media (max-width: 400px) {
   .mini-lb-recent { padding-left: 0; gap: 2px; }
   .mini-lb-recent-team { font-size: 11px; }
-  .mini-lb-recent-chips .td-chip,
-  .mini-lb-recent-chips .td-mul { font-size: 10px; padding: 1px 4px; }
+  .mini-lb-recent-line .td-chip,
+  .mini-lb-recent-line .td-mul { font-size: 10px; padding: 1px 4px; }
 }
 
 /* ── Upcoming schedule ──────────────────────────────────────── */
