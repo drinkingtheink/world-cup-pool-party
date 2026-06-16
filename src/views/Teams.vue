@@ -165,7 +165,8 @@ function tierLabel(t) { return TIER_LABELS[t] }
 <style scoped>
 .search-wrap { margin-bottom: 16px; }
 .search-input {
-  width: 100%; padding: 10px 14px; background: var(--surface);
+  display: block; width: 96%; max-width: 100%; box-sizing: border-box;
+  padding: 10px 14px; background: var(--surface);
   border: 1px solid var(--border); border-radius: var(--radius);
   color: var(--text); font-size: 17px;
 }
