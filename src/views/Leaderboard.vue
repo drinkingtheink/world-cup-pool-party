@@ -54,7 +54,7 @@
                 LIVE
               </button>
               <span class="lb-today-tomorrow">
-                <span class="lb-tt-label">Games:</span> {{ playerMatchDays[entry.name].today }} Today
+                <span class="lb-tt-label">MATCHES:</span> {{ playerMatchDays[entry.name].today }} Today
                 <span class="lb-tt-sep">/</span>
                 {{ playerMatchDays[entry.name].tomorrow }} Tomorrow
               </span>
