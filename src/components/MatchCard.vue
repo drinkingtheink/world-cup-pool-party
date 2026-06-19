@@ -116,8 +116,8 @@ const awayBonuses = computed(() => allBonuses.value.filter(b => b.side === 'away
 </script>
 
 <style scoped>
-.match-row { padding: 12px 14px; }
-.match-row--divider { border-top: 1px solid var(--border); }
+.match-row { padding: 14px; }
+.match-row--divider { border-top: 1px solid var(--border); padding-top: 16px; }
 .match-row--live {
   background: rgba(0,255,159,0.04);
   box-shadow: inset 3px 0 0 rgba(0,255,159,0.5);

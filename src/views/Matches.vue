@@ -170,6 +170,7 @@ function stagePillClass(stage) {
 
 .match-list { margin-bottom: 4px; }
 .match-list--today { border-color: rgba(0,255,159,0.25); }
+.match-list > div:nth-child(even) { background: rgba(255,255,255,0.025); }
 
 .empty-msg { text-align: center; color: var(--text-dim); padding: 32px; font-size: 17px; }
 </style>
