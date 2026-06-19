@@ -270,7 +270,10 @@
       <div class="card mu-list">
         <div v-for="(m, i) in matchupStats.byType[type]" :key="m.home + m.date"
           class="mu-row" :class="{ 'mu-row--div': i > 0, 'mu-row--done': m.home_score !== '' && !m.snapshot_minute }">
-          <span class="mu-date">{{ fmtDate(m.date) }}</span>
+          <span class="mu-date">
+            <span>{{ fmtDate(m.date) }}</span>
+            <span v-if="m.date === today" class="mu-today-badge">Today</span>
+          </span>
           <div class="mu-sides">
             <div class="mu-side">
               <span class="mu-flag">{{ FLAG_MAP[m.home] ?? '🏳' }}</span>
@@ -1069,6 +1072,12 @@ function rankClass(r) {
 .mu-date {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
   color: var(--cyan); white-space: nowrap; flex-shrink: 0; width: 42px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+}
+.mu-today-badge {
+  font-size: 8px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase;
+  padding: 1px 5px; border-radius: 99px; white-space: nowrap;
+  background: var(--accent); color: var(--bg);
 }
 .mu-sides { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
 .mu-side { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
