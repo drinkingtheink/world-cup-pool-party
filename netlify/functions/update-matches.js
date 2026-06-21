@@ -232,6 +232,17 @@ exports.handler = async (event) => {
     // 4. Parse ESPN events
     const espnParsed = events.map(evt => parseESPNEvent(evt, ourTeams)).filter(Boolean)
 
+    // Live snapshot for today's matches — returned on every call (commit or not) so the
+    // client can resync its minute estimate against ESPN's real clock without needing a push.
+    const live = todayMatches.map(m => {
+      const espn = espnParsed.find(e =>
+        normalize(e.homeName) === normalize(m.home) &&
+        normalize(e.awayName) === normalize(m.away)
+      )
+      if (!espn) return null
+      return { home: m.home, away: m.away, minute: espn.snapshotMinute, home_score: espn.homeScore, away_score: espn.awayScore }
+    }).filter(Boolean)
+
     // 5. Merge updates into full match list
     let changed = 0
     const updatedAll = allMatches.map(m => {
@@ -248,7 +259,22 @@ exports.handler = async (event) => {
       const goals = (totalGoals > 0 && espn.goals.length === 0) ? (m.goals || []) : espn.goals
       const cards = (espn.cards.length === 0 && (m.cards || []).length > 0) ? m.cards : espn.cards
 
-      const updated = {
+      // Only commit on real events (score/goals/cards, or the match starting/finishing) —
+      // the live clock ticks every poll, and committing on that alone would trigger a
+      // rebuild every minute. The live minute is shown client-side instead (see pool.js).
+      const wasLive = m.snapshot_minute != null
+      const isLive = espn.snapshotMinute != null
+      const meaningfulChange =
+        espn.homeScore !== m.home_score ||
+        espn.awayScore !== m.away_score ||
+        JSON.stringify(goals) !== JSON.stringify(m.goals || []) ||
+        JSON.stringify(cards) !== JSON.stringify(m.cards || []) ||
+        wasLive !== isLive
+
+      if (!meaningfulChange) return m
+
+      changed++
+      return {
         ...m,
         home_score: espn.homeScore,
         away_score: espn.awayScore,
@@ -256,13 +282,10 @@ exports.handler = async (event) => {
         cards,
         snapshot_minute: espn.snapshotMinute,
       }
-
-      if (JSON.stringify(updated) !== JSON.stringify(m)) changed++
-      return updated
     })
 
     if (!changed) {
-      return json(200, { message: 'Scores checked — no changes', updated: [] })
+      return json(200, { message: 'Scores checked — no changes', updated: [], live })
     }
 
     // 6. Commit updated file to GitHub
@@ -280,7 +303,7 @@ exports.handler = async (event) => {
         return `${m.home} ${m.home_score || '-'}:${m.away_score || '-'} ${m.away} [${status}]`
       })
 
-    return json(200, { message: `Updated ${changed} match(es)`, date: today, updated: summary })
+    return json(200, { message: `Updated ${changed} match(es)`, date: today, updated: summary, live })
 
   } catch (err) {
     console.error('update-matches error:', err)

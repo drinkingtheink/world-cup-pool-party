@@ -3,6 +3,23 @@ import { computed, ref } from 'vue'
 import { players as rawPlayers, matches as staticMatches, tiers as rawTiers, GROUP_MAP } from '../data/index.js'
 import { buildLeaderboard, enrichMatches } from '../services/points.js'
 
+// Live minute is estimated client-side rather than read from matches.json — the server
+// only commits on score/goal/card events now, so committed snapshot_minute can be stale.
+// When we have a recent anchor (real ESPN minute from the last autoUpdateScores poll),
+// extrapolate forward from it; otherwise fall back to a plain kickoff-time estimate
+// (45-min half + 15-min halftime break, capped at 90).
+function estimateMinute(start, now, anchor) {
+  if (anchor) {
+    const drift = (now.getTime() - anchor.capturedAt) / 60000
+    return Math.max(1, Math.round(anchor.minute + drift))
+  }
+  const elapsed = (now.getTime() - start.getTime()) / 60000
+  if (elapsed < 0) return null
+  if (elapsed <= 45) return Math.max(1, Math.ceil(elapsed))
+  if (elapsed <= 60) return 45
+  return Math.min(90, Math.ceil(elapsed - 15))
+}
+
 // CT = CDT (UTC-5) during tournament months
 function parseMatchTime(date, timeStr) {
   const m = timeStr?.match(/(\d+):(\d+)\s*(AM|PM)/i)
@@ -17,8 +34,12 @@ const MATCHES_URL = import.meta.env.DEV
   ? '/matches.json'
   : 'https://raw.githubusercontent.com/drinkingtheink/world-cup-pool-party/main/src/data/matches.json'
 
-// Module-scope ref so both HMR and the poll can update it
+// Module-scope refs so both HMR and the poll can update them
 const rawMatches = ref(staticMatches)
+
+// Real ESPN minute readings from the last autoUpdateScores call, keyed by "home__away".
+// Used to resync the live-minute estimate without needing a git commit per tick.
+const liveAnchors = ref({})
 
 async function pollMatchData() {
   try {
@@ -38,7 +59,14 @@ async function autoUpdateScores() {
   const secret = import.meta.env.VITE_UPDATE_SECRET
   if (!secret) return
   try {
-    await fetch(`/.netlify/functions/update-matches?secret=${encodeURIComponent(secret)}`, { cache: 'no-store' })
+    const res = await fetch(`/.netlify/functions/update-matches?secret=${encodeURIComponent(secret)}`, { cache: 'no-store' })
+    if (!res.ok) return
+    const { live } = await res.json()
+    const capturedAt = Date.now()
+    for (const m of live || []) {
+      if (m.minute == null) continue
+      liveAnchors.value[`${m.home}__${m.away}`] = { minute: m.minute, capturedAt }
+    }
   } catch {}
 }
 
@@ -105,11 +133,19 @@ export const usePoolStore = defineStore('pool', () => {
         homePlayers: teamPlayerMap.value[m.home] ?? [],
         awayPlayers: teamPlayerMap.value[m.away] ?? [],
       }
-      if (base.played || base.snapshot_minute || !m.time) return base
+      if (base.played || !m.time) return base
       const start = parseMatchTime(m.date, m.time)
       if (!start) return base
+      const anchor = liveAnchors.value[`${m.home}__${m.away}`]
+
+      if (base.snapshot_minute) {
+        return { ...base, liveMinute: estimateMinute(start, now.value, anchor) }
+      }
+
       const end = new Date(start.getTime() + 115 * 60 * 1000)
-      return { ...base, autoLive: now.value >= start && now.value < end }
+      const autoLive = now.value >= start && now.value < end
+      if (!autoLive) return base
+      return { ...base, autoLive, liveMinute: estimateMinute(start, now.value, anchor) }
     })
   )
 

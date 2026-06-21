@@ -16,7 +16,7 @@
           <span :class="{ 'score-winner': match.result === 'away' }">{{ match.away_score !== '' ? match.away_score : 0 }}</span>
         </span>
         <span v-else class="score score--upcoming">vs</span>
-        <span v-if="match.snapshot_minute || match.autoLive" class="score-minute">{{ match.snapshot_minute || 1 }}'</span>
+        <span v-if="match.snapshot_minute || match.autoLive" class="score-minute">{{ match.liveMinute || match.snapshot_minute || 1 }}'</span>
       </div>
       <span class="team-name team-name--right" :class="{ winner: match.result === 'away' }">{{ match.away }}</span>
     </div>
