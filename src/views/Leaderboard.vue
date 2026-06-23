@@ -642,8 +642,15 @@ function rankClass(r) {
   padding: 16px; margin-bottom: 16px;
 }
 .stat-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.stat-value { font-size: 26px; font-weight: 800; color: var(--green); }
-.stat-of { font-size: 16px; color: var(--text-dim); font-weight: 600; }
+.stat-value {
+  font-size: 26px; font-weight: 800;
+  background: linear-gradient(90deg, var(--green) 0%, var(--cyan) 40%, rgba(255,255,255,0.75) 50%, var(--cyan) 60%, var(--green) 100%);
+  background-size: 250% auto;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 8s ease-in-out infinite;
+}
+.stat-of { font-size: 16px; font-weight: 600; -webkit-text-fill-color: var(--text-dim); color: var(--text-dim); }
 .stat-label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
 
 .leaderboard { display: flex; flex-direction: column; gap: 8px; }
