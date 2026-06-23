@@ -62,9 +62,7 @@
             </div>
             <div class="lb-stats-row">
               <span class="lb-stat"><span class="lb-stat-value">{{ playerGamesPlayed[entry.name].played }}</span><span class="lb-stat-label">Matches Played</span></span>
-              <span class="lb-stat-sep"></span>
               <span class="lb-stat"><span class="lb-stat-value">{{ playerGoals[entry.name] }}</span><span class="lb-stat-label">Goals Scored</span></span>
-              <span class="lb-stat-sep"></span>
               <span class="lb-stat"><span class="lb-stat-value">{{ playerGoalsPerGame[entry.name] }}</span><span class="lb-stat-label">Goals/Game</span></span>
             </div>
           </div>
@@ -676,7 +674,6 @@ function rankClass(r) {
 .lb-stat { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .lb-stat-value { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.2; }
 .lb-stat-label { font-size: 9px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-dim); line-height: 1.25; white-space: nowrap; }
-.lb-stat-sep { width: 1px; align-self: stretch; background: var(--border); }
 @media (max-width: 380px) {
   .lb-stats-row { gap: 8px; }
   .lb-stat-label { white-space: normal; }
