@@ -56,7 +56,7 @@ function deriveBonuses(match) {
 }
 
 // Points for a single team in a single match (before multiplier)
-function matchPointsForTeam(team, match) {
+export function matchPointsForTeam(team, match) {
   const { home, away, home_score, away_score, stage } = match
   const isHome = home === team
   const isAway = away === team

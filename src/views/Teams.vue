@@ -1,5 +1,24 @@
 <template>
   <div class="view">
+    <!-- Top 5 teams by points earned -->
+    <template v-if="topTeamsByPoints.length">
+      <p class="view-title">Top 5 by points</p>
+      <div class="card team-list">
+        <div v-for="(item, i) in topTeamsByPoints" :key="item.team"
+          class="team-list-row" :class="{ 'team-list-row--div': i > 0 }">
+          <span class="lb-rank" :class="rankClass(i + 1)">{{ i + 1 }}</span>
+          <span class="tg-flag">{{ FLAG_MAP[item.team] ?? '🏳' }}</span>
+          <div class="tl-left">
+            <span class="tl-name">{{ item.team }}</span>
+            <span v-if="store.fifaRankMap[item.team]" class="tl-rank" :class="`tl-rank-t${store.tierMap[item.team]}`">#{{ store.fifaRankMap[item.team] }}</span>
+          </div>
+          <span class="tg-played">{{ item.played }}GP</span>
+          <span class="tg-pts">{{ item.pts }} pts</span>
+          <span class="tl-owners">{{ ownersOf(item.team) }}</span>
+        </div>
+      </div>
+    </template>
+
     <!-- Top single-game performances -->
     <template v-if="topSingleGamePerformers.length">
       <p class="view-title">Best single game</p>
@@ -93,11 +112,31 @@ import { useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import { GROUP_MAP, FLAG_MAP } from '../data/index.js'
 import { matchSlug } from '../utils.js'
-import { matchBreakdownForTeam } from '../services/points.js'
+import { matchBreakdownForTeam, matchPointsForTeam } from '../services/points.js'
 
 const store = usePoolStore()
 const router = useRouter()
 const query = ref('')
+
+const topTeamsByPoints = computed(() => {
+  const rows = store.tiers.map(({ team }) => {
+    let pts = 0, played = 0
+    store.matches.forEach(m => {
+      if (m.home !== team && m.away !== team) return
+      if (m.home_score === '' || m.away_score === '') return
+      played++
+      pts += matchPointsForTeam(team, m)
+    })
+    return { team, pts: Math.round(pts * 10) / 10, played }
+  })
+  return rows.sort((a, b) => b.pts - a.pts).slice(0, 5)
+})
+
+function rankClass(r) {
+  if (r === 1) return 'rank-gold'
+  if (r === 2) return 'rank-silver'
+  if (r === 3) return 'rank-bronze'
+}
 
 const liveMatchByTeam = computed(() => {
   const map = {}
@@ -216,6 +255,17 @@ function tierLabel(t) { return TIER_LABELS[t] }
 
 .tg-flag { font-size: 26px; line-height: 1; flex-shrink: 0; }
 .tg-pts { font-size: 17px; font-weight: 800; color: var(--accent); white-space: nowrap; flex-shrink: 0; }
+.tg-played { font-size: 12px; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; }
+
+.lb-rank {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; background: var(--surface2); color: var(--text-dim);
+  flex-shrink: 0;
+}
+.rank-gold   { background: #4a3a1a; color: #f0c060; }
+.rank-silver { background: #2a2e3a; color: #d0d8e8; }
+.rank-bronze { background: #2e2018; color: #e89060; }
 
 .tg-list {
   margin: 0 14px 10px;
