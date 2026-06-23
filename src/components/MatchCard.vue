@@ -6,7 +6,7 @@
     </div>
 
     <div class="match-score-row">
-      <span class="team-name" :class="{ winner: match.result === 'home' }">{{ match.home }}</span>
+      <span class="team-name" :class="{ winner: match.result === 'home' }"><span class="team-flag">{{ flagOf(match.home) }}</span>{{ match.home }}</span>
       <div class="score-box">
         <span v-if="isOrphan" class="orphan-tag">🍿 Popcorn Game</span>
         <span v-if="match.played && !match.snapshot_minute" class="score-check">✓</span>
@@ -18,7 +18,7 @@
         <span v-else class="score score--upcoming">vs</span>
         <span v-if="match.snapshot_minute || match.autoLive" class="score-minute">{{ match.liveMinute || match.snapshot_minute || 1 }}'</span>
       </div>
-      <span class="team-name team-name--right" :class="{ winner: match.result === 'away' }">{{ match.away }}</span>
+      <span class="team-name team-name--right" :class="{ winner: match.result === 'away' }">{{ match.away }}<span class="team-flag">{{ flagOf(match.away) }}</span></span>
     </div>
 
     <div v-if="match.played && events.length" class="goal-list">
@@ -61,6 +61,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { FLAG_MAP } from '../data/index.js'
 
 const props = defineProps({
   match:       { type: Object,  required: true },
@@ -68,6 +69,10 @@ const props = defineProps({
 })
 
 const m = computed(() => props.match)
+
+function flagOf(team) {
+  return FLAG_MAP[team] ?? '🏳'
+}
 
 const isOrphan = computed(() =>
   !m.value.homePlayers?.length && !m.value.awayPlayers?.length
@@ -149,6 +154,7 @@ const awayBonuses = computed(() => allBonuses.value.filter(b => b.side === 'away
 }
 .team-name--right { text-align: right; }
 .team-name.winner { color: var(--green); font-weight: 700; }
+.team-flag { display: inline-block; margin: 0 5px; }
 
 .score-box { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .score { font-size: 19px; font-weight: 700; white-space: nowrap; color: var(--text); }
