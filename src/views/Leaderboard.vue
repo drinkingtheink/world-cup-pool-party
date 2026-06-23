@@ -7,12 +7,10 @@
         <span class="stat-value">{{ totalGoals }}</span>
         <span class="stat-label">Goals Scored</span>
       </div>
-      <div class="stat-divider"></div>
       <div class="stat-item">
         <span class="stat-value">{{ matchesPlayed }} <span class="stat-of">/ {{ totalMatches }}</span></span>
         <span class="stat-label">Matches Played</span>
       </div>
-      <div class="stat-divider"></div>
       <div class="stat-item">
         <span class="stat-value">{{ goalsPerGame }}</span>
         <span class="stat-label">Goals / Game</span>
@@ -649,7 +647,6 @@ function rankClass(r) {
 .stat-value { font-size: 26px; font-weight: 800; color: var(--green); }
 .stat-of { font-size: 16px; color: var(--text-dim); font-weight: 600; }
 .stat-label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
-.stat-divider { width: 1px; height: 40px; background: var(--border); }
 
 .leaderboard { display: flex; flex-direction: column; gap: 8px; }
 
