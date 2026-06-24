@@ -10,7 +10,7 @@
       <div class="score-box">
         <span v-if="isOrphan" class="orphan-tag">🍿 Popcorn Game</span>
         <span v-if="match.played && !match.snapshot_minute" class="score-check">✓</span>
-        <span v-if="match.home_score !== '' || match.away_score !== ''" class="score">
+        <span v-if="match.home_score !== '' || match.away_score !== '' || match.snapshot_minute || match.autoLive" class="score">
           <span :class="{ 'score-winner': match.result === 'home' }">{{ match.home_score !== '' ? match.home_score : 0 }}</span>
           –
           <span :class="{ 'score-winner': match.result === 'away' }">{{ match.away_score !== '' ? match.away_score : 0 }}</span>
