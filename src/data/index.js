@@ -48,7 +48,7 @@ export const tiers = [
   { team: 'Mexico',               tier: 2, odds:  6600, fifaRank: 15 },
   { team: 'Senegal',              tier: 2, odds:  6600, fifaRank: 14 },
   { team: 'Switzerland',          tier: 2, odds:  6600, fifaRank: 19 },
-  { team: 'Turkey',               tier: 2, odds:  6600, fifaRank: 22 },
+  { team: 'Türkiye',              tier: 2, odds:  6600, fifaRank: 22 },
   { team: 'Uruguay',              tier: 2, odds:  6600, fifaRank: 17 },
   { team: 'Croatia',              tier: 2, odds:  8000, fifaRank: 11 },
   { team: 'Ecuador',              tier: 2, odds:  8000, fifaRank: 23 },
@@ -101,7 +101,7 @@ export const GROUP_MAP = {
   'Haiti':                'C',
   // Group D
   'USA':                  'D',
-  'Turkey':               'D',
+  'Türkiye':               'D',
   'Australia':            'D',
   'Paraguay':             'D',
   // Group E
@@ -164,7 +164,7 @@ export const FLAG_MAP = {
   'Mexico':               '🇲🇽',
   'Senegal':              '🇸🇳',
   'Switzerland':          '🇨🇭',
-  'Turkey':               '🇹🇷',
+  'Türkiye':               '🇹🇷',
   'Uruguay':              '🇺🇾',
   'Croatia':              '🇭🇷',
   'Ecuador':              '🇪🇨',
