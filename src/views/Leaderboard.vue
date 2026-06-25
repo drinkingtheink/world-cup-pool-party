@@ -5,11 +5,11 @@
     <div class="tourney-stats card">
       <div class="stat-item">
         <span class="stat-value">{{ totalGoals }}</span>
-        <span class="stat-label">Goals Scored</span>
+        <span class="stat-label">Goals</span>
       </div>
       <div class="stat-item">
         <span class="stat-value">{{ matchesPlayed }} <span class="stat-of">/ {{ totalMatches }}</span></span>
-        <span class="stat-label">Matches Played</span>
+        <span class="stat-label">Matches</span>
       </div>
       <div class="stat-item">
         <span class="stat-value">{{ goalsPerGame }}</span>
@@ -61,8 +61,8 @@
               <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
             </div>
             <div class="lb-stats-row">
-              <span class="lb-stat"><span class="lb-stat-value">{{ playerGamesPlayed[entry.name].played }}</span><span class="lb-stat-label">Matches Played</span></span>
-              <span class="lb-stat"><span class="lb-stat-value">{{ playerGoals[entry.name] }}</span><span class="lb-stat-label">Goals Scored</span></span>
+              <span class="lb-stat"><span class="lb-stat-value">{{ playerGamesPlayed[entry.name].played }}</span><span class="lb-stat-label">Matches</span></span>
+              <span class="lb-stat"><span class="lb-stat-value">{{ playerGoals[entry.name] }}</span><span class="lb-stat-label">Goals</span></span>
               <span class="lb-stat"><span class="lb-stat-value">{{ playerGoalsPerGame[entry.name] }}</span><span class="lb-stat-label">Goals/Game</span></span>
             </div>
           </div>
@@ -677,8 +677,8 @@ function rankClass(r) {
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
 .lb-flags { display: flex; gap: 3px; flex-wrap: nowrap; }
 .lb-flag { font-size: 24px; line-height: 1; cursor: default; flex-shrink: 0; }
-.lb-stats-row { display: flex; align-items: stretch; gap: 12px; margin-top: 4px; }
-.lb-stat { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.lb-stats-row { display: flex; align-items: stretch; gap: 12px; margin-top: 10px; }
+.lb-stat { display: flex; flex-direction: column; gap: 1px; min-width: 0; padding-top: 6px; }
 .lb-stat-value { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.2; }
 .lb-stat-label { font-size: 9px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-dim); line-height: 1.25; white-space: nowrap; }
 @media (max-width: 380px) {
