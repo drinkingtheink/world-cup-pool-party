@@ -44,7 +44,19 @@ const liveAnchors = ref({})
 async function pollMatchData() {
   try {
     const res = await fetch(`${MATCHES_URL}?t=${Date.now()}`, { cache: 'no-store' })
-    if (res.ok) rawMatches.value = await res.json()
+    if (!res.ok) return
+    const fetched = await res.json()
+    // Never let a stale CDN response erase scores we already have locally
+    const current = rawMatches.value
+    rawMatches.value = fetched.map((m, i) => {
+      const cur = current[i]
+      if (cur && cur.home === m.home && cur.away === m.away &&
+          (cur.home_score !== '' || cur.snapshot_minute) &&
+          m.home_score === '') {
+        return cur
+      }
+      return m
+    })
   } catch {}
 }
 
