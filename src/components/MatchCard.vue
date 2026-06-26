@@ -75,7 +75,10 @@ function flagOf(team) {
 }
 
 const isOrphan = computed(() =>
-  !m.value.homePlayers?.length && !m.value.awayPlayers?.length
+  FLAG_MAP[m.value.home] != null &&
+  FLAG_MAP[m.value.away] != null &&
+  !m.value.homePlayers?.length &&
+  !m.value.awayPlayers?.length
 )
 
 const stagePillClass = computed(() => {
