@@ -26,12 +26,20 @@
     <p class="view-title"></p>
 
     <div class="leaderboard">
+      <div class="lb-header">
+        <span></span>
+        <span>Player</span>
+        <span>Teams</span>
+        <span>Stats</span>
+        <span class="lb-header-pts">Points</span>
+      </div>
+
       <div
         v-for="(entry, i) in store.leaderboard"
         :key="entry.name"
         class="lb-row card"
         :class="{ 'lb-row--first': entry.rank === 1 }"
-        :style="{ '--i': i }"
+        :style="{ '--i': i, '--pts-pct': ptsPct(entry) + '%' }"
         @click="expanded = expanded === entry.name ? null : entry.name"
       >
         <div class="lb-main">
@@ -634,6 +642,11 @@ function rankClass(r) {
   if (r === 3) return 'rank-bronze'
   return ''
 }
+
+function ptsPct(entry) {
+  const max = store.leaderboard[0]?.total ?? 1
+  return max > 0 ? ((entry.total / max) * 100).toFixed(1) : '0'
+}
 </script>
 
 <style scoped>
@@ -1094,4 +1107,63 @@ function rankClass(r) {
 .mu-score { font-size: 13px; font-weight: 800; color: #fff; letter-spacing: .04em; }
 .mu-ft { font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); }
 .mu-player-both { color: var(--green); font-weight: 800; }
+
+/* ── Desktop Leaderboard ──────────────────────────────────────────── */
+.lb-header { display: none; }
+
+@media (min-width: 768px) {
+  .lb-header {
+    display: grid;
+    grid-template-columns: 44px 1fr 180px 195px 90px;
+    gap: 0 16px;
+    padding: 0 20px 8px;
+    font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 6px;
+  }
+  .lb-header-pts { text-align: right; padding-right: 4px; }
+
+  .lb-row { position: relative; overflow: hidden; }
+  .lb-row::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: var(--pts-pct, 0%);
+    background: rgba(0,255,159,0.055);
+    pointer-events: none;
+    transition: width .8s cubic-bezier(.4,0,.2,1);
+  }
+  .lb-row--first::before { background: rgba(0,255,159,0.09); }
+
+  .lb-main {
+    display: grid;
+    grid-template-columns: 44px 1fr 180px 195px 90px;
+    align-items: center;
+    gap: 0 16px;
+    padding: 12px 20px;
+  }
+  .lb-center { display: contents; }
+
+  .lb-name-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .lb-name { font-size: 20px; }
+
+  .lb-flags { gap: 5px; }
+  .lb-flag { font-size: 26px; }
+
+  .lb-stats-row { margin-top: 0; justify-content: space-between; }
+  .lb-stat { padding-top: 0; }
+  .lb-stat-value { font-size: 16px; }
+
+  .lb-pts { font-size: 24px; text-align: right; }
+  .lb-pts-label { font-size: 14px; }
+
+  .lb-rank { width: 32px; height: 32px; font-size: 15px; }
+
+  .lb-breakdown {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px 16px;
+    padding: 10px 20px 16px;
+  }
+}
 </style>
