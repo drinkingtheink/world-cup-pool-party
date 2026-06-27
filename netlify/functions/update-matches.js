@@ -26,7 +26,8 @@ function json(statusCode, body) {
 }
 
 function todayISO() {
-  const t = new Date()
+  // Match dates are stored in CT (CDT = UTC-5); offset so late-night games don't roll to the next UTC date
+  const t = new Date(Date.now() - 5 * 60 * 60 * 1000)
   return t.toISOString().slice(0, 10)
 }
 
