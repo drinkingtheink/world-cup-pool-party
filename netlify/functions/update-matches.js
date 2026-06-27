@@ -26,9 +26,13 @@ function json(statusCode, body) {
 }
 
 function todayISO() {
-  // Match dates are stored in CT (CDT = UTC-5); offset so late-night games don't roll to the next UTC date
+  // Match dates are stored in CT (CDT = UTC-5)
   const t = new Date(Date.now() - 5 * 60 * 60 * 1000)
   return t.toISOString().slice(0, 10)
+}
+
+function utcDateISO() {
+  return new Date().toISOString().slice(0, 10)
 }
 
 // Preserve compact single-line-per-match format of existing file
@@ -154,11 +158,13 @@ exports.handler = async (event) => {
   try {
     const today = todayISO()
 
-    // 1. Fetch today's fixtures list
-    const fixtures = await apiFetch(
-      `/fixtures?league=${WC_LEAGUE}&season=${WC_SEASON}&date=${today}`,
-      API_FOOTBALL_KEY
+    // 1. Fetch fixtures for both CT date and UTC date — late-night CT games (e.g. 10PM CT = 3AM UTC)
+    //    are stored under the next UTC date in API-Football's system
+    const dates = [...new Set([today, utcDateISO()])]
+    const fixtureArrays = await Promise.all(
+      dates.map(d => apiFetch(`/fixtures?league=${WC_LEAGUE}&season=${WC_SEASON}&date=${d}`, API_FOOTBALL_KEY))
     )
+    const fixtures = fixtureArrays.flat()
 
     if (!fixtures.length) {
       return json(200, { message: `No fixtures from API-Football for ${today}`, updated: [] })
