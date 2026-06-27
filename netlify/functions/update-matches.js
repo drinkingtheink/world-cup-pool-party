@@ -1,36 +1,33 @@
 'use strict'
 
 // Netlify Function: update-matches
-// Fetches today's ESPN match data, parses it directly into our schema,
-// then commits the updated matches.json back to GitHub (triggering a redeploy).
+// Fetches today's World Cup fixtures + events from API-Football, then commits
+// any score/goal/card changes back to matches.json on GitHub.
 //
 // Required env vars (set in Netlify dashboard):
-//   GITHUB_TOKEN   — Personal access token with repo write scope
-//   GITHUB_OWNER   — GitHub username/org (e.g. "drinkingtheink")
-//   GITHUB_REPO    — Repo name (e.g. "world-cup-pool-party")
-//   UPDATE_SECRET  — Random string; callers must pass ?secret=<this>
+//   API_FOOTBALL_KEY  — API-Football key (api-sports.io dashboard)
+//   GITHUB_TOKEN      — Personal access token with repo write scope
+//   GITHUB_OWNER      — GitHub username/org (e.g. "drinkingtheink")
+//   GITHUB_REPO       — Repo name (e.g. "world-cup-pool-party")
+//   UPDATE_SECRET     — Random string; callers must pass ?secret=<this>
+
+const API_BASE   = 'https://v3.football.api-sports.io'
+const WC_LEAGUE  = 1
+const WC_SEASON  = 2026
 
 const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin':  '*',
   'Access-Control-Allow-Headers': 'Content-Type',
-  'Content-Type': 'application/json',
+  'Content-Type':                 'application/json',
 }
 
 function json(statusCode, body) {
   return { statusCode, headers: CORS_HEADERS, body: JSON.stringify(body) }
 }
 
-function todayESPN() {
-  const t = new Date()
-  const y = t.getUTCFullYear()
-  const m = String(t.getUTCMonth() + 1).padStart(2, '0')
-  const d = String(t.getUTCDate()).padStart(2, '0')
-  return `${y}${m}${d}`
-}
-
 function todayISO() {
-  const d = todayESPN()
-  return `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}`
+  const t = new Date()
+  return t.toISOString().slice(0, 10)
 }
 
 // Preserve compact single-line-per-match format of existing file
@@ -39,120 +36,70 @@ function serializeMatches(matches) {
 }
 
 // ─── Team name normalization ───────────────────────────────────────────────────
-// ESPN uses different names than we do for some teams. We normalize both sides
-// and apply explicit overrides for the known mismatches.
+// API-Football uses slightly different names than our matches.json.
 
-const ESPN_OVERRIDE = {
-  'united states': 'USA',
-  'usa': 'USA',
-  'korea republic': 'South Korea',
-  'republic of korea': 'South Korea',
-  'czech republic': 'Czechia',
-  "cote divoire": 'Ivory Coast',
-  "cote d ivoire": 'Ivory Coast',
-  'ivory coast': 'Ivory Coast',
-  'dr congo': 'DR Congo',
+const API_OVERRIDE = {
+  'korea republic':               'South Korea',
+  'republic of korea':            'South Korea',
+  'ir iran':                      'Iran',
+  'united states':                'USA',
+  'ivory coast':                  "Côte d'Ivoire",
+  "cote d'ivoire":                "Côte d'Ivoire",
+  'cote divoire':                 "Côte d'Ivoire",
+  'dr congo':                     'DR Congo',
+  'congo dr':                     'DR Congo',
   'democratic republic of congo': 'DR Congo',
-  'congo dr': 'DR Congo',
-  'trinidad and tobago': 'Trinidad & Tobago',
-  'bosnia and herzegovina': 'Bosnia & Herzegovina',
-  'north macedonia': 'North Macedonia',
-  'cape verde': 'Cape Verde',
+  'bosnia':                       'Bosnia & Herzegovina',
+  'bosnia and herzegovina':       'Bosnia & Herzegovina',
+  'curacao':                      'Curaçao',
+  'turkey':                       'Türkiye',
+  'turkiye':                      'Türkiye',
+  'cape verde islands':           'Cape Verde',
 }
 
 function normalize(s) {
   return s.toLowerCase()
-    .replace(/&/g, 'and')
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/&/g, 'and')
     .replace(/[^a-z0-9\s]/g, '')
     .replace(/\s+/g, ' ').trim()
 }
 
-function resolveTeamName(espnName, ourTeams) {
-  const norm = normalize(espnName)
-  if (ESPN_OVERRIDE[norm]) return ESPN_OVERRIDE[norm]
+function resolveTeamName(apiName, ourTeams) {
+  const norm = normalize(apiName)
+  if (API_OVERRIDE[norm]) return API_OVERRIDE[norm]
   for (const t of ourTeams) {
     if (normalize(t) === norm) return t
   }
-  // partial fallback
   for (const t of ourTeams) {
     const nt = normalize(t)
     if (norm.includes(nt) || nt.includes(norm)) return t
   }
-  return espnName
+  return apiName
 }
 
-// ─── Clock parsing ─────────────────────────────────────────────────────────────
-// ESPN gives clock as elapsed seconds. Math.ceil(value/60) = display minute.
-// 1020s → 17', 5580s → 93' (handles stoppage time naturally).
+// ─── Status helpers ────────────────────────────────────────────────────────────
 
-function secondsToMinute(seconds) {
-  if (seconds == null) return null
-  return Math.ceil(seconds / 60) || null
+const FINISHED = new Set(['FT', 'AET', 'PEN', 'AWD', 'WO'])
+const LIVE     = new Set(['1H', 'HT', '2H', 'ET', 'P', 'BT', 'SUSP', 'INT'])
+
+function fixtureMinute(status) {
+  if (!LIVE.has(status?.short)) return null
+  return (status.elapsed ?? 0) + (status.extra ?? 0) || null
 }
 
-// ─── ESPN event parser ─────────────────────────────────────────────────────────
+// ─── API-Football fetch ────────────────────────────────────────────────────────
 
-function parseESPNEvent(event, ourTeams) {
-  const comp = event.competitions?.[0]
-  if (!comp) return null
-
-  const homeComp = comp.competitors?.find(c => c.homeAway === 'home')
-  const awayComp = comp.competitors?.find(c => c.homeAway === 'away')
-  if (!homeComp || !awayComp) return null
-
-  const homeName = resolveTeamName(homeComp.team?.displayName || homeComp.team?.name || '', ourTeams)
-  const awayName = resolveTeamName(awayComp.team?.displayName || awayComp.team?.name || '', ourTeams)
-  const homeTeamId = homeComp.team?.id
-  const awayTeamId = awayComp.team?.id
-
-  const state = comp.status?.type?.state         // 'pre' | 'in' | 'post'
-  const completed = comp.status?.type?.completed  // boolean
-  const started = state !== 'pre'
-  const finished = completed || state === 'post'
-  const snapshotMinute = finished ? null : (started ? secondsToMinute(comp.status?.clock) : null)
-
-  const homeScore = started ? (homeComp.score ?? '') : ''
-  const awayScore = started ? (awayComp.score ?? '') : ''
-
-  const goals = []
-  const cards = []
-
-  for (const detail of (comp.details || [])) {
-    const teamId = detail.team?.id
-    const side = teamId === homeTeamId ? 'home' : teamId === awayTeamId ? 'away' : null
-    if (!side) continue
-
-    const eventMinute = secondsToMinute(detail.clock?.value)
-    const detailType = detail.type?.text
-
-    const isGoal = detailType === 'Goal' || detail.scoringPlay === true
-    const isYellow = detail.yellowCard || detailType === 'Yellow Card'
-    const isRed = detail.redCard || detailType === 'Red Card' || detailType === 'Yellow-Red Card'
-
-    if (isGoal) {
-      const athlete = detail.athletesInvolved?.[0]
-      // Use short name's surname, falling back to full name's last word
-      const lastName = athlete
-        ? (athlete.shortName?.split('. ').pop() || athlete.displayName?.split(' ').pop() || 'Unknown')
-        : 'Unknown'
-
-      if (detail.ownGoal) {
-        // ESPN's team on an OG event = the benefiting team (already correct — don't flip)
-        goals.push({ team: side, minute: eventMinute, scorer: `${lastName} (OG)` })
-      } else {
-        const scorer = detail.penaltyKick ? `${lastName} (P)` : lastName
-        goals.push({ team: side, minute: eventMinute, scorer })
-      }
-    } else if (isYellow || isRed) {
-      cards.push({ team: side, minute: eventMinute, type: isRed ? 'red' : 'yellow' })
-    }
+async function apiFetch(path, apiKey) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    headers: { 'x-apisports-key': apiKey },
+  })
+  if (!res.ok) throw new Error(`API-Football ${path} → ${res.status}`)
+  const { response, errors } = await res.json()
+  if (errors && Object.keys(errors).length) {
+    throw new Error(`API-Football errors: ${JSON.stringify(errors)}`)
   }
-
-  goals.sort((a, b) => a.minute - b.minute)
-  cards.sort((a, b) => a.minute - b.minute)
-
-  return { homeName, awayName, homeScore, awayScore, snapshotMinute, goals, cards }
+  return response ?? []
 }
 
 // ─── GitHub helpers ────────────────────────────────────────────────────────────
@@ -172,9 +119,9 @@ async function writeGitHubFile(owner, repo, path, content, sha, message, token) 
     {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${token}`,
-        'User-Agent': 'netlify-update-matches',
-        Accept: 'application/vnd.github.v3+json',
+        Authorization:  `Bearer ${token}`,
+        'User-Agent':   'netlify-update-matches',
+        Accept:         'application/vnd.github.v3+json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ message, content: Buffer.from(content, 'utf-8').toString('base64'), sha }),
@@ -195,25 +142,25 @@ exports.handler = async (event) => {
     return json(401, { error: 'Unauthorized' })
   }
 
-  const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO } = process.env
+  const { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, API_FOOTBALL_KEY } = process.env
   if (!GITHUB_TOKEN || !GITHUB_OWNER || !GITHUB_REPO) {
     return json(500, { error: 'Missing GITHUB_TOKEN / GITHUB_OWNER / GITHUB_REPO env vars' })
+  }
+  if (!API_FOOTBALL_KEY) {
+    return json(500, { error: 'Missing API_FOOTBALL_KEY env var' })
   }
 
   try {
     const today = todayISO()
-    const espnDate = todayESPN()
 
-    // 1. Fetch ESPN scoreboard for today
-    const espnRes = await fetch(
-      `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${espnDate}`,
-      { headers: { 'User-Agent': 'Mozilla/5.0' } }
+    // 1. Fetch today's fixtures list
+    const fixtures = await apiFetch(
+      `/fixtures?league=${WC_LEAGUE}&season=${WC_SEASON}&date=${today}`,
+      API_FOOTBALL_KEY
     )
-    if (!espnRes.ok) throw new Error(`ESPN fetch failed: ${espnRes.status}`)
-    const { events = [] } = await espnRes.json()
 
-    if (!events.length) {
-      return json(200, { message: `ESPN has no events for ${today}`, updated: [] })
+    if (!fixtures.length) {
+      return json(200, { message: `No fixtures from API-Football for ${today}`, updated: [] })
     }
 
     // 2. Read current matches.json from GitHub
@@ -226,49 +173,107 @@ exports.handler = async (event) => {
       return json(200, { message: `No matches for ${today} in our data`, updated: [] })
     }
 
-    // 3. Get all team names we use today for normalization
+    // 3. Parse each fixture; fetch events in parallel for started ones
     const ourTeams = [...new Set(todayMatches.flatMap(m => [m.home, m.away]))]
 
-    // 4. Parse ESPN events
-    const espnParsed = events.map(evt => parseESPNEvent(evt, ourTeams)).filter(Boolean)
+    const parsed = await Promise.all(fixtures.map(async (fx) => {
+      const status    = fx.fixture?.status ?? {}
+      const finished  = FINISHED.has(status.short)
+      const started   = finished || LIVE.has(status.short)
 
-    // Live snapshot for today's matches — returned on every call (commit or not) so the
-    // client can resync its minute estimate against ESPN's real clock without needing a push.
+      const homeName  = resolveTeamName(fx.teams?.home?.name ?? '', ourTeams)
+      const awayName  = resolveTeamName(fx.teams?.away?.name ?? '', ourTeams)
+      const homeId    = fx.teams?.home?.id
+      const awayId    = fx.teams?.away?.id
+
+      const homeScore       = started ? String(fx.goals?.home ?? '') : ''
+      const awayScore       = started ? String(fx.goals?.away ?? '') : ''
+      const snapshotMinute  = fixtureMinute(status)
+
+      // Penalty shootout winner
+      let penalties_winner = null
+      if (finished && fx.score?.penalty?.home != null) {
+        const pH = fx.score.penalty.home ?? 0
+        const pA = fx.score.penalty.away ?? 0
+        if (pH !== pA) penalties_winner = pH > pA ? 'home' : 'away'
+      }
+
+      const goals = []
+      const cards = []
+
+      if (started) {
+        const events = await apiFetch(`/fixtures/events?fixture=${fx.fixture.id}`, API_FOOTBALL_KEY)
+
+        for (const e of events) {
+          const teamId = e.team?.id
+          const side   = teamId === homeId ? 'home' : teamId === awayId ? 'away' : null
+          if (!side) continue
+
+          const minute     = (e.time?.elapsed ?? 0) + (e.time?.extra ?? 0)
+          const playerName = (e.player?.name ?? '').trim()
+          const lastName   = playerName.split(' ').filter(Boolean).pop() ?? 'Unknown'
+
+          if (e.type === 'Goal') {
+            const detail = e.detail ?? ''
+            if (detail === 'Own Goal') {
+              // API-Football tags the OG with the player's team — flip to get benefiting side
+              const scoring = side === 'home' ? 'away' : 'home'
+              goals.push({ team: scoring, minute, scorer: `${lastName} (OG)` })
+            } else if (detail === 'Penalty') {
+              goals.push({ team: side, minute, scorer: `${lastName} (P)` })
+            } else {
+              goals.push({ team: side, minute, scorer: lastName })
+            }
+          } else if (e.type === 'Card') {
+            const detail = e.detail ?? ''
+            const type   = (detail === 'Red Card' || detail === 'Yellow Red Card') ? 'red' : 'yellow'
+            cards.push({ team: side, minute, type })
+          }
+          // Ignore substitutions, VAR reviews, etc.
+        }
+
+        goals.sort((a, b) => a.minute - b.minute)
+        cards.sort((a, b) => a.minute - b.minute)
+      }
+
+      return { homeName, awayName, homeScore, awayScore, snapshotMinute, goals, cards, penalties_winner }
+    }))
+
+    // 4. Build live snapshot for client minute resync (returned on every call)
     const live = todayMatches.map(m => {
-      const espn = espnParsed.find(e =>
-        normalize(e.homeName) === normalize(m.home) &&
-        normalize(e.awayName) === normalize(m.away)
+      const fx = parsed.find(f =>
+        normalize(f.homeName) === normalize(m.home) &&
+        normalize(f.awayName) === normalize(m.away)
       )
-      if (!espn) return null
-      return { home: m.home, away: m.away, minute: espn.snapshotMinute, home_score: espn.homeScore, away_score: espn.awayScore }
+      if (!fx) return null
+      return { home: m.home, away: m.away, minute: fx.snapshotMinute, home_score: fx.homeScore, away_score: fx.awayScore }
     }).filter(Boolean)
 
-    // 5. Merge updates into full match list
+    // 5. Merge updates into full match list — only commit on meaningful changes
     let changed = 0
     const updatedAll = allMatches.map(m => {
       if (m.date !== today) return m
 
-      const espn = espnParsed.find(e =>
-        normalize(e.homeName) === normalize(m.home) &&
-        normalize(e.awayName) === normalize(m.away)
+      const fx = parsed.find(f =>
+        normalize(f.homeName) === normalize(m.home) &&
+        normalize(f.awayName) === normalize(m.away)
       )
-      if (!espn) return m
+      if (!fx) return m
 
-      // If ESPN has a non-zero score but no goal events yet, preserve our existing goal data
-      const totalGoals = Number(espn.homeScore || 0) + Number(espn.awayScore || 0)
-      const goals = (totalGoals > 0 && espn.goals.length === 0) ? (m.goals || []) : espn.goals
-      const cards = (espn.cards.length === 0 && (m.cards || []).length > 0) ? m.cards : espn.cards
+      // If API has a score but no goal events yet, keep our existing goal data
+      const totalGoals = Number(fx.homeScore || 0) + Number(fx.awayScore || 0)
+      const goals = (totalGoals > 0 && fx.goals.length === 0) ? (m.goals || []) : fx.goals
+      const cards = (fx.cards.length === 0 && (m.cards || []).length > 0) ? m.cards : fx.cards
 
-      // Only commit on real events (score/goals/cards, or the match starting/finishing) —
-      // the live clock ticks every poll, and committing on that alone would trigger a
-      // rebuild every minute. The live minute is shown client-side instead (see pool.js).
       const wasLive = m.snapshot_minute != null
-      const isLive = espn.snapshotMinute != null
+      const isLive  = fx.snapshotMinute != null
+
       const meaningfulChange =
-        espn.homeScore !== m.home_score ||
-        espn.awayScore !== m.away_score ||
+        fx.homeScore  !== m.home_score ||
+        fx.awayScore  !== m.away_score ||
         JSON.stringify(goals) !== JSON.stringify(m.goals || []) ||
         JSON.stringify(cards) !== JSON.stringify(m.cards || []) ||
+        (fx.penalties_winner ?? null) !== (m.penalties_winner ?? null) ||
         wasLive !== isLive
 
       if (!meaningfulChange) return m
@@ -276,11 +281,12 @@ exports.handler = async (event) => {
       changed++
       return {
         ...m,
-        home_score: espn.homeScore,
-        away_score: espn.awayScore,
+        home_score:       fx.homeScore,
+        away_score:       fx.awayScore,
         goals,
         cards,
-        snapshot_minute: espn.snapshotMinute,
+        snapshot_minute:  fx.snapshotMinute,
+        penalties_winner: fx.penalties_winner,
       }
     })
 
@@ -288,7 +294,7 @@ exports.handler = async (event) => {
       return json(200, { message: 'Scores checked — no changes', updated: [], live })
     }
 
-    // 6. Commit updated file to GitHub
+    // 6. Commit updated file to GitHub (triggers Netlify redeploy)
     await writeGitHubFile(
       GITHUB_OWNER, GITHUB_REPO, 'src/data/matches.json',
       serializeMatches(updatedAll), fileSha,
