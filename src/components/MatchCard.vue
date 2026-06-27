@@ -2,7 +2,7 @@
   <div class="match-row" :class="{ 'match-row--divider': showDivider, 'match-row--orphan': isOrphan, 'match-row--live': match.snapshot_minute || match.autoLive, 'match-row--played': match.played && !match.snapshot_minute }">
     <div class="match-stage-pill">
       <span v-if="match.snapshot_minute || match.autoLive" class="match-time match-time--live">● LIVE</span>
-      <span v-else-if="match.time && !match.played" class="match-time">{{ match.time }}</span>
+      <span v-else-if="match.time" class="match-time">{{ match.time }}</span>
     </div>
 
     <div class="match-score-row">
