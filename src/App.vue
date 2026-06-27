@@ -135,7 +135,7 @@
               <span class="building-dot"></span>Building…
             </span>
             <span v-else-if="updateMsg" class="update-msg">{{ updateMsg }}</span>
-            <span v-else>Update Scores (ESPN)</span>
+            <span v-else>Update Scores (API-Football)</span>
           </button>
         </div>
       </div>
