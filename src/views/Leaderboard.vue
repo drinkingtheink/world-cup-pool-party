@@ -146,6 +146,34 @@
       </div>
     </template>
 
+    <template v-if="topDaysChart">
+      <p class="view-title" style="margin-top:20px">Best Single Days</p>
+      <p class="strength-sub">Each player's 3 highest-scoring match days</p>
+      <div class="card best-days-card">
+        <svg :viewBox="`0 0 ${topDaysChart.W} ${topDaysChart.H}`" class="best-days-svg" preserveAspectRatio="none">
+          <line v-for="g in topDaysChart.gridLines" :key="g.y"
+            x1="0" :x2="topDaysChart.W" :y1="g.y" :y2="g.y" class="pot-gridline" />
+          <template v-for="group in topDaysChart.groups" :key="group.name">
+            <g v-for="(bar, bi) in group.bars" :key="bi">
+              <title>{{ fmtDate(bar.date) }} · {{ bar.pts }} pts</title>
+              <rect :x="bar.x" :y="bar.y" :width="bar.w" :height="bar.h"
+                :fill="bar.color" rx="2" opacity="0.85" />
+            </g>
+          </template>
+        </svg>
+        <div class="best-days-names">
+          <span v-for="group in topDaysChart.groups" :key="group.name" class="best-days-name">
+            {{ group.name }}
+          </span>
+        </div>
+        <div class="best-days-legend">
+          <span class="bd-leg"><span class="bd-dot" style="background:#ffd200"></span>Best day</span>
+          <span class="bd-leg"><span class="bd-dot" style="background:#00e5ff"></span>2nd</span>
+          <span class="bd-leg"><span class="bd-dot" style="background:#bd5fff"></span>3rd</span>
+        </div>
+      </div>
+    </template>
+
     <div class="quote-card">
       <span class="quote-mark">"</span>
       <p class="quote-text">{{ randomQuote.text }}</p>
@@ -685,6 +713,43 @@ const playerPointsByDate = computed(() => {
 })
 
 function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
+
+const topDaysChart = computed(() => {
+  const entries = store.leaderboard
+  if (!entries.length) return null
+
+  const W = 600, H = 160
+  const padX = 4, padT = 10
+  const cW = W - padX * 2
+  const cH = H - padT
+
+  const allPts = entries.flatMap(e =>
+    (playerPointsByDate.value[e.name] ?? []).map(d => d.pts)
+  )
+  if (!allPts.length) return null
+  const maxPts = Math.max(10, ...allPts)
+
+  const groupW = cW / entries.length
+  const barW = Math.max(7, Math.floor(groupW * 0.19))
+  const gap = 3
+  const BAR_COLORS = ['#ffd200', '#00e5ff', '#bd5fff']
+
+  const groups = entries.map((entry, gi) => {
+    const cx = padX + (gi + 0.5) * groupW
+    const top3 = [...(playerPointsByDate.value[entry.name] ?? [])]
+      .sort((a, b) => b.pts - a.pts).slice(0, 3)
+    const bars = top3.map((d, bi) => {
+      const x = cx + (bi - 1) * (barW + gap) - barW / 2
+      const bH = (d.pts / maxPts) * cH
+      return { x, y: padT + cH - bH, w: barW, h: bH, pts: d.pts, date: d.date, color: BAR_COLORS[bi] }
+    })
+    return { name: entry.name, bars }
+  })
+
+  const gridLines = [0.25, 0.5, 0.75, 1].map(f => ({ y: padT + cH * (1 - f), label: Math.round(f * maxPts) }))
+
+  return { W, H, groups, gridLines }
+})
 </script>
 
 <style scoped>
@@ -1246,4 +1311,20 @@ function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
 @media (min-width: 768px) {
   .lb-daygrid { padding: 10px 20px 16px; }
 }
+
+/* ── Best Single Days Chart ───────────────────────────────────────── */
+.best-days-card { padding: 14px 14px 12px; margin-bottom: 16px; }
+.best-days-svg { width: 100%; display: block; overflow: visible; }
+.best-days-names {
+  display: flex; margin-top: 8px;
+}
+.best-days-name {
+  flex: 1; text-align: center;
+  font-size: 11px; font-weight: 700; color: var(--text-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 0 2px;
+}
+.best-days-legend { display: flex; gap: 14px; margin-top: 10px; }
+.bd-leg { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-dim); }
+.bd-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
 </style>
