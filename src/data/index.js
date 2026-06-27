@@ -27,6 +27,11 @@ export const players = [
 
 export { default as matches } from './matches.json'
 
+export const ELIMINATED_TEAMS = new Set([
+  'Czechia', 'Qatar', 'Haiti', 'Türkiye', 'Curaçao', 'Tunisia',
+  'New Zealand', 'Saudi Arabia', 'Uruguay', 'Iraq', 'Jordan', 'Panama',
+])
+
 export const tiers = [
   // Tier 1 — Contenders (+450 to 20-1)
   // odds: positive American odds (+450 → 450, 14-1 → 1400) | fifaRank: April 2026

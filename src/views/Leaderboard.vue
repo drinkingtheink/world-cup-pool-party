@@ -66,7 +66,7 @@
               </span>
             </div>
             <div class="lb-flags">
-              <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :title="team">{{ FLAG_MAP[team] ?? '🏳' }}</span>
+              <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :class="{ 'lb-flag--eliminated': ELIMINATED_TEAMS.has(team) }" :title="team"><span class="lb-flag-emoji">{{ FLAG_MAP[team] ?? '🏳' }}</span><span v-if="ELIMINATED_TEAMS.has(team)" class="lb-flag-x">✕</span></span>
             </div>
             <div class="lb-stats-row">
               <span class="lb-stat"><span class="lb-stat-value">{{ playerGamesPlayed[entry.name].played }}</span><span class="lb-stat-label">Matches</span></span>
@@ -82,7 +82,7 @@
           <div v-if="expanded === entry.name" class="lb-expanded">
             <div class="lb-breakdown"
               @click.stop="router.push({ path: '/my-teams', query: { player: entry.name } })">
-              <div v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-team-row">
+              <div v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-team-row" :class="{ 'lb-team-row--eliminated': ELIMINATED_TEAMS.has(team) }">
                 <span class="lb-team-flag">{{ FLAG_MAP[team] ?? '🏳' }}</span>
                 <span class="lb-team-name">{{ team }}</span>
                 <span class="lb-team-pts">{{ entry.breakdown[team] ?? 0 }} pts</span>
@@ -372,7 +372,7 @@ import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { CalendarDays, ChevronRight, Link2, Check } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
-import { quotes, FLAG_MAP } from '../data/index.js'
+import { quotes, FLAG_MAP, ELIMINATED_TEAMS } from '../data/index.js'
 import { matchSlug } from '../utils.js'
 import { calcPlayerPoints, matchPointsForTeam } from '../services/points.js'
 
@@ -799,7 +799,8 @@ const topDaysChart = computed(() => {
 .lb-center { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
 .lb-flags { display: flex; gap: 3px; flex-wrap: nowrap; }
-.lb-flag { font-size: 24px; line-height: 1; cursor: default; flex-shrink: 0; }
+.lb-flag { font-size: 24px; line-height: 1; cursor: default; flex-shrink: 0; display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
+.lb-flag-x { font-size: 9px; font-weight: 900; color: #ffffff; line-height: 1; }
 .lb-stats-row { display: flex; align-items: stretch; gap: 12px; margin-top: 10px; }
 .lb-stat { display: flex; flex-direction: column; gap: 1px; min-width: 0; padding-top: 6px; }
 .lb-stat-value { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.2; }
@@ -854,6 +855,9 @@ const topDaysChart = computed(() => {
 .lb-team-flag { font-size: 18px; line-height: 1; flex-shrink: 0; }
 .lb-team-name { display: flex; align-items: center; gap: 6px; color: var(--text-dim); flex: 1; }
 .lb-team-pts { font-weight: 600; color: #ffffff; }
+.lb-team-row--eliminated { opacity: 0.35; }
+.lb-team-row--eliminated .lb-team-name { text-decoration: line-through; }
+.lb-flag--eliminated .lb-flag-emoji { opacity: 0.35; }
 
 .expand-enter-active, .expand-leave-active { transition: opacity .15s; }
 .expand-enter-from, .expand-leave-to { opacity: 0; }
