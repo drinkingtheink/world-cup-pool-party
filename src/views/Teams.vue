@@ -5,11 +5,12 @@
       <p class="view-title">Top 5 by points</p>
       <div class="card team-list">
         <div v-for="(item, i) in topTeamsByPoints" :key="item.team"
-          class="team-list-row" :class="{ 'team-list-row--div': i > 0 }">
+          class="team-list-row" :class="{ 'team-list-row--div': i > 0, 'team-list-row--eliminated': ELIMINATED_TEAMS.has(item.team) }">
           <span class="lb-rank" :class="rankClass(i + 1)">{{ i + 1 }}</span>
           <span class="tg-flag">{{ FLAG_MAP[item.team] ?? '🏳' }}</span>
           <div class="tl-left">
             <span class="tl-name">{{ item.team }}</span>
+            <span v-if="ELIMINATED_TEAMS.has(item.team)" class="tl-eliminated">Eliminated</span>
             <span v-if="store.fifaRankMap[item.team]" class="tl-rank" :class="`tl-rank-t${store.tierMap[item.team]}`">#{{ store.fifaRankMap[item.team] }}</span>
           </div>
           <span class="tg-played">{{ item.played }}GP</span>
@@ -24,11 +25,12 @@
       <p class="view-title">Best single game</p>
       <div class="card team-list">
         <div v-for="(item, i) in topSingleGamePerformers" :key="item.team"
-          class="team-search-result" :class="{ 'team-list-row--div': i > 0 }">
+          class="team-search-result" :class="{ 'team-list-row--div': i > 0, 'team-list-row--eliminated': ELIMINATED_TEAMS.has(item.team) }">
           <div class="team-list-row">
             <span class="tg-flag">{{ FLAG_MAP[item.team] ?? '🏳' }}</span>
             <div class="tl-left">
               <span class="tl-name">{{ item.team }}</span>
+              <span v-if="ELIMINATED_TEAMS.has(item.team)" class="tl-eliminated">Eliminated</span>
               <span v-if="store.fifaRankMap[item.team]" class="tl-rank" :class="`tl-rank-t${store.tierMap[item.team]}`">#{{ store.fifaRankMap[item.team] }}</span>
             </div>
             <span class="tg-pts">+{{ item.bd.total }} pts</span>
@@ -66,9 +68,10 @@
       <p class="view-title">Results</p>
       <div class="card team-list">
         <div v-for="(t, i) in searchResults" :key="t.team"
-          class="team-list-row" :class="{ 'team-list-row--div': i > 0 }">
+          class="team-list-row" :class="{ 'team-list-row--div': i > 0, 'team-list-row--eliminated': ELIMINATED_TEAMS.has(t.team) }">
           <div class="tl-left">
             <span class="tl-name">{{ t.team }}</span>
+            <span v-if="ELIMINATED_TEAMS.has(t.team)" class="tl-eliminated">Eliminated</span>
             <span v-if="store.fifaRankMap[t.team]" class="tl-rank" :class="`tl-rank-t${t.tier}`">#{{ store.fifaRankMap[t.team] }}</span>
             <span v-if="GROUP_MAP[t.team]" class="tl-group">Grp {{ GROUP_MAP[t.team] }}</span>
           </div>
@@ -89,9 +92,10 @@
         </div>
         <div class="card team-list">
           <div v-for="(team, i) in store.tierGroups[tier]" :key="team"
-            class="team-list-row" :class="{ 'team-list-row--div': i > 0 }">
+            class="team-list-row" :class="{ 'team-list-row--div': i > 0, 'team-list-row--eliminated': ELIMINATED_TEAMS.has(team) }">
             <div class="tl-left">
               <span class="tl-name">{{ team }}</span>
+              <span v-if="ELIMINATED_TEAMS.has(team)" class="tl-eliminated">Eliminated</span>
               <span v-if="store.fifaRankMap[team]" class="tl-rank" :class="`tl-rank-t${tier}`">#{{ store.fifaRankMap[team] }}</span>
               <span v-if="GROUP_MAP[team]" class="tl-group">Grp {{ GROUP_MAP[team] }}</span>
             </div>
@@ -110,7 +114,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
-import { GROUP_MAP, FLAG_MAP } from '../data/index.js'
+import { GROUP_MAP, FLAG_MAP, ELIMINATED_TEAMS } from '../data/index.js'
 import { matchSlug } from '../utils.js'
 import { matchBreakdownForTeam, matchPointsForTeam } from '../services/points.js'
 
@@ -228,6 +232,9 @@ function tierLabel(t) { return TIER_LABELS[t] }
 .team-list {}
 .team-list-row { display: flex; align-items: center; gap: 10px; padding: 11px 14px; }
 .team-list-row--div { border-top: 1px solid var(--border); }
+.team-list-row--eliminated { opacity: 0.4; }
+.team-list-row--eliminated .tl-name { text-decoration: line-through; }
+.tl-eliminated { font-size: 10px; font-weight: 700; letter-spacing: .04em; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; }
 .tl-left { flex: 1; display: flex; align-items: baseline; gap: 6px; min-width: 0; }
 .tl-name { font-size: 17px; font-weight: 500; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tl-rank { font-size: 12px; font-weight: 700; flex-shrink: 0; }

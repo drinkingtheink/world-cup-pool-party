@@ -61,11 +61,12 @@
           v-for="team in teams"
           :key="team.name"
           class="team-card card"
-          :class="{ 'team-card--conflict': team.groupConflict }"
+          :class="{ 'team-card--conflict': team.groupConflict, 'team-card--eliminated': ELIMINATED_TEAMS.has(team.name) }"
         >
           <div class="team-card-top">
             <span class="team-card-flag">{{ FLAG_MAP[team.name] ?? '🏳' }}</span>
-            <span class="team-card-name">{{ team.name }}</span>
+            <span class="team-card-name" :class="{ 'team-card-name--eliminated': ELIMINATED_TEAMS.has(team.name) }">{{ team.name }}</span>
+            <span v-if="ELIMINATED_TEAMS.has(team.name)" class="team-eliminated-label">Eliminated</span>
             <button v-if="liveMatchByTeam[team.name]" class="team-live-btn" @click="goToLiveMatch(team.name)">● LIVE</button>
             <span class="pill" :class="`pill-t${team.tier}`">T{{ team.tier }}</span>
             <span v-if="store.fifaRankMap[team.name]" class="fifa-badge">FIFA #{{ store.fifaRankMap[team.name] }}</span>
@@ -117,7 +118,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
-import { FLAG_MAP } from '../data/index.js'
+import { FLAG_MAP, ELIMINATED_TEAMS } from '../data/index.js'
 import { matchBreakdownForTeam } from '../services/points.js'
 import { matchSlug } from '../utils.js'
 
@@ -347,6 +348,12 @@ function fmtDate(d) {
   border-color: rgba(255,176,32,0.4);
 }
 .team-card--conflict { border-color: rgba(255,176,32,0.35); }
+.team-card--eliminated { opacity: 0.45; }
+.team-card-name--eliminated { text-decoration: line-through; }
+.team-eliminated-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .04em;
+  color: var(--text-dim); white-space: nowrap; flex-shrink: 0;
+}
 
 .fifa-badge {
   font-size: 12px; font-weight: 700; letter-spacing: .04em;
