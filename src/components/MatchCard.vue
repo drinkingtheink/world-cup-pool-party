@@ -56,12 +56,23 @@
         <span v-for="b in awayBonuses" :key="b.label" class="bonus-tag">{{ b.label }}</span>
       </div>
     </div>
+
+    <div v-if="match.played && !match.snapshot_minute" class="match-pts-row">
+      <span class="match-pts" :class="{ 'match-pts--zero': homeMatchPts === 0 }">
+        +{{ fmt(homeMatchPts) }}<span class="match-pts-unit">pts</span>
+      </span>
+      <span></span>
+      <span class="match-pts match-pts--right" :class="{ 'match-pts--zero': awayMatchPts === 0 }">
+        +{{ fmt(awayMatchPts) }}<span class="match-pts-unit">pts</span>
+      </span>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { FLAG_MAP } from '../data/index.js'
+import { matchPointsForTeam } from '../services/points.js'
 
 const props = defineProps({
   match:       { type: Object,  required: true },
@@ -121,6 +132,18 @@ const allBonuses = computed(() =>
 
 const homeBonuses = computed(() => allBonuses.value.filter(b => b.side === 'home'))
 const awayBonuses = computed(() => allBonuses.value.filter(b => b.side === 'away'))
+
+const homeMatchPts = computed(() =>
+  m.value.played && !m.value.snapshot_minute
+    ? matchPointsForTeam(m.value.home, m.value)
+    : 0
+)
+const awayMatchPts = computed(() =>
+  m.value.played && !m.value.snapshot_minute
+    ? matchPointsForTeam(m.value.away, m.value)
+    : 0
+)
+function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
 </script>
 
 <style scoped>
@@ -188,4 +211,20 @@ const awayBonuses = computed(() => allBonuses.value.filter(b => b.side === 'away
 .bonus-col--home { align-items: flex-start; }
 .bonus-col--away { align-items: flex-end; }
 .bonus-tag { font-size: 12px; color: var(--accent); background: #2a2010; border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
+
+.match-pts-row {
+  display: grid; grid-template-columns: 1fr 60px 1fr;
+  margin-top: 8px; padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.match-pts {
+  font-size: 12px; font-weight: 800; color: var(--green);
+  letter-spacing: .01em;
+}
+.match-pts--zero { color: var(--text-dim); }
+.match-pts--right { text-align: right; }
+.match-pts-unit {
+  font-size: 10px; font-weight: 600; color: var(--text-dim);
+  margin-left: 2px; text-transform: uppercase; letter-spacing: .04em;
+}
 </style>
