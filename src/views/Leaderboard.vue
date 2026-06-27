@@ -162,9 +162,16 @@
           </template>
         </svg>
         <div class="best-days-names">
-          <span v-for="group in topDaysChart.groups" :key="group.name" class="best-days-name">
-            {{ group.name }}
-          </span>
+          <div v-for="group in topDaysChart.groups" :key="group.name" class="best-days-name-col">
+            <span class="best-days-name">{{ group.name }}</span>
+            <div class="best-days-vals">
+              <span
+                v-for="(bar, bi) in group.bars" :key="bi"
+                class="best-days-val"
+                :style="{ color: ['#ffd200','#00e5ff','#bd5fff'][bi] }"
+              >{{ bar.pts }}</span>
+            </div>
+          </div>
         </div>
         <div class="best-days-legend">
           <span class="bd-leg"><span class="bd-dot" style="background:#ffd200"></span>Best day</span>
@@ -1315,15 +1322,17 @@ const topDaysChart = computed(() => {
 /* ── Best Single Days Chart ───────────────────────────────────────── */
 .best-days-card { padding: 14px 14px 12px; margin-bottom: 16px; }
 .best-days-svg { width: 100%; display: block; overflow: visible; }
-.best-days-names {
-  display: flex; margin-top: 8px;
+.best-days-names { display: flex; margin-top: 8px; }
+.best-days-name-col {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  min-width: 0; padding: 0 1px;
 }
 .best-days-name {
-  flex: 1; text-align: center;
   font-size: 11px; font-weight: 700; color: var(--text-dim);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  padding: 0 2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;
 }
+.best-days-vals { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.best-days-val { font-size: 12px; font-weight: 800; line-height: 1; }
 .best-days-legend { display: flex; gap: 14px; margin-top: 10px; }
 .bd-leg { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-dim); }
 .bd-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
