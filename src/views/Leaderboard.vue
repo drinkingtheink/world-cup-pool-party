@@ -77,14 +77,30 @@
           <span class="lb-pts">{{ entry.total }} <span class="lb-pts-label">pts</span></span>
         </div>
 
-        <!-- Expanded team breakdown -->
+        <!-- Expanded team breakdown + match day pts -->
         <transition name="expand">
-          <div v-if="expanded === entry.name" class="lb-breakdown"
-            @click.stop="router.push({ path: '/my-teams', query: { player: entry.name } })">
-            <div v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-team-row">
-              <span class="lb-team-flag">{{ FLAG_MAP[team] ?? '🏳' }}</span>
-              <span class="lb-team-name">{{ team }}</span>
-              <span class="lb-team-pts">{{ entry.breakdown[team] ?? 0 }} pts</span>
+          <div v-if="expanded === entry.name" class="lb-expanded">
+            <div class="lb-breakdown"
+              @click.stop="router.push({ path: '/my-teams', query: { player: entry.name } })">
+              <div v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-team-row">
+                <span class="lb-team-flag">{{ FLAG_MAP[team] ?? '🏳' }}</span>
+                <span class="lb-team-name">{{ team }}</span>
+                <span class="lb-team-pts">{{ entry.breakdown[team] ?? 0 }} pts</span>
+              </div>
+            </div>
+            <div v-if="playerPointsByDate[entry.name]?.length" class="lb-daygrid" @click.stop>
+              <span class="lb-daygrid-label">Points by Day</span>
+              <div class="lb-daygrid-chips">
+                <div
+                  v-for="d in playerPointsByDate[entry.name]"
+                  :key="d.date"
+                  class="lb-day-chip"
+                  :class="{ 'lb-day-chip--zero': d.pts === 0, 'lb-day-chip--high': d.pts >= 10 }"
+                >
+                  <span class="lb-day-date">{{ fmtDate(d.date) }}</span>
+                  <span class="lb-day-pts">+{{ fmt(d.pts) }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </transition>
@@ -322,7 +338,7 @@ import { CalendarDays, ChevronRight, Link2, Check } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
 import { quotes, FLAG_MAP } from '../data/index.js'
 import { matchSlug } from '../utils.js'
-import { calcPlayerPoints } from '../services/points.js'
+import { calcPlayerPoints, matchPointsForTeam } from '../services/points.js'
 
 const router = useRouter()
 const route  = useRoute()
@@ -647,6 +663,27 @@ function ptsPct(entry) {
   const max = store.leaderboard[0]?.total ?? 1
   return max > 0 ? ((entry.total / max) * 100).toFixed(1) : '0'
 }
+
+const playerPointsByDate = computed(() => {
+  const result = {}
+  store.players.forEach(p => {
+    const teams = new Set(playerTeams(p))
+    const byDate = {}
+    store.enrichedMatches.forEach(m => {
+      if (!m.played || m.snapshot_minute) return
+      if (!teams.has(m.home) && !teams.has(m.away)) return
+      if (!byDate[m.date]) byDate[m.date] = 0
+      if (teams.has(m.home)) byDate[m.date] += matchPointsForTeam(m.home, m)
+      if (teams.has(m.away)) byDate[m.date] += matchPointsForTeam(m.away, m)
+    })
+    result[p.name] = Object.entries(byDate)
+      .map(([date, pts]) => ({ date, pts: Math.round(pts * 10) / 10 }))
+      .sort((a, b) => a.date.localeCompare(b.date))
+  })
+  return result
+})
+
+function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
 </script>
 
 <style scoped>
@@ -1165,5 +1202,45 @@ function ptsPct(entry) {
     gap: 4px 16px;
     padding: 10px 20px 16px;
   }
+}
+
+/* ── Match Day Points Grid ────────────────────────────────────────── */
+.lb-daygrid {
+  border-top: 1px solid var(--border);
+  padding: 10px 16px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.lb-daygrid-label {
+  font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.lb-daygrid-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.lb-day-chip {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 5px 9px; border-radius: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  min-width: 54px;
+}
+.lb-day-date {
+  font-size: 9px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-dim); white-space: nowrap;
+}
+.lb-day-pts { font-size: 13px; font-weight: 800; color: var(--green); }
+.lb-day-chip--zero .lb-day-pts { color: var(--text-dim); }
+.lb-day-chip--zero { opacity: 0.5; }
+.lb-day-chip--high .lb-day-pts {
+  background: linear-gradient(90deg, var(--green) 0%, #fff 45%, #afffdc 55%, var(--green) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: lb-day-shimmer 2s linear infinite;
+}
+@keyframes lb-day-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+@media (min-width: 768px) {
+  .lb-daygrid { padding: 10px 20px 16px; }
 }
 </style>
