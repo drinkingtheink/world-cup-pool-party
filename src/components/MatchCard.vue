@@ -58,11 +58,11 @@
     </div>
 
     <div v-if="match.played && !match.snapshot_minute" class="match-pts-row">
-      <span class="match-pts" :class="{ 'match-pts--zero': homeMatchPts === 0 }">
+      <span class="match-pts" :class="{ 'match-pts--zero': homeMatchPts === 0, 'match-pts--shimmer': homeMatchPts >= 10 }">
         +{{ fmt(homeMatchPts) }}<span class="match-pts-unit">pts</span>
       </span>
       <span></span>
-      <span class="match-pts match-pts--right" :class="{ 'match-pts--zero': awayMatchPts === 0 }">
+      <span class="match-pts match-pts--right" :class="{ 'match-pts--zero': awayMatchPts === 0, 'match-pts--shimmer': awayMatchPts >= 10 }">
         +{{ fmt(awayMatchPts) }}<span class="match-pts-unit">pts</span>
       </span>
     </div>
@@ -223,6 +223,18 @@ function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
 }
 .match-pts--zero { color: var(--text-dim); }
 .match-pts--right { text-align: right; }
+.match-pts--shimmer {
+  background: linear-gradient(90deg, var(--green) 0%, #fff 45%, #afffdc 55%, var(--green) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pts-shimmer 2s linear infinite;
+}
+@keyframes pts-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
 .match-pts-unit {
   font-size: 10px; font-weight: 600; color: var(--text-dim);
   margin-left: 2px; text-transform: uppercase; letter-spacing: .04em;
