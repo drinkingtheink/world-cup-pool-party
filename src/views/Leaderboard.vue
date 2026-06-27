@@ -96,6 +96,7 @@
                   :key="d.date"
                   class="lb-day-chip"
                   :class="{ 'lb-day-chip--zero': d.pts === 0, 'lb-day-chip--high': d.pts >= 10 }"
+                  @click.stop="router.push({ path: '/matches', hash: '#date-' + d.date })"
                 >
                   <span class="lb-day-date">{{ fmtDate(d.date) }}</span>
                   <span class="lb-day-pts">+{{ fmt(d.pts) }}</span>
@@ -1219,8 +1220,10 @@ function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
   display: flex; flex-direction: column; align-items: center; gap: 2px;
   padding: 5px 9px; border-radius: 8px;
   background: var(--surface2); border: 1px solid var(--border);
-  min-width: 54px;
+  min-width: 54px; cursor: pointer;
+  transition: border-color .15s;
 }
+.lb-day-chip:hover { border-color: rgba(0,229,255,0.4); }
 .lb-day-date {
   font-size: 9px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
   color: var(--text-dim); white-space: nowrap;

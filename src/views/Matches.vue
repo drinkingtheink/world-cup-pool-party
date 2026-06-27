@@ -12,7 +12,7 @@
     </div>
 
     <template v-for="(group, i) in grouped" :key="group.date">
-      <div class="date-header" :ref="el => { if (isToday(group.date)) todayEl = el }" :class="{ 'date-header--first': i === 0, 'date-header--today': isToday(group.date), 'date-header--past': isPast(group.date) }">
+      <div :id="'date-' + group.date" class="date-header" :ref="el => { if (isToday(group.date)) todayEl = el }" :class="{ 'date-header--first': i === 0, 'date-header--today': isToday(group.date), 'date-header--past': isPast(group.date) }">
         <span class="date-header__text">{{ formatDate(group.date) }}</span>
         <span class="pill date-stage-pill" :class="stagePillClass(group.matches[0]?.stage)">
           <span class="stage-full">{{ group.matches[0]?.stage }}</span>
