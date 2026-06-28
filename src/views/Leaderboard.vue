@@ -1057,7 +1057,9 @@ const topDaysChart = computed(() => {
 
 .leaderboard { display: flex; flex-direction: column; gap: 8px; }
 
-.lb-row { cursor: pointer; transition: border-color .15s; overflow: visible; }
+.lb-row { cursor: pointer; transition: border-color .15s; overflow: visible; position: relative; z-index: 0; }
+.lb-row:has(.lb-tooltip-wrap:hover),
+.lb-row:has(.lb-tooltip-wrap:focus) { z-index: 50; }
 .lb-row--first { border-color: var(--accent); }
 
 .lb-main {
