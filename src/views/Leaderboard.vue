@@ -65,7 +65,7 @@
                 <span v-if="entry.name === pointsLeader" class="lb-setting-pace lb-tooltip-wrap">🏊 Setting the Pace<span class="lb-tooltip">Current points leader</span></span>
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
                 <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap">🎯 In the Chase<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
-                <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
+                <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅🧨<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
                 <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
                 <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap">🧤 Golden Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
