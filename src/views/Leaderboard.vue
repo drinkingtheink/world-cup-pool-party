@@ -1447,13 +1447,13 @@ const topDaysChart = computed(() => {
 .lb-day-chip--zero .lb-day-pts { color: var(--text-dim); }
 .lb-day-chip--zero { opacity: 0.5; }
 .lb-day-chip--high {
-  background: rgba(0,255,159,0.08);
-  border-color: rgba(0,255,159,0.45);
-  box-shadow: 0 0 8px rgba(0,255,159,0.15);
+  background: rgba(255,45,120,0.1);
+  border-color: rgba(189,95,255,0.5);
+  box-shadow: 0 0 10px rgba(255,45,120,0.18), 0 0 4px rgba(189,95,255,0.2);
 }
-.lb-day-chip--high .lb-day-date { color: rgba(0,255,159,0.7); }
+.lb-day-chip--high .lb-day-date { color: rgba(255,130,200,0.85); }
 .lb-day-chip--high .lb-day-pts {
-  background: linear-gradient(90deg, var(--green) 0%, #fff 45%, #afffdc 55%, var(--green) 100%);
+  background: linear-gradient(90deg, #ff2d78 0%, #bd5fff 35%, #ff79c6 55%, #ff2d78 100%);
   background-size: 200% auto;
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
