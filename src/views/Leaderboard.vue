@@ -75,6 +75,7 @@
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
                 <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
                 <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 The Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
+                <span v-if="twoPumpChump.holders.has(entry.name)" class="lb-two-pump lb-tooltip-wrap" tabindex="0">⏱️ 2-Pump Chump<span class="lb-tooltip">Majority of goals scored in the first half</span></span>
                 <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
                 <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap" tabindex="0">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap" tabindex="0">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
@@ -920,6 +921,28 @@ const lateShow = computed(() => {
   return { count: max, holders }
 })
 
+const twoPumpChump = computed(() => {
+  const holders = new Set(
+    store.leaderboard
+      .filter(e => {
+        const teamSet = new Set(e.teams)
+        let first = 0, second = 0
+        for (const m of store.enrichedMatches) {
+          if (!m.played || !m.goals?.length) continue
+          for (const g of m.goals) {
+            const team = g.team === 'home' ? m.home : m.away
+            if (!teamSet.has(team)) continue
+            if (g.minute <= 45) first++
+            else second++
+          }
+        }
+        return first + second > 0 && first > second
+      })
+      .map(e => e.name)
+  )
+  return { holders }
+})
+
 const groundskeeper = computed(() => {
   const counts = store.leaderboard.map(e => ({
     name: e.name,
@@ -1197,6 +1220,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(150,100,255,0.38);
   white-space: nowrap;
   animation: shield-sparkle 3.2s linear infinite;
+}
+
+.lb-two-pump {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,160,20,0.13), rgba(255,210,80,0.2), rgba(255,160,20,0.13));
+  background-size: 200% auto;
+  color: #ffcc44;
+  border: 1px solid rgba(255,180,30,0.38);
+  white-space: nowrap;
+  animation: shield-sparkle 1.4s linear infinite;
 }
 
 .lb-golden-boot-overall {
