@@ -858,7 +858,7 @@ const topDaysChart = computed(() => {
 .lb-tooltip-wrap { position: relative; cursor: default; }
 .lb-tooltip {
   display: none;
-  position: absolute; bottom: calc(100% + 6px); left: 50%;
+  position: absolute; top: calc(100% + 6px); left: 50%;
   transform: translateX(-50%);
   background: var(--surface2); color: var(--text);
   border: 1px solid var(--border);
@@ -867,10 +867,10 @@ const topDaysChart = computed(() => {
   pointer-events: none; z-index: 10;
 }
 .lb-tooltip::after {
-  content: ''; position: absolute; top: 100%; left: 50%;
+  content: ''; position: absolute; bottom: 100%; left: 50%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-top-color: var(--border);
+  border-bottom-color: var(--border);
 }
 .lb-tooltip-wrap:hover .lb-tooltip,
 .lb-tooltip-wrap:focus .lb-tooltip { display: block; }
