@@ -69,6 +69,7 @@
                 <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
                 <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap">🧤 Golden Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
+                <span v-if="coldBoots.holders.has(entry.name)" class="lb-cold-boots lb-tooltip-wrap">🧊 Cold Boots<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
                 <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
                 <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
@@ -808,6 +809,23 @@ const goldenBootGroup = computed(() => {
   return { goals: max, holders }
 })
 
+const coldBoots = computed(() => {
+  const totals = store.leaderboard.map(e => {
+    const teamSet = new Set(e.teams)
+    const scored = store.enrichedMatches
+      .filter(m => m.played && !m.snapshot_minute && m.stage === 'Group Stage')
+      .reduce((sum, m) => {
+        if (teamSet.has(m.home)) sum += Number(m.home_score)
+        if (teamSet.has(m.away)) sum += Number(m.away_score)
+        return sum
+      }, 0)
+    return { name: e.name, scored }
+  })
+  const min = Math.min(...totals.map(t => t.scored))
+  const holders = new Set(totals.filter(t => t.scored === min).map(t => t.name))
+  return { scored: min, holders }
+})
+
 const goldenBoot = computed(() => {
   const totals = calcGoals(null)
   const max = Math.max(...totals.map(t => t.goals))
@@ -1036,6 +1054,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(255,210,0,0.4);
   white-space: nowrap;
   animation: shield-sparkle 2.2s linear infinite;
+}
+
+.lb-cold-boots {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(100,200,255,0.12), rgba(200,240,255,0.2), rgba(100,200,255,0.12));
+  background-size: 200% auto;
+  color: #7ee8ff;
+  border: 1px solid rgba(100,200,255,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 3s linear infinite;
 }
 
 .lb-golden-boot-overall {
