@@ -114,6 +114,9 @@
             <div v-if="playerPointsByDate[entry.name]?.length" class="lb-daygrid" @click.stop>
               <span class="lb-daygrid-label">Points by Day</span>
               <div class="lb-daygrid-chips">
+                <div v-if="lastGroupDate" class="lb-day-divider lb-day-divider--start">
+                  <span class="lb-day-divider-label">Group Stage</span>
+                </div>
                 <template v-for="d in playerPointsByDate[entry.name]" :key="d.date">
                   <div
                     class="lb-day-chip"
@@ -1772,6 +1775,7 @@ const topDaysChart = computed(() => {
   letter-spacing: .1em; text-transform: uppercase;
   margin: 2px 0;
 }
+.lb-day-divider--start { margin-top: 0; }
 .lb-day-divider::before, .lb-day-divider::after {
   content: ''; flex: 1; height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255,45,120,0.4), transparent);
