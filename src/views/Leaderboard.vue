@@ -49,6 +49,7 @@
               <span class="lb-name">{{ entry.name }}</span>
               <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
               <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
+              <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap">📈 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
               <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
               <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
               <button
@@ -733,6 +734,24 @@ const groundskeeper = computed(() => {
   return { count: max, holders }
 })
 
+const trending = computed(() => {
+  const allDates = [...new Set(
+    store.enrichedMatches.filter(m => m.played && !m.snapshot_minute).map(m => m.date)
+  )].sort()
+  const last3 = allDates.slice(-3)
+  const totals = store.leaderboard.map(e => {
+    const pts = last3.reduce((sum, date) => {
+      return sum + (playerPointsByDate.value[e.name] ?? [])
+        .filter(d => d.date === date)
+        .reduce((s, d) => s + d.pts, 0)
+    }, 0)
+    return { name: e.name, pts }
+  })
+  const max = Math.max(...totals.map(t => t.pts))
+  const holders = new Set(totals.filter(t => t.pts === max && max > 0).map(t => t.name))
+  return { pts: max, holders, dates: last3 }
+})
+
 const bestSingleDay = computed(() => {
   let max = 0
   Object.values(playerPointsByDate.value).forEach(days =>
@@ -853,6 +872,17 @@ const topDaysChart = computed(() => {
 @keyframes shield-sparkle {
   0%   { background-position: 200% center; }
   100% { background-position: 0% center; }
+}
+
+.lb-trending {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,45,120,0.13), rgba(255,255,255,0.18), rgba(255,45,120,0.13));
+  background-size: 200% auto;
+  color: #ff6fa0;
+  border: 1px solid rgba(255,45,120,0.32);
+  white-space: nowrap;
+  animation: shield-sparkle 1.8s linear infinite;
 }
 
 .lb-groundskeeper {
