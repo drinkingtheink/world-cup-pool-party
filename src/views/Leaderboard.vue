@@ -76,7 +76,7 @@
                 <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
                 <span v-if="iMeanCmon.holders.has(entry.name)" class="lb-i-mean-cmon lb-tooltip-wrap" tabindex="0">🙄 I Mean, C'mon<span class="lb-tooltip">Top 3 highest-ranked pools by avg FIFA ranking</span></span>
                 <span v-if="bellyFlop.holders.has(entry.name)" class="lb-belly-flop lb-tooltip-wrap" tabindex="0">🫃 Belly Flop<span class="lb-tooltip">Lowest-ranked pool by avg FIFA ranking (avg: #{{ bellyFlop.avg }})</span></span>
-                <span v-if="earlyShower.holders.has(entry.name)" class="lb-early-shower lb-tooltip-wrap" tabindex="0">🚿 Early Shower<span class="lb-tooltip">Most red cards across all teams ({{ earlyShower.count }})</span></span>
+                <span v-if="earlyShower.holders.has(entry.name)" class="lb-dirty-pool-plus lb-tooltip-wrap" tabindex="0">🟥 Dirty Pool+<span class="lb-tooltip">Most red cards across all teams ({{ earlyShower.count }})</span></span>
                 <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 The Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
                 <span v-if="twoPumpChump.holders.has(entry.name)" class="lb-two-pump lb-tooltip-wrap" tabindex="0">💦 Early Finisher<span class="lb-tooltip">Majority of goals scored in the first half</span></span>
                 <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
@@ -1281,7 +1281,7 @@ const topDaysChart = computed(() => {
   animation: shield-sparkle 2.8s linear infinite;
 }
 
-.lb-early-shower {
+.lb-dirty-pool-plus {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
   padding: 2px 7px; border-radius: 20px;
   background: linear-gradient(90deg, rgba(220,30,30,0.13), rgba(255,80,80,0.2), rgba(220,30,30,0.13));
