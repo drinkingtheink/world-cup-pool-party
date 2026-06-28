@@ -77,6 +77,7 @@
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
                 <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
                 <span v-if="iMeanCmon.holders.has(entry.name)" class="lb-i-mean-cmon lb-tooltip-wrap" tabindex="0">🙄 I mean...C'mon<span class="lb-tooltip">Top 3 highest-ranked pools by avg FIFA ranking</span></span>
+                <span v-if="madGenius.holders.has(entry.name)" class="lb-mad-genius lb-tooltip-wrap" tabindex="0">🤯 Mad Genius?<span class="lb-tooltip">Least likely pool to win the tournament based on pre-tournament odds</span></span>
                 <span v-if="bellyFlop.holders.has(entry.name)" class="lb-belly-flop lb-tooltip-wrap" tabindex="0">🫃 Belly Flop<span class="lb-tooltip">Lowest-ranked pool by avg FIFA ranking (avg: #{{ bellyFlop.avg }})</span></span>
                 <span v-if="earlyShower.holders.has(entry.name)" class="lb-dirty-pool-plus lb-tooltip-wrap" tabindex="0">🟥 Dirty Pool+<span class="lb-tooltip">Most red cards across all teams ({{ earlyShower.count }})</span></span>
                 <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 The Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
@@ -927,6 +928,7 @@ const lateShow = computed(() => {
 })
 
 const fifaRankMap = Object.fromEntries(tiers.map(t => [t.team, t.fifaRank]))
+const oddsMap = Object.fromEntries(tiers.map(t => [t.team, t.odds]))
 
 const clinical = computed(() => {
   const rates = store.leaderboard.map(e => {
@@ -943,6 +945,16 @@ const clinical = computed(() => {
   const max = Math.max(...rates.map(r => r.gpg))
   const holders = new Set(rates.filter(r => r.gpg === max && max > 0).map(r => r.name))
   return { holders, gpg: max.toFixed(2) }
+})
+
+const madGenius = computed(() => {
+  const avgs = store.leaderboard.map(e => {
+    const avg = e.teams.reduce((sum, t) => sum + (oddsMap[t] ?? 0), 0) / e.teams.length
+    return { name: e.name, avg }
+  })
+  const max = Math.max(...avgs.map(a => a.avg))
+  const holders = new Set(avgs.filter(a => a.avg === max).map(a => a.name))
+  return { holders }
 })
 
 const herdMentality = computed(() => {
@@ -1311,6 +1323,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(255,210,0,0.38);
   white-space: nowrap;
   animation: shield-sparkle 2.6s linear infinite;
+}
+
+.lb-mad-genius {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(160,0,255,0.14), rgba(220,100,255,0.22), rgba(160,0,255,0.14));
+  background-size: 200% auto;
+  color: #d966ff;
+  border: 1px solid rgba(180,40,255,0.42);
+  white-space: nowrap;
+  animation: shield-sparkle 0.9s linear infinite;
 }
 
 .lb-i-mean-cmon {
