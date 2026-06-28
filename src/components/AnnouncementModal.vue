@@ -60,6 +60,18 @@ onMounted(() => {
 function dismiss() {
   if (!announcement.alwaysShow) localStorage.setItem(STORAGE_KEY, '1')
   visible.value = false
+  fetch('/.netlify/functions/notify-dismiss', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      announcementId: announcement.id,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      screen: `${screen.width}×${screen.height}`,
+      language: navigator.language,
+    }),
+  }).catch(() => {})
 }
 </script>
 
