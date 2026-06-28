@@ -49,6 +49,7 @@
               <span class="lb-name">{{ entry.name }}</span>
               <span v-if="entry.name === 'Jason'" class="lb-shield" title="Community Shield">🏆 Community Shield</span>
               <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day" title="Best single-day score">🥇 {{ bestSingleDay.pts }}</span>
+              <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day" title="2nd best single-day score">🥈 {{ secondBestSingleDay.pts }}</span>
               <button
                 v-if="playerLiveMatches[entry.name]?.length"
                 class="lb-live-btn"
@@ -734,6 +735,20 @@ const bestSingleDay = computed(() => {
   return { pts: max, holders }
 })
 
+const secondBestSingleDay = computed(() => {
+  const { pts: first } = bestSingleDay.value
+  let second = 0
+  Object.values(playerPointsByDate.value).forEach(days =>
+    days.forEach(d => { if (d.pts > second && d.pts < first) second = d.pts })
+  )
+  const holders = new Set(
+    Object.entries(playerPointsByDate.value)
+      .filter(([, days]) => days.some(d => d.pts === second))
+      .map(([name]) => name)
+  )
+  return { pts: second, holders }
+})
+
 function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
 
 const topDaysChart = computed(() => {
@@ -838,6 +853,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(0,255,159,0.35);
   white-space: nowrap;
   animation: shield-sparkle 2s linear infinite;
+}
+
+.lb-second-day {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,229,255,0.12), rgba(255,255,255,0.18), rgba(0,229,255,0.12));
+  background-size: 200% auto;
+  color: var(--cyan);
+  border: 1px solid rgba(0,229,255,0.3);
+  white-space: nowrap;
+  animation: shield-sparkle 2.4s linear infinite;
 }
 .lb-flags { display: flex; gap: 3px; flex-wrap: nowrap; }
 .lb-flag { font-size: 24px; line-height: 1; cursor: default; flex-shrink: 0; display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
