@@ -70,6 +70,7 @@
                 <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap">🧤 Golden Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
                 <span v-if="coldBoots.holders.has(entry.name)" class="lb-cold-boots lb-tooltip-wrap">🧊 Cold Boots<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
+                <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
                 <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
                 <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
@@ -833,6 +834,26 @@ const goldenBoot = computed(() => {
   return { goals: max, holders }
 })
 
+const comebackKid = computed(() => {
+  const comebackWinners = store.enrichedMatches
+    .filter(m => m.played && !m.snapshot_minute && m.goals?.length > 0)
+    .flatMap(m => {
+      const homeScore = Number(m.home_score)
+      const awayScore = Number(m.away_score)
+      if (homeScore === awayScore) return []
+      const winner = homeScore > awayScore ? 'home' : 'away'
+      if (m.goals[0].team === winner) return []
+      return [winner === 'home' ? m.home : m.away]
+    })
+  const counts = store.leaderboard.map(e => {
+    const teamSet = new Set(e.teams)
+    return { name: e.name, count: comebackWinners.filter(t => teamSet.has(t)).length }
+  })
+  const max = Math.max(...counts.map(c => c.count))
+  const holders = new Set(counts.filter(c => c.count === max && max > 0).map(c => c.name))
+  return { count: max, holders }
+})
+
 const groundskeeper = computed(() => {
   const counts = store.leaderboard.map(e => ({
     name: e.name,
@@ -1065,6 +1086,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(100,200,255,0.35);
   white-space: nowrap;
   animation: shield-sparkle 3s linear infinite;
+}
+
+.lb-comeback {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(80,255,150,0.12), rgba(200,255,220,0.2), rgba(80,255,150,0.12));
+  background-size: 200% auto;
+  color: #4dff9e;
+  border: 1px solid rgba(80,255,150,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 2.4s linear infinite;
 }
 
 .lb-golden-boot-overall {
