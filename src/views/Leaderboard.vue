@@ -1230,7 +1230,7 @@ const topDaysChart = computed(() => {
   background: var(--surface2); color: var(--text);
   border: 1px solid var(--border);
   font-size: 11px; font-weight: 500; letter-spacing: 0;
-  white-space: normal; max-width: 220px; padding: 4px 8px; border-radius: 6px;
+  white-space: normal; max-width: min(260px, calc(100vw - 32px)); padding: 4px 8px; border-radius: 6px;
   pointer-events: none; z-index: 10; line-height: 1.4;
 }
 .lb-tooltip::after {
@@ -1693,7 +1693,7 @@ const topDaysChart = computed(() => {
   }
   .lb-header-pts { text-align: right; padding-right: 4px; }
 
-  .lb-row { position: relative; overflow: hidden; }
+  .lb-row { position: relative; overflow: visible; }
   .lb-row::before {
     content: '';
     position: absolute; left: 0; top: 0; bottom: 0;
