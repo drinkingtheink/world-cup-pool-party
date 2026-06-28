@@ -48,8 +48,8 @@
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
               <span v-if="entry.name === 'Jason'" class="lb-shield" title="Community Shield">🏆 Community Shield</span>
-              <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day" title="Best single-day score">🥇 {{ bestSingleDay.pts }}</span>
-              <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day" title="2nd best single-day score">🥈 {{ secondBestSingleDay.pts }}</span>
+              <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
+              <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
               <button
                 v-if="playerLiveMatches[entry.name]?.length"
                 class="lb-live-btn"
@@ -854,6 +854,26 @@ const topDaysChart = computed(() => {
   white-space: nowrap;
   animation: shield-sparkle 2s linear infinite;
 }
+
+.lb-tooltip-wrap { position: relative; cursor: default; }
+.lb-tooltip {
+  display: none;
+  position: absolute; bottom: calc(100% + 6px); left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface2); color: var(--text);
+  border: 1px solid var(--border);
+  font-size: 11px; font-weight: 500; letter-spacing: 0;
+  white-space: nowrap; padding: 4px 8px; border-radius: 6px;
+  pointer-events: none; z-index: 10;
+}
+.lb-tooltip::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--border);
+}
+.lb-tooltip-wrap:hover .lb-tooltip,
+.lb-tooltip-wrap:focus .lb-tooltip { display: block; }
 
 .lb-second-day {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
