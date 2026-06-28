@@ -949,12 +949,24 @@ const clinical = computed(() => {
 })
 
 const madGenius = computed(() => {
-  const bests = store.leaderboard.map(e => {
-    const best = Math.min(...e.teams.map(t => oddsMap[t] ?? 0))
-    return { name: e.name, best }
-  })
-  const max = Math.max(...bests.map(b => b.best))
-  const holders = new Set(bests.filter(b => b.best === max).map(b => b.name))
+  const holders = new Set()
+
+  // Worst best-team odds
+  const bests = store.leaderboard.map(e => ({
+    name: e.name,
+    best: Math.min(...e.teams.map(t => oddsMap[t] ?? 0)),
+  }))
+  const maxOdds = Math.max(...bests.map(b => b.best))
+  bests.filter(b => b.best === maxOdds).forEach(b => holders.add(b.name))
+
+  // Worst avg FIFA rank (lowest strength on paper)
+  const avgs = store.leaderboard.map(e => ({
+    name: e.name,
+    avg: e.teams.reduce((s, t) => s + (fifaRankMap[t] ?? 99), 0) / e.teams.length,
+  }))
+  const maxRank = Math.max(...avgs.map(a => a.avg))
+  avgs.filter(a => a.avg === maxRank).forEach(a => holders.add(a.name))
+
   return { holders }
 })
 
