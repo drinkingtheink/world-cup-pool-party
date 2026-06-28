@@ -114,16 +114,19 @@
             <div v-if="playerPointsByDate[entry.name]?.length" class="lb-daygrid" @click.stop>
               <span class="lb-daygrid-label">Points by Day</span>
               <div class="lb-daygrid-chips">
-                <div
-                  v-for="d in playerPointsByDate[entry.name]"
-                  :key="d.date"
-                  class="lb-day-chip"
-                  :class="{ 'lb-day-chip--zero': d.pts === 0, 'lb-day-chip--high': d.pts >= 10 && d.pts < 20, 'lb-day-chip--ultra': d.pts >= 20 }"
-                  @click.stop="router.push({ path: '/matches', hash: '#date-' + d.date })"
-                >
-                  <span class="lb-day-date">{{ fmtDate(d.date) }}</span>
-                  <span class="lb-day-pts">+{{ fmt(d.pts) }}</span>
-                </div>
+                <template v-for="d in playerPointsByDate[entry.name]" :key="d.date">
+                  <div
+                    class="lb-day-chip"
+                    :class="{ 'lb-day-chip--zero': d.pts === 0, 'lb-day-chip--high': d.pts >= 10 && d.pts < 20, 'lb-day-chip--ultra': d.pts >= 20 }"
+                    @click.stop="router.push({ path: '/matches', hash: '#date-' + d.date })"
+                  >
+                    <span class="lb-day-date">{{ fmtDate(d.date) }}</span>
+                    <span class="lb-day-pts">+{{ fmt(d.pts) }}</span>
+                  </div>
+                  <div v-if="lastGroupDate && d.date === lastGroupDate" class="lb-day-divider">
+                    <span class="lb-day-divider-label">Knockout Rounds</span>
+                  </div>
+                </template>
               </div>
             </div>
           </div>
@@ -730,6 +733,14 @@ function ptsPct(entry) {
   const max = store.leaderboard[0]?.total ?? 1
   return max > 0 ? ((entry.total / max) * 100).toFixed(1) : '0'
 }
+
+const lastGroupDate = computed(() => {
+  const dates = store.enrichedMatches
+    .filter(m => m.stage === 'Group Stage')
+    .map(m => m.date)
+    .sort()
+  return dates[dates.length - 1] ?? null
+})
 
 const playerPointsByDate = computed(() => {
   const result = {}
@@ -1755,6 +1766,16 @@ const topDaysChart = computed(() => {
   color: var(--text-dim);
 }
 .lb-daygrid-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.lb-day-divider {
+  width: 100%; display: flex; align-items: center; gap: 6px;
+  color: var(--accent); font-size: 9px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  margin: 2px 0;
+}
+.lb-day-divider::before, .lb-day-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,45,120,0.4), transparent);
+}
 .lb-day-chip {
   display: flex; flex-direction: column; align-items: center; gap: 2px;
   padding: 5px 9px; border-radius: 8px;
