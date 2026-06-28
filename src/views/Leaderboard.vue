@@ -75,6 +75,7 @@
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
                 <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
                 <span v-if="bellyFlop.holders.has(entry.name)" class="lb-belly-flop lb-tooltip-wrap" tabindex="0">🫃 Belly Flop<span class="lb-tooltip">Lowest-ranked pool by avg FIFA ranking (avg: #{{ bellyFlop.avg }})</span></span>
+                <span v-if="earlyShower.holders.has(entry.name)" class="lb-early-shower lb-tooltip-wrap" tabindex="0">🚿 Early Shower<span class="lb-tooltip">Most red cards across all teams ({{ earlyShower.count }})</span></span>
                 <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 The Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
                 <span v-if="twoPumpChump.holders.has(entry.name)" class="lb-two-pump lb-tooltip-wrap" tabindex="0">💦 2-Pump Chump<span class="lb-tooltip">Majority of goals scored in the first half</span></span>
                 <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
@@ -935,6 +936,26 @@ const bellyFlop = computed(() => {
   return { holders, avg: Math.round(max) }
 })
 
+const earlyShower = computed(() => {
+  const counts = store.leaderboard.map(e => {
+    const teamSet = new Set(e.teams)
+    const reds = store.enrichedMatches
+      .filter(m => m.played && m.cards?.length)
+      .reduce((sum, m) => {
+        for (const c of m.cards) {
+          if (c.type !== 'red') continue
+          const team = c.team === 'home' ? m.home : m.away
+          if (teamSet.has(team)) sum++
+        }
+        return sum
+      }, 0)
+    return { name: e.name, reds }
+  })
+  const max = Math.max(...counts.map(c => c.reds))
+  const holders = new Set(counts.filter(c => c.reds === max && max > 0).map(c => c.name))
+  return { count: max, holders }
+})
+
 const twoPumpChump = computed(() => {
   const holders = new Set(
     store.leaderboard
@@ -1236,6 +1257,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(0,180,240,0.38);
   white-space: nowrap;
   animation: shield-sparkle 2.8s linear infinite;
+}
+
+.lb-early-shower {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(220,30,30,0.13), rgba(255,80,80,0.2), rgba(220,30,30,0.13));
+  background-size: 200% auto;
+  color: #ff6060;
+  border: 1px solid rgba(220,40,40,0.4);
+  white-space: nowrap;
+  animation: shield-sparkle 2s linear infinite;
 }
 
 .lb-late-show {
