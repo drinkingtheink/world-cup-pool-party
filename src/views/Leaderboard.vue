@@ -47,6 +47,18 @@
           <div class="lb-center">
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
+              <button
+                v-if="playerLiveMatches[entry.name]?.length"
+                class="lb-live-btn"
+                @click.stop="router.push({ path: '/matches', hash: '#' + matchSlug(playerLiveMatches[entry.name][0]) })"
+                :title="playerLiveMatches[entry.name].map(m => `${m.home} vs ${m.away}`).join(', ')"
+              >
+                <span class="lb-live-dot"></span>
+                <span v-for="m in playerLiveMatches[entry.name]" :key="m.home + m.away" class="lb-live-flag">
+                  {{ FLAG_MAP[entry.teams.find(t => t === m.home || t === m.away)] ?? '🏳' }}
+                </span>
+                LIVE
+              </button>
             </div>
             <div class="lb-badges">
               <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
@@ -61,24 +73,12 @@
               <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
               <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
               <span v-if="!entry.teams.includes('USA')" class="lb-sus lb-tooltip-wrap">👀 sus<span class="lb-tooltip">Did not pick the USA. The US Government has been notified.</span></span>
-              <button
-                v-if="playerLiveMatches[entry.name]?.length"
-                class="lb-live-btn"
-                @click.stop="router.push({ path: '/matches', hash: '#' + matchSlug(playerLiveMatches[entry.name][0]) })"
-                :title="playerLiveMatches[entry.name].map(m => `${m.home} vs ${m.away}`).join(', ')"
-              >
-                <span class="lb-live-dot"></span>
-                <span v-for="m in playerLiveMatches[entry.name]" :key="m.home + m.away" class="lb-live-flag">
-                  {{ FLAG_MAP[entry.teams.find(t => t === m.home || t === m.away)] ?? '🏳' }}
-                </span>
-                LIVE
-              </button>
-              <span class="lb-today-tomorrow">
-                <span class="lb-tt-label">MATCHES:</span> {{ playerMatchDays[entry.name].today }} Today
-                <span class="lb-tt-sep">/</span>
-                {{ playerMatchDays[entry.name].tomorrow }} Tomorrow
-              </span>
             </div>
+            <span class="lb-today-tomorrow">
+              <span class="lb-tt-label">MATCHES:</span> {{ playerMatchDays[entry.name].today }} Today
+              <span class="lb-tt-sep">/</span>
+              {{ playerMatchDays[entry.name].tomorrow }} Tomorrow
+            </span>
             <div class="lb-flags">
               <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :class="{ 'lb-flag--eliminated': ELIMINATED_TEAMS.has(team) }" :title="team"><span class="lb-flag-emoji">{{ FLAG_MAP[team] ?? '🏳' }}</span><span v-if="ELIMINATED_TEAMS.has(team)" class="lb-flag-x">✕</span></span>
             </div>
@@ -1110,14 +1110,9 @@ const topDaysChart = computed(() => {
 .lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
 .lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
 
-.lb-name-row {
-  display: flex; align-items: center; gap: 8px;
-}
+.lb-name-row { display: flex; align-items: center; gap: 8px; }
 
-.lb-badges {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
-  margin-top: 4px;
-}
+.lb-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 4px; }
 
 .lb-live-btn {
   display: inline-flex; align-items: center; gap: 5px;
