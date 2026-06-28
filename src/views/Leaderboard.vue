@@ -62,6 +62,7 @@
                 </button>
               </div>
               <div class="lb-badges">
+                <span v-if="entry.name === pointsLeader" class="lb-setting-pace lb-tooltip-wrap">🏊 Setting the Pace<span class="lb-tooltip">Current points leader</span></span>
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
                 <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap">🎯 In the Chase<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
                 <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
@@ -768,6 +769,8 @@ const goldenGlove = computed(() => {
   return { conceded: min, holders }
 })
 
+const pointsLeader = computed(() => store.leaderboard[0]?.name ?? null)
+
 const IN_THE_CHASE_THRESHOLD = 10
 
 const inTheChase = computed(() => {
@@ -960,6 +963,17 @@ const topDaysChart = computed(() => {
 @keyframes shield-sparkle {
   0%   { background-position: 200% center; }
   100% { background-position: 0% center; }
+}
+
+.lb-setting-pace {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,229,255,0.15), rgba(255,255,255,0.22), rgba(0,229,255,0.15));
+  background-size: 200% auto;
+  color: var(--cyan);
+  border: 1px solid rgba(0,229,255,0.45);
+  white-space: nowrap;
+  animation: shield-sparkle 1.5s linear infinite;
 }
 
 .lb-in-the-chase {
