@@ -48,6 +48,7 @@
             <div class="lb-name-row">
               <div class="lb-name-line">
                 <span class="lb-name">{{ entry.name }}</span>
+                <span v-if="trending.holders.has(entry.name)" class="lb-trending-fire" aria-hidden="true">🔥</span>
                 <button
                   v-if="playerLiveMatches[entry.name]?.length"
                   class="lb-live-btn"
@@ -1009,6 +1010,7 @@ const topDaysChart = computed(() => {
 
 .lb-center { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
+.lb-trending-fire { font-size: 16px; line-height: 1; }
 
 .lb-shield {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
