@@ -67,6 +67,7 @@
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
                 <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap">🎯 In the Chase<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
                 <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅🇺🇸<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
+                <span v-if="entry.teams.includes('England')" class="lb-imperialism lb-tooltip-wrap">👌🏴󠁧󠁢󠁥󠁮󠁧󠁿 Ok with Imperialism<span class="lb-tooltip">This player is admitting their own complicity with the historical imperialistic crimes of England</span></span>
                 <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
                 <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap">🧤 Golden Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
@@ -1097,6 +1098,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(0,229,255,0.4);
   white-space: nowrap; cursor: default;
   filter: drop-shadow(0 0 5px rgba(0,229,255,0.35));
+}
+
+.lb-imperialism {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(180,20,20,0.14), rgba(220,80,80,0.2), rgba(180,20,20,0.14));
+  background-size: 200% auto;
+  color: #e87878;
+  border: 1px solid rgba(200,50,50,0.38);
+  white-space: nowrap;
+  animation: shield-sparkle 3.5s linear infinite;
 }
 
 .lb-golden-glove {
