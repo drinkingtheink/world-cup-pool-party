@@ -71,6 +71,7 @@
                 <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap" tabindex="0">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
                 <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap" tabindex="0">🧤 Golden Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
+                <span v-if="clinical.holders.has(entry.name)" class="lb-clinical lb-tooltip-wrap" tabindex="0">🎯 Clinical<span class="lb-tooltip">Most goals per game across all teams ({{ clinical.gpg }} g/g)</span></span>
                 <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap" tabindex="0">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
                 <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
@@ -926,6 +927,23 @@ const lateShow = computed(() => {
 
 const fifaRankMap = Object.fromEntries(tiers.map(t => [t.team, t.fifaRank]))
 
+const clinical = computed(() => {
+  const rates = store.leaderboard.map(e => {
+    const teamSet = new Set(e.teams)
+    let goals = 0, games = 0
+    for (const m of store.enrichedMatches) {
+      if (!m.played || m.snapshot_minute) continue
+      if (teamSet.has(m.home)) { goals += Number(m.home_score); games++ }
+      if (teamSet.has(m.away)) { goals += Number(m.away_score); games++ }
+    }
+    const gpg = games ? goals / games : 0
+    return { name: e.name, gpg }
+  })
+  const max = Math.max(...rates.map(r => r.gpg))
+  const holders = new Set(rates.filter(r => r.gpg === max && max > 0).map(r => r.name))
+  return { holders, gpg: max.toFixed(2) }
+})
+
 const iMeanCmon = computed(() => {
   const avgs = store.leaderboard.map(e => {
     const ranks = e.teams.map(t => fifaRankMap[t] ?? 99)
@@ -1213,6 +1231,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(0,255,159,0.35);
   white-space: nowrap;
   animation: shield-sparkle 2.3s linear infinite;
+}
+
+.lb-clinical {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,80,0,0.13), rgba(255,140,60,0.2), rgba(255,80,0,0.13));
+  background-size: 200% auto;
+  color: #ff9040;
+  border: 1px solid rgba(255,100,20,0.4);
+  white-space: nowrap;
+  animation: shield-sparkle 1.8s linear infinite;
 }
 
 .lb-golden-boot {
