@@ -41,11 +41,13 @@ const todayMatches = computed(() =>
 )
 
 onMounted(() => {
-  if (announcement.enabled && !sessionStorage.getItem(STORAGE_KEY)) visible.value = true
+  if (announcement.enabled && (announcement.alwaysShow || !sessionStorage.getItem(STORAGE_KEY))) {
+    visible.value = true
+  }
 })
 
 function dismiss() {
-  sessionStorage.setItem(STORAGE_KEY, '1')
+  if (!announcement.alwaysShow) sessionStorage.setItem(STORAGE_KEY, '1')
   visible.value = false
 }
 </script>
