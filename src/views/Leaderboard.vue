@@ -100,7 +100,7 @@
                   v-for="d in playerPointsByDate[entry.name]"
                   :key="d.date"
                   class="lb-day-chip"
-                  :class="{ 'lb-day-chip--zero': d.pts === 0, 'lb-day-chip--high': d.pts >= 10 }"
+                  :class="{ 'lb-day-chip--zero': d.pts === 0, 'lb-day-chip--high': d.pts >= 10 && d.pts < 20, 'lb-day-chip--ultra': d.pts >= 20 }"
                   @click.stop="router.push({ path: '/matches', hash: '#date-' + d.date })"
                 >
                   <span class="lb-day-date">{{ fmtDate(d.date) }}</span>
@@ -1459,6 +1459,20 @@ const topDaysChart = computed(() => {
   -webkit-text-fill-color: transparent;
   animation: lb-day-shimmer 2s linear infinite;
 }
+.lb-day-chip--ultra {
+  background: rgba(255,120,0,0.12);
+  border-color: rgba(255,160,0,0.55);
+  box-shadow: 0 0 12px rgba(255,100,0,0.25), 0 0 4px rgba(255,200,0,0.2);
+}
+.lb-day-chip--ultra .lb-day-date { color: rgba(255,180,80,0.9); }
+.lb-day-chip--ultra .lb-day-pts {
+  background: linear-gradient(90deg, #ff4500 0%, #ffb300 40%, #ff8c00 60%, #ff4500 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: lb-day-shimmer 1.6s linear infinite;
+}
+
 @keyframes lb-day-shimmer {
   0%   { background-position: 200% center; }
   100% { background-position: -200% center; }
