@@ -912,10 +912,10 @@ const topDaysChart = computed(() => {
 .lb-real-american {
   font-size: 14px; line-height: 1;
   padding: 3px 7px; border-radius: 20px;
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.4);
+  background: rgba(0,229,255,0.12);
+  border: 1px solid rgba(0,229,255,0.4);
   white-space: nowrap; cursor: default;
-  filter: drop-shadow(0 0 4px rgba(255,255,255,0.3));
+  filter: drop-shadow(0 0 5px rgba(0,229,255,0.35));
 }
 
 .lb-golden-boot {
