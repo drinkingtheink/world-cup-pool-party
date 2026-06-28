@@ -47,7 +47,7 @@
           <div class="lb-center">
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
-              <span v-if="entry.name === 'Jason'" class="lb-shield" title="Community Shield">🏅 Community Shield</span>
+              <span v-if="entry.name === 'Jason'" class="lb-shield" title="Community Shield">🏆 Community Shield</span>
               <button
                 v-if="playerLiveMatches[entry.name]?.length"
                 class="lb-live-btn"
