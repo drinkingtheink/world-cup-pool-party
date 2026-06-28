@@ -74,6 +74,7 @@
                 <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap" tabindex="0">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
                 <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
+                <span v-if="bellyFlop.holders.has(entry.name)" class="lb-belly-flop lb-tooltip-wrap" tabindex="0">🫃 Belly Flop<span class="lb-tooltip">Lowest-ranked pool by avg FIFA ranking (avg: #{{ bellyFlop.avg }})</span></span>
                 <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 The Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
                 <span v-if="twoPumpChump.holders.has(entry.name)" class="lb-two-pump lb-tooltip-wrap" tabindex="0">💦 2-Pump Chump<span class="lb-tooltip">Majority of goals scored in the first half</span></span>
                 <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
@@ -402,7 +403,7 @@ import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { CalendarDays, ChevronRight, Link2, Check } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
-import { quotes, FLAG_MAP, ELIMINATED_TEAMS } from '../data/index.js'
+import { quotes, FLAG_MAP, ELIMINATED_TEAMS, tiers } from '../data/index.js'
 import { matchSlug } from '../utils.js'
 import { calcPlayerPoints, matchPointsForTeam } from '../services/points.js'
 
@@ -921,6 +922,19 @@ const lateShow = computed(() => {
   return { count: max, holders }
 })
 
+const fifaRankMap = Object.fromEntries(tiers.map(t => [t.team, t.fifaRank]))
+
+const bellyFlop = computed(() => {
+  const avgs = store.leaderboard.map(e => {
+    const ranks = e.teams.map(t => fifaRankMap[t] ?? 99)
+    const avg = ranks.reduce((a, b) => a + b, 0) / ranks.length
+    return { name: e.name, avg }
+  })
+  const max = Math.max(...avgs.map(a => a.avg))
+  const holders = new Set(avgs.filter(a => a.avg === max).map(a => a.name))
+  return { holders, avg: Math.round(max) }
+})
+
 const twoPumpChump = computed(() => {
   const holders = new Set(
     store.leaderboard
@@ -1211,6 +1225,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(255,210,0,0.38);
   white-space: nowrap;
   animation: shield-sparkle 2.6s linear infinite;
+}
+
+.lb-belly-flop {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,160,220,0.13), rgba(80,210,255,0.2), rgba(0,160,220,0.13));
+  background-size: 200% auto;
+  color: #4dd4ff;
+  border: 1px solid rgba(0,180,240,0.38);
+  white-space: nowrap;
+  animation: shield-sparkle 2.8s linear infinite;
 }
 
 .lb-late-show {
