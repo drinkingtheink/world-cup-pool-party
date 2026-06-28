@@ -49,6 +49,7 @@
               <span class="lb-name">{{ entry.name }}</span>
               <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
               <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
+              <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
               <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
               <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
               <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
@@ -727,6 +728,22 @@ const playerPointsByDate = computed(() => {
   return result
 })
 
+const EUROPEAN_TEAMS = new Set([
+  'England','Germany','Norway','Scotland','France','Netherlands',
+  'Croatia','Switzerland','Spain','Sweden','Czechia',
+  'Bosnia & Herzegovina','Portugal','Belgium','Austria','Türkiye',
+])
+
+const ballsy = computed(() => {
+  const counts = store.leaderboard.map(e => ({
+    name: e.name,
+    count: e.teams.filter(t => EUROPEAN_TEAMS.has(t)).length,
+  }))
+  const avg = counts.reduce((s, c) => s + c.count, 0) / counts.length
+  const holders = new Set(counts.filter(c => c.count < avg).map(c => c.name))
+  return { avg: Math.round(avg * 10) / 10, holders }
+})
+
 const tournamentComplete = computed(() =>
   store.enrichedMatches.some(m => m.stage === 'Final' && m.played)
 )
@@ -907,6 +924,17 @@ const topDaysChart = computed(() => {
 @keyframes shield-sparkle {
   0%   { background-position: 200% center; }
   100% { background-position: 0% center; }
+}
+
+.lb-ballsy {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,140,0,0.13), rgba(255,255,255,0.18), rgba(255,140,0,0.13));
+  background-size: 200% auto;
+  color: #ff9d3a;
+  border: 1px solid rgba(255,140,0,0.38);
+  white-space: nowrap;
+  animation: shield-sparkle 2.5s linear infinite;
 }
 
 .lb-real-american {
