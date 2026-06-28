@@ -13,7 +13,7 @@
             <tbody>
               <tr v-for="row in announcement.multipliers" :key="row.stage">
                 <td>{{ row.stage }}</td>
-                <td class="modal-table-mul">{{ row.multiplier }}</td>
+                <td class="modal-table-mul"><span class="pill" :class="row.pillClass">{{ row.multiplier }}</span></td>
               </tr>
             </tbody>
           </table>
@@ -107,7 +107,7 @@ function dismiss() {
 }
 .modal-table td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text); }
 .modal-table tr:last-child td { border-bottom: none; }
-.modal-table-mul { font-weight: 800; color: var(--accent); text-align: right; }
+.modal-table-mul { text-align: right; }
 
 .modal-matches {
   flex: 1; overflow-y: auto; border-radius: 0;
