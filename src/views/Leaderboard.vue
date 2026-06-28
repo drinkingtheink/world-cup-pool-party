@@ -948,12 +948,12 @@ const clinical = computed(() => {
 })
 
 const madGenius = computed(() => {
-  const avgs = store.leaderboard.map(e => {
-    const avg = e.teams.reduce((sum, t) => sum + (oddsMap[t] ?? 0), 0) / e.teams.length
-    return { name: e.name, avg }
+  const bests = store.leaderboard.map(e => {
+    const best = Math.min(...e.teams.map(t => oddsMap[t] ?? 0))
+    return { name: e.name, best }
   })
-  const max = Math.max(...avgs.map(a => a.avg))
-  const holders = new Set(avgs.filter(a => a.avg === max).map(a => a.name))
+  const max = Math.max(...bests.map(b => b.best))
+  const holders = new Set(bests.filter(b => b.best === max).map(b => b.name))
   return { holders }
 })
 
