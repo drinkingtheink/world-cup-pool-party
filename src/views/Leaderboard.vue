@@ -47,6 +47,7 @@
           <div class="lb-center">
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
+              <span v-if="entry.name === 'Jason'" class="lb-shield" title="Community Shield">🏅 Community Shield</span>
               <button
                 v-if="playerLiveMatches[entry.name]?.length"
                 class="lb-live-btn"
@@ -798,6 +799,21 @@ const topDaysChart = computed(() => {
 
 .lb-center { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
+
+.lb-shield {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,210,0,0.18), rgba(255,255,255,0.22), rgba(255,210,0,0.18));
+  background-size: 200% auto;
+  color: #ffd200;
+  border: 1px solid rgba(255,210,0,0.4);
+  white-space: nowrap;
+  animation: shield-sparkle 2s linear infinite;
+}
+@keyframes shield-sparkle {
+  0%   { background-position: 200% center; }
+  100% { background-position: 0% center; }
+}
 .lb-flags { display: flex; gap: 3px; flex-wrap: nowrap; }
 .lb-flag { font-size: 24px; line-height: 1; cursor: default; flex-shrink: 0; display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
 .lb-flag-x { font-size: 9px; font-weight: 900; color: #ffffff; line-height: 1; }
