@@ -1230,8 +1230,8 @@ const topDaysChart = computed(() => {
   background: var(--surface2); color: var(--text);
   border: 1px solid var(--border);
   font-size: 11px; font-weight: 500; letter-spacing: 0;
-  white-space: nowrap; padding: 4px 8px; border-radius: 6px;
-  pointer-events: none; z-index: 10;
+  white-space: normal; max-width: 220px; padding: 4px 8px; border-radius: 6px;
+  pointer-events: none; z-index: 10; line-height: 1.4;
 }
 .lb-tooltip::after {
   content: ''; position: absolute; bottom: 100%; left: 10px;
