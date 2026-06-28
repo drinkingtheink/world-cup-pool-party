@@ -26,7 +26,7 @@
             :show-divider="i > 0"
           />
         </div>
-        <button class="modal-btn" @click="dismiss">Fine. Jason leads groups.</button>
+        <button class="modal-btn" @click="dismiss">Fine. Jason leads after Groups.</button>
       </div>
     </div>
   </transition>
