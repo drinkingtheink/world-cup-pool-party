@@ -49,6 +49,7 @@
               <span class="lb-name">{{ entry.name }}</span>
               <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
               <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
+              <span v-if="!entry.teams.includes('USA')" class="lb-sus lb-tooltip-wrap">👀 sus<span class="lb-tooltip">Did not pick the USA. The US Government has been notified.</span></span>
               <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
               <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
               <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
@@ -924,6 +925,15 @@ const topDaysChart = computed(() => {
 @keyframes shield-sparkle {
   0%   { background-position: 200% center; }
   100% { background-position: 0% center; }
+}
+
+.lb-sus {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: rgba(255,45,120,0.1);
+  border: 1px solid rgba(255,45,120,0.35);
+  color: #ff6fa0;
+  white-space: nowrap;
 }
 
 .lb-ballsy {
