@@ -69,6 +69,7 @@
                 <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap" tabindex="0">🦅🇺🇸<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
                 <span v-if="entry.teams.includes('England')" class="lb-imperialism lb-tooltip-wrap" tabindex="0">👌🏴󠁧󠁢󠁥󠁮󠁧󠁿<span class="lb-tooltip">Ok with Imperialism — This player is admitting their implicit support for the imperialistic atrocities of England upon the nations they occupied. ¯\_(ツ)_/¯</span></span>
                 <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap" tabindex="0">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
+                <span v-if="herdMentality.holders.has(entry.name)" class="lb-herd lb-tooltip-wrap" tabindex="0">🐑 Herd Mentality<span class="lb-tooltip">Most teams shared with other players in the pool</span></span>
                 <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap" tabindex="0">🧤 Golden Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ Golden Boot - GS<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
                 <span v-if="clinical.holders.has(entry.name)" class="lb-clinical lb-tooltip-wrap" tabindex="0">🎯 Clinical<span class="lb-tooltip">Most goals per game across all teams ({{ clinical.gpg }} g/g)</span></span>
@@ -944,6 +945,19 @@ const clinical = computed(() => {
   return { holders, gpg: max.toFixed(2) }
 })
 
+const herdMentality = computed(() => {
+  const allTeams = store.leaderboard.map(e => e.teams)
+  const scores = store.leaderboard.map(e => {
+    const overlap = e.teams.reduce((sum, team) => {
+      return sum + allTeams.filter((teams, i) => store.leaderboard[i].name !== e.name && teams.includes(team)).length
+    }, 0)
+    return { name: e.name, overlap }
+  }).sort((a, b) => b.overlap - a.overlap)
+  const threshold = scores[2]?.overlap ?? 0
+  const holders = new Set(scores.filter(s => s.overlap >= threshold && threshold > 0).map(s => s.name))
+  return { holders }
+})
+
 const iMeanCmon = computed(() => {
   const avgs = store.leaderboard.map(e => {
     const ranks = e.teams.map(t => fifaRankMap[t] ?? 99)
@@ -1189,6 +1203,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(255,45,120,0.35);
   color: #ff6fa0;
   white-space: nowrap;
+}
+
+.lb-herd {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(180,170,160,0.13), rgba(220,215,210,0.2), rgba(180,170,160,0.13));
+  background-size: 200% auto;
+  color: #c8c0b8;
+  border: 1px solid rgba(180,170,160,0.38);
+  white-space: nowrap;
+  animation: shield-sparkle 3.4s linear infinite;
 }
 
 .lb-ballsy {
