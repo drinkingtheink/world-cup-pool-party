@@ -1057,7 +1057,7 @@ const topDaysChart = computed(() => {
 
 .leaderboard { display: flex; flex-direction: column; gap: 8px; }
 
-.lb-row { cursor: pointer; transition: border-color .15s; }
+.lb-row { cursor: pointer; transition: border-color .15s; overflow: visible; }
 .lb-row--first { border-color: var(--accent); }
 
 .lb-main {
@@ -1748,7 +1748,7 @@ const topDaysChart = computed(() => {
   }
   .lb-header-pts { text-align: right; padding-right: 4px; }
 
-  .lb-row { position: relative; overflow: visible; }
+  .lb-row { position: relative; }
   .lb-row::before {
     content: '';
     position: absolute; left: 0; top: 0; bottom: 0;
