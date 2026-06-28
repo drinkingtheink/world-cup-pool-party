@@ -71,6 +71,7 @@
                 <span v-if="entry.teams.includes('England')" class="lb-imperialism lb-tooltip-wrap" tabindex="0">👌🏴󠁧󠁢󠁥󠁮󠁧󠁿<span class="lb-tooltip">Ok with Imperialism — This player is admitting their implicit support for the imperialistic atrocities of England upon the nations they occupied. ¯\_(ツ)_/¯</span></span>
                 <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap" tabindex="0">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
                 <span v-if="herdMentality.holders.has(entry.name)" class="lb-herd lb-tooltip-wrap" tabindex="0">🍍 Pro-Poly<span class="lb-tooltip">Most teams shared with other players in the pool</span></span>
+                <span v-if="eskimoBros.holders.has(entry.name)" class="lb-eskimo-bros lb-tooltip-wrap" tabindex="0">❄️ Eskimo Bros<span class="lb-tooltip">All picked {{ eskimoBros.team }} — the most-shared team in the pool ({{ eskimoBros.count }} players)</span></span>
                 <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap" tabindex="0">🧤 Golden Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ Golden Boot - GS<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
                 <span v-if="clinical.holders.has(entry.name)" class="lb-clinical lb-tooltip-wrap" tabindex="0">🎯 Clinical<span class="lb-tooltip">Most goals per game across all teams ({{ clinical.gpg }} g/g)</span></span>
@@ -957,6 +958,18 @@ const madGenius = computed(() => {
   return { holders }
 })
 
+const eskimoBros = computed(() => {
+  const teamPickers = {}
+  for (const e of store.leaderboard)
+    for (const t of e.teams)
+      teamPickers[t] = (teamPickers[t] ?? []).concat(e.name)
+  const max = Math.max(...Object.values(teamPickers).map(p => p.length))
+  const topTeams = Object.entries(teamPickers).filter(([, p]) => p.length === max)
+  const sharedTeam = topTeams[0]?.[0] ?? ''
+  const holders = new Set(topTeams[0]?.[1] ?? [])
+  return { holders, team: sharedTeam, count: max }
+})
+
 const herdMentality = computed(() => {
   const allTeams = store.leaderboard.map(e => e.teams)
   const scores = store.leaderboard.map(e => {
@@ -1215,6 +1228,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(255,45,120,0.35);
   color: #ff6fa0;
   white-space: nowrap;
+}
+
+.lb-eskimo-bros {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(160,230,255,0.12), rgba(210,245,255,0.2), rgba(160,230,255,0.12));
+  background-size: 200% auto;
+  color: #a8e8ff;
+  border: 1px solid rgba(160,220,255,0.38);
+  white-space: nowrap;
+  animation: shield-sparkle 3s linear infinite;
 }
 
 .lb-herd {
