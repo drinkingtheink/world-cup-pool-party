@@ -48,6 +48,7 @@
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
               <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
+              <span v-if="goldenBoot.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚽ Golden Boot<span class="lb-tooltip">Most goals scored across all teams ({{ goldenBoot.goals }})</span></span>
               <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
               <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
               <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
@@ -724,6 +725,23 @@ const playerPointsByDate = computed(() => {
   return result
 })
 
+const goldenBoot = computed(() => {
+  const totals = store.leaderboard.map(e => {
+    const teamSet = new Set(e.teams)
+    const goals = store.enrichedMatches
+      .filter(m => m.played && !m.snapshot_minute)
+      .reduce((sum, m) => {
+        if (teamSet.has(m.home)) sum += Number(m.home_score)
+        if (teamSet.has(m.away)) sum += Number(m.away_score)
+        return sum
+      }, 0)
+    return { name: e.name, goals }
+  })
+  const max = Math.max(...totals.map(t => t.goals))
+  const holders = new Set(totals.filter(t => t.goals === max && max > 0).map(t => t.name))
+  return { goals: max, holders }
+})
+
 const groundskeeper = computed(() => {
   const counts = store.leaderboard.map(e => ({
     name: e.name,
@@ -872,6 +890,17 @@ const topDaysChart = computed(() => {
 @keyframes shield-sparkle {
   0%   { background-position: 200% center; }
   100% { background-position: 0% center; }
+}
+
+.lb-golden-boot {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,210,0,0.15), rgba(255,255,255,0.22), rgba(255,210,0,0.15));
+  background-size: 200% auto;
+  color: #ffd200;
+  border: 1px solid rgba(255,210,0,0.4);
+  white-space: nowrap;
+  animation: shield-sparkle 2.2s linear infinite;
 }
 
 .lb-trending {
