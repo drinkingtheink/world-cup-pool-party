@@ -1446,6 +1446,12 @@ const topDaysChart = computed(() => {
 .lb-day-pts { font-size: 13px; font-weight: 800; color: var(--green); }
 .lb-day-chip--zero .lb-day-pts { color: var(--text-dim); }
 .lb-day-chip--zero { opacity: 0.5; }
+.lb-day-chip--high {
+  background: rgba(0,255,159,0.08);
+  border-color: rgba(0,255,159,0.45);
+  box-shadow: 0 0 8px rgba(0,255,159,0.15);
+}
+.lb-day-chip--high .lb-day-date { color: rgba(0,255,159,0.7); }
 .lb-day-chip--high .lb-day-pts {
   background: linear-gradient(90deg, var(--green) 0%, #fff 45%, #afffdc 55%, var(--green) 100%);
   background-size: 200% auto;
