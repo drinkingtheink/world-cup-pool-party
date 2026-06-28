@@ -63,24 +63,24 @@
                 </button>
               </div>
               <div class="lb-badges">
-                <span v-if="entry.name === pointsLeader" class="lb-setting-pace lb-tooltip-wrap">🏊 Setting the Pace<span class="lb-tooltip">Current points leader</span></span>
-                <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
-                <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap">🎯 In the Chase<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
-                <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅🇺🇸<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
-                <span v-if="entry.teams.includes('England')" class="lb-imperialism lb-tooltip-wrap">👌🏴󠁧󠁢󠁥󠁮󠁧󠁿<span class="lb-tooltip">Ok with Imperialism — This player is admitting their implicit support for the imperialistic atrocities of England upon the nations they were occupying.</span></span>
-                <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
-                <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap">🧤 Golden Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
-                <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
-                <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
-                <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
-                <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
-                <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap">🌙 The Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
-                <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
-                <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
-                <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
-                <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
-                <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
-                <span v-if="!entry.teams.includes('USA')" class="lb-sus lb-tooltip-wrap">👀 sus<span class="lb-tooltip">Did not pick the USA. The US Government has been notified.</span></span>
+                <span v-if="entry.name === pointsLeader" class="lb-setting-pace lb-tooltip-wrap" tabindex="0">🏊 Setting the Pace<span class="lb-tooltip">Current points leader</span></span>
+                <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
+                <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap" tabindex="0">🎯 In the Chase<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
+                <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap" tabindex="0">🦅🇺🇸<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
+                <span v-if="entry.teams.includes('England')" class="lb-imperialism lb-tooltip-wrap" tabindex="0">👌🏴󠁧󠁢󠁥󠁮󠁧󠁿<span class="lb-tooltip">Ok with Imperialism — This player is admitting their implicit support for the imperialistic atrocities of England upon the nations they were occupying.</span></span>
+                <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap" tabindex="0">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
+                <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap" tabindex="0">🧤 Golden Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
+                <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
+                <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap" tabindex="0">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
+                <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
+                <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
+                <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 The Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
+                <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
+                <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap" tabindex="0">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
+                <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap" tabindex="0">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
+                <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap" tabindex="0">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
+                <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap" tabindex="0">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
+                <span v-if="!entry.teams.includes('USA')" class="lb-sus lb-tooltip-wrap" tabindex="0">👀 sus<span class="lb-tooltip">Did not pick the USA. The US Government has been notified.</span></span>
               </div>
               <span class="lb-today-tomorrow">
                 <span class="lb-tt-label">MATCHES:</span> {{ playerMatchDays[entry.name].today }} Today
@@ -427,7 +427,15 @@ function scrollToHash(hash) {
 }
 
 watch(() => route.hash, scrollToHash)
-onMounted(() => nextTick(() => { ready.value = true; scrollToHash(route.hash) }))
+onMounted(() => nextTick(() => {
+  ready.value = true
+  scrollToHash(route.hash)
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.lb-tooltip-wrap')) {
+      document.querySelectorAll('.lb-tooltip-wrap[tabindex]').forEach(el => el.blur())
+    }
+  })
+}))
 
 const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
 
@@ -1222,6 +1230,7 @@ const topDaysChart = computed(() => {
 }
 
 .lb-tooltip-wrap { position: relative; cursor: default; z-index: 1; }
+.lb-tooltip-wrap:focus { outline: none; }
 .lb-tooltip-wrap:hover,
 .lb-tooltip-wrap:focus { z-index: 100; }
 .lb-tooltip {
@@ -1814,4 +1823,24 @@ const topDaysChart = computed(() => {
 .best-days-legend { display: flex; gap: 14px; margin-top: 10px; }
 .bd-leg { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-dim); }
 .bd-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+
+@media (max-width: 767px) {
+  .lb-tooltip-wrap { -webkit-tap-highlight-color: transparent; }
+  .lb-tooltip {
+    position: fixed;
+    top: auto;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    left: 16px;
+    right: 16px;
+    max-width: none;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    z-index: 9999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .lb-tooltip::after { display: none; }
+  .lb-badges { gap: 8px; }
+  .lb-tooltip-wrap[tabindex] { min-height: 28px; display: inline-flex; align-items: center; }
+}
 </style>
