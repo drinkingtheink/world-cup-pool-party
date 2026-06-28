@@ -48,6 +48,7 @@
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
               <span v-if="entry.name === 'Jason'" class="lb-shield" title="Community Shield">🏆 Community Shield</span>
+              <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day" title="Best single-day score">🥇 {{ bestSingleDay.pts }}</span>
               <button
                 v-if="playerLiveMatches[entry.name]?.length"
                 class="lb-live-btn"
@@ -720,6 +721,19 @@ const playerPointsByDate = computed(() => {
   return result
 })
 
+const bestSingleDay = computed(() => {
+  let max = 0
+  Object.values(playerPointsByDate.value).forEach(days =>
+    days.forEach(d => { if (d.pts > max) max = d.pts })
+  )
+  const holders = new Set(
+    Object.entries(playerPointsByDate.value)
+      .filter(([, days]) => days.some(d => d.pts === max))
+      .map(([name]) => name)
+  )
+  return { pts: max, holders }
+})
+
 function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
 
 const topDaysChart = computed(() => {
@@ -813,6 +827,17 @@ const topDaysChart = computed(() => {
 @keyframes shield-sparkle {
   0%   { background-position: 200% center; }
   100% { background-position: 0% center; }
+}
+
+.lb-best-day {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,255,159,0.15), rgba(255,255,255,0.2), rgba(0,255,159,0.15));
+  background-size: 200% auto;
+  color: var(--green);
+  border: 1px solid rgba(0,255,159,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 2s linear infinite;
 }
 .lb-flags { display: flex; gap: 3px; flex-wrap: nowrap; }
 .lb-flag { font-size: 24px; line-height: 1; cursor: default; flex-shrink: 0; display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
