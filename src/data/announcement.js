@@ -5,7 +5,7 @@
 
 export const announcement = {
   enabled: true,
-  alwaysShow: true,
+  alwaysShow: false,
   id: '2026-06-28-knockout-rounds',
   title: 'Knockout Rounds Begin',
   body: `The group stage is over — now every match matters. A team that was quiet in groups can rocket your standings overnight.\n\nKeep an eye on your squads — the bracket is set.`,

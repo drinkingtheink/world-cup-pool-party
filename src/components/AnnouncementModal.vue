@@ -52,13 +52,13 @@ const todayMatches = computed(() =>
 )
 
 onMounted(() => {
-  if (announcement.enabled && (announcement.alwaysShow || !sessionStorage.getItem(STORAGE_KEY))) {
+  if (announcement.enabled && (announcement.alwaysShow || !localStorage.getItem(STORAGE_KEY))) {
     visible.value = true
   }
 })
 
 function dismiss() {
-  if (!announcement.alwaysShow) sessionStorage.setItem(STORAGE_KEY, '1')
+  if (!announcement.alwaysShow) localStorage.setItem(STORAGE_KEY, '1')
   visible.value = false
 }
 </script>
