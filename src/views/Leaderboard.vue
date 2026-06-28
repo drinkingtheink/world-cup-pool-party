@@ -74,6 +74,7 @@
                 <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap" tabindex="0">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
                 <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
+                <span v-if="iMeanCmon.holders.has(entry.name)" class="lb-i-mean-cmon lb-tooltip-wrap" tabindex="0">🙄 I Mean, C'mon<span class="lb-tooltip">Top 3 highest-ranked pools by avg FIFA ranking</span></span>
                 <span v-if="bellyFlop.holders.has(entry.name)" class="lb-belly-flop lb-tooltip-wrap" tabindex="0">🫃 Belly Flop<span class="lb-tooltip">Lowest-ranked pool by avg FIFA ranking (avg: #{{ bellyFlop.avg }})</span></span>
                 <span v-if="earlyShower.holders.has(entry.name)" class="lb-early-shower lb-tooltip-wrap" tabindex="0">🚿 Early Shower<span class="lb-tooltip">Most red cards across all teams ({{ earlyShower.count }})</span></span>
                 <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 The Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
@@ -925,6 +926,16 @@ const lateShow = computed(() => {
 
 const fifaRankMap = Object.fromEntries(tiers.map(t => [t.team, t.fifaRank]))
 
+const iMeanCmon = computed(() => {
+  const avgs = store.leaderboard.map(e => {
+    const ranks = e.teams.map(t => fifaRankMap[t] ?? 99)
+    return { name: e.name, avg: ranks.reduce((a, b) => a + b, 0) / ranks.length }
+  }).sort((a, b) => a.avg - b.avg)
+  const threshold = avgs[2]?.avg ?? 0
+  const holders = new Set(avgs.filter(a => a.avg <= threshold).map(a => a.name))
+  return { holders }
+})
+
 const bellyFlop = computed(() => {
   const avgs = store.leaderboard.map(e => {
     const ranks = e.teams.map(t => fifaRankMap[t] ?? 99)
@@ -1246,6 +1257,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(255,210,0,0.38);
   white-space: nowrap;
   animation: shield-sparkle 2.6s linear infinite;
+}
+
+.lb-i-mean-cmon {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(200,200,220,0.12), rgba(240,240,255,0.2), rgba(200,200,220,0.12));
+  background-size: 200% auto;
+  color: #d0d4f0;
+  border: 1px solid rgba(200,200,240,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 3s linear infinite;
 }
 
 .lb-belly-flop {
