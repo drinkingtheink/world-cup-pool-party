@@ -33,12 +33,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { announcement } from '../data/announcement.js'
 import { usePoolStore } from '../stores/pool.js'
 import MatchCard from './MatchCard.vue'
 
 const store = usePoolStore()
+const route = useRoute()
 const STORAGE_KEY = `announcement_seen_${announcement.id}`
 const visible = ref(false)
 
@@ -51,14 +53,15 @@ const todayMatches = computed(() =>
   store.enrichedMatches.filter(m => m.date === todayStr())
 )
 
-onMounted(() => {
-  if (announcement.enabled && (announcement.alwaysShow || !localStorage.getItem(STORAGE_KEY))) {
-    visible.value = true
-  }
-})
+function maybeShow() {
+  if (announcement.enabled && !localStorage.getItem(STORAGE_KEY)) visible.value = true
+}
+
+onMounted(maybeShow)
+watch(() => route.path, maybeShow)
 
 function dismiss() {
-  if (!announcement.alwaysShow) localStorage.setItem(STORAGE_KEY, '1')
+  localStorage.setItem(STORAGE_KEY, '1')
   visible.value = false
   fetch('/.netlify/functions/notify-dismiss', {
     method: 'POST',
