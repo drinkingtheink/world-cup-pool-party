@@ -6,6 +6,17 @@
         <div class="modal-body">
           <p class="modal-title">{{ announcement.title }}</p>
           <p v-if="announcement.body" class="modal-text" style="white-space: pre-line">{{ announcement.body }}</p>
+          <table v-if="announcement.multipliers" class="modal-table">
+            <thead>
+              <tr><th>Round</th><th>Multiplier</th></tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in announcement.multipliers" :key="row.stage">
+                <td>{{ row.stage }}</td>
+                <td class="modal-table-mul">{{ row.multiplier }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div v-if="todayMatches.length" class="modal-matches card">
           <MatchCard
@@ -83,7 +94,20 @@ function dismiss() {
   color: var(--accent); margin-bottom: 6px;
 }
 
-.modal-text { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0; }
+.modal-text { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0 0 12px; }
+
+.modal-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px; margin-top: 4px;
+}
+.modal-table th {
+  text-align: left; padding: 5px 8px;
+  font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-dim); border-bottom: 1px solid var(--border);
+}
+.modal-table td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text); }
+.modal-table tr:last-child td { border-bottom: none; }
+.modal-table-mul { font-weight: 800; color: var(--accent); text-align: right; }
 
 .modal-matches {
   flex: 1; overflow-y: auto; border-radius: 0;
