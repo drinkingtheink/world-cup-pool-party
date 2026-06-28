@@ -51,6 +51,7 @@
               <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap">🎯 In the Chase<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
               <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
               <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
+              <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap">🧤 Golden Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
               <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
               <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
               <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
@@ -746,6 +747,23 @@ const ballsy = computed(() => {
   return { avg: Math.round(avg * 10) / 10, holders }
 })
 
+const goldenGlove = computed(() => {
+  const totals = store.leaderboard.map(e => {
+    const teamSet = new Set(e.teams)
+    const conceded = store.enrichedMatches
+      .filter(m => m.played && !m.snapshot_minute && m.stage === 'Group Stage')
+      .reduce((sum, m) => {
+        if (teamSet.has(m.home)) sum += Number(m.away_score)
+        if (teamSet.has(m.away)) sum += Number(m.home_score)
+        return sum
+      }, 0)
+    return { name: e.name, conceded }
+  })
+  const min = Math.min(...totals.map(t => t.conceded))
+  const holders = new Set(totals.filter(t => t.conceded === min).map(t => t.name))
+  return { conceded: min, holders }
+})
+
 const IN_THE_CHASE_THRESHOLD = 10
 
 const inTheChase = computed(() => {
@@ -978,6 +996,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(0,229,255,0.4);
   white-space: nowrap; cursor: default;
   filter: drop-shadow(0 0 5px rgba(0,229,255,0.35));
+}
+
+.lb-golden-glove {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,255,159,0.12), rgba(255,255,255,0.18), rgba(0,255,159,0.12));
+  background-size: 200% auto;
+  color: var(--green);
+  border: 1px solid rgba(0,255,159,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 2.3s linear infinite;
 }
 
 .lb-golden-boot {
