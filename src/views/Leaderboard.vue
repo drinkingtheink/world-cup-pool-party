@@ -1035,7 +1035,9 @@ const topDaysChart = computed(() => {
   animation: shield-sparkle 2s linear infinite;
 }
 
-.lb-tooltip-wrap { position: relative; cursor: default; }
+.lb-tooltip-wrap { position: relative; cursor: default; z-index: 1; }
+.lb-tooltip-wrap:hover,
+.lb-tooltip-wrap:focus { z-index: 100; }
 .lb-tooltip {
   display: none;
   position: absolute; top: calc(100% + 6px); left: 0;
