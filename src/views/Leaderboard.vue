@@ -49,7 +49,6 @@
               <span class="lb-name">{{ entry.name }}</span>
               <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
               <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
-              <span v-if="!entry.teams.includes('USA')" class="lb-sus lb-tooltip-wrap">👀 sus<span class="lb-tooltip">Did not pick the USA. The US Government has been notified.</span></span>
               <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
               <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
               <span v-if="tournamentComplete && goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap">⚡ Golden Boot<span class="lb-tooltip">Most goals scored across all rounds ({{ goldenBoot.goals }})</span></span>
@@ -57,6 +56,7 @@
               <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
               <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
               <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
+              <span v-if="!entry.teams.includes('USA')" class="lb-sus lb-tooltip-wrap">👀 sus<span class="lb-tooltip">Did not pick the USA. The US Government has been notified.</span></span>
               <button
                 v-if="playerLiveMatches[entry.name]?.length"
                 class="lb-live-btn"
