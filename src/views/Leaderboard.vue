@@ -48,6 +48,7 @@
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
               <span v-if="entry.name === 'Jason'" class="lb-shield" title="Community Shield">🏆 Community Shield</span>
+              <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap">🪦 Groundskeeper<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
               <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
               <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
               <button
@@ -722,6 +723,16 @@ const playerPointsByDate = computed(() => {
   return result
 })
 
+const groundskeeper = computed(() => {
+  const counts = store.leaderboard.map(e => ({
+    name: e.name,
+    count: e.teams.filter(t => ELIMINATED_TEAMS.has(t)).length,
+  }))
+  const max = Math.max(...counts.map(c => c.count))
+  const holders = new Set(counts.filter(c => c.count === max && max > 0).map(c => c.name))
+  return { count: max, holders }
+})
+
 const bestSingleDay = computed(() => {
   let max = 0
   Object.values(playerPointsByDate.value).forEach(days =>
@@ -842,6 +853,17 @@ const topDaysChart = computed(() => {
 @keyframes shield-sparkle {
   0%   { background-position: 200% center; }
   100% { background-position: 0% center; }
+}
+
+.lb-groundskeeper {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(189,95,255,0.12), rgba(255,255,255,0.16), rgba(189,95,255,0.12));
+  background-size: 200% auto;
+  color: var(--purple);
+  border: 1px solid rgba(189,95,255,0.3);
+  white-space: nowrap;
+  animation: shield-sparkle 2.8s linear infinite;
 }
 
 .lb-best-day {
