@@ -47,6 +47,8 @@
           <div class="lb-center">
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
+            </div>
+            <div class="lb-badges">
               <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
               <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap">🎯 In the Chase<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
               <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
@@ -1109,7 +1111,12 @@ const topDaysChart = computed(() => {
 .lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
 
 .lb-name-row {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.lb-badges {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  margin-top: 4px;
 }
 
 .lb-live-btn {
@@ -1554,7 +1561,7 @@ const topDaysChart = computed(() => {
   }
   .lb-center { display: contents; }
 
-  .lb-name-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .lb-name-row { align-items: flex-start; }
   .lb-name { font-size: 20px; }
 
   .lb-flags { gap: 5px; }
