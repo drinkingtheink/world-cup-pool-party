@@ -48,6 +48,7 @@
             <div class="lb-name-row">
               <span class="lb-name">{{ entry.name }}</span>
               <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
+              <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap">🎯 In the Chase<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
               <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap">🦅<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
               <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
               <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap">⚡ Golden Boot - Groups<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
@@ -745,6 +746,18 @@ const ballsy = computed(() => {
   return { avg: Math.round(avg * 10) / 10, holders }
 })
 
+const IN_THE_CHASE_THRESHOLD = 10
+
+const inTheChase = computed(() => {
+  const leader = store.leaderboard[0]?.total ?? 0
+  const holders = new Set(
+    store.leaderboard
+      .filter(e => e.total < leader && leader - e.total <= IN_THE_CHASE_THRESHOLD)
+      .map(e => e.name)
+  )
+  return { holders, threshold: IN_THE_CHASE_THRESHOLD }
+})
+
 const tournamentComplete = computed(() =>
   store.enrichedMatches.some(m => m.stage === 'Final' && m.played)
 )
@@ -925,6 +938,17 @@ const topDaysChart = computed(() => {
 @keyframes shield-sparkle {
   0%   { background-position: 200% center; }
   100% { background-position: 0% center; }
+}
+
+.lb-in-the-chase {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,229,255,0.12), rgba(255,255,255,0.18), rgba(0,229,255,0.12));
+  background-size: 200% auto;
+  color: var(--cyan);
+  border: 1px solid rgba(0,229,255,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 1.6s linear infinite;
 }
 
 .lb-sus {
