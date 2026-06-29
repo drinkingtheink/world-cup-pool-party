@@ -948,14 +948,6 @@ const clinical = computed(() => {
 const madGenius = computed(() => {
   const holders = new Set()
 
-  // Worst best-team odds
-  const bests = store.leaderboard.map(e => ({
-    name: e.name,
-    best: Math.min(...e.teams.map(t => oddsMap[t] ?? 0)),
-  }))
-  const maxOdds = Math.max(...bests.map(b => b.best))
-  bests.filter(b => b.best === maxOdds).forEach(b => holders.add(b.name))
-
   // Worst avg FIFA rank (lowest strength on paper)
   const avgs = store.leaderboard.map(e => ({
     name: e.name,
