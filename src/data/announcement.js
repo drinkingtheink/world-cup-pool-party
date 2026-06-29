@@ -6,9 +6,9 @@
 export const announcement = {
   enabled: true,
   alwaysShow: false,
-  id: '2026-06-28-knockout-rounds',
-  title: 'Knockout Rounds Begin',
-  body: `The group stage is over — now every match matters. A team that was quiet in groups can rocket your standings overnight.\n\nKeep an eye on your squads — the bracket is set.`,
+  id: '2026-06-29-infantino',
+  title: 'A Message from FIFA',
+  body: `"Are you having fun yet? Shall I come to your address and tickle you? Don't make me have to come tickle you."\n\n— Gianni Infantino, FIFA President`,
   multipliers: [
     { stage: 'Round of 32',  multiplier: '1.5×', pillClass: 'pill-t4' },
     { stage: 'Round of 16',  multiplier: '1.5×', pillClass: 'pill-t4' },
@@ -17,5 +17,5 @@ export const announcement = {
     { stage: 'Third Place',  multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Final',        multiplier: '4×',   pillClass: 'pill-t1' },
   ],
-  image: '/knockout-banner.png',
+  image: '/infantino.png',
 }

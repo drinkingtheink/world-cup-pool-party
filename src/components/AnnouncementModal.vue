@@ -28,7 +28,7 @@
             />
           </div>
         </div>
-        <button class="modal-btn" @click="dismiss">Fine. Jason leads after Groups.</button>
+        <button class="modal-btn" @click="dismiss">Please don't tickle me, Gianni.</button>
       </div>
     </div>
   </transition>
