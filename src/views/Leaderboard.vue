@@ -64,6 +64,8 @@
               </div>
               <div class="lb-badges">
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap" tabindex="0">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
+                <span v-if="positionChange.risers.has(entry.name)" class="lb-on-the-rise lb-tooltip-wrap" tabindex="0">🚀 On the Rise<span class="lb-tooltip">Biggest jump in the standings since yesterday (+{{ positionChange.riseCount }} place{{ positionChange.riseCount !== 1 ? 's' : '' }})</span></span>
+                <span v-if="positionChange.fallers.has(entry.name)" class="lb-sinker lb-tooltip-wrap" tabindex="0">🪨 Sinker<span class="lb-tooltip">Biggest drop in the standings since yesterday (-{{ positionChange.fallCount }} place{{ positionChange.fallCount !== 1 ? 's' : '' }})</span></span>
                 <span v-if="entry.name === pointsLeader" class="lb-setting-pace lb-tooltip-wrap" tabindex="0">🏊 Pacer<span class="lb-tooltip">Current points leader</span></span>
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
                 <span v-if="entry.name === 'Jason' && pointsLeader === 'Jason'" class="lb-foia lb-tooltip-wrap" tabindex="0">📋 FOIA<span class="lb-tooltip">Yes, Jason is leading but the data is public and can be shared if you are interested. What's your Github @?</span></span>
@@ -1128,6 +1130,33 @@ const trending = computed(() => {
   return { pts: max, holders, dates: last3 }
 })
 
+const positionChange = computed(() => {
+  const allDates = [...new Set(
+    store.enrichedMatches.filter(m => m.played && !m.snapshot_minute).map(m => m.date)
+  )].sort()
+  if (allDates.length < 2) return { risers: new Set(), fallers: new Set(), riseCount: 0, fallCount: 0 }
+  const lastDate = allDates[allDates.length - 1]
+  const prevDates = new Set(allDates.slice(0, -1))
+  const prevTotals = store.leaderboard
+    .map(e => ({
+      name: e.name,
+      pts: (playerPointsByDate.value[e.name] ?? [])
+        .filter(d => prevDates.has(d.date))
+        .reduce((s, d) => s + d.pts, 0),
+    }))
+    .sort((a, b) => b.pts - a.pts)
+  const prevPos = Object.fromEntries(prevTotals.map((e, i) => [e.name, i + 1]))
+  const changes = store.leaderboard.map((e, i) => ({
+    name: e.name,
+    change: (prevPos[e.name] ?? i + 1) - (i + 1),
+  }))
+  const maxRise = Math.max(...changes.map(c => c.change))
+  const maxFall = Math.min(...changes.map(c => c.change))
+  const risers = new Set(changes.filter(c => c.change === maxRise && maxRise > 0).map(c => c.name))
+  const fallers = new Set(changes.filter(c => c.change === maxFall && maxFall < 0).map(c => c.name))
+  return { risers, fallers, riseCount: maxRise, fallCount: Math.abs(maxFall), lastDate }
+})
+
 const bestSingleDay = computed(() => {
   let max = 0
   Object.values(playerPointsByDate.value).forEach(days =>
@@ -1529,6 +1558,28 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(255,45,120,0.32);
   white-space: nowrap;
   animation: shield-sparkle 1.8s linear infinite;
+}
+
+.lb-on-the-rise {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(80,255,180,0.12), rgba(200,255,230,0.2), rgba(80,255,180,0.12));
+  background-size: 200% auto;
+  color: #4dffb0;
+  border: 1px solid rgba(80,255,180,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 1.6s linear infinite;
+}
+
+.lb-sinker {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(160,100,255,0.12), rgba(200,160,255,0.2), rgba(160,100,255,0.12));
+  background-size: 200% auto;
+  color: #c87fff;
+  border: 1px solid rgba(160,100,255,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 2s linear infinite;
 }
 
 .lb-groundskeeper {
