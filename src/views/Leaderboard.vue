@@ -2092,16 +2092,20 @@ const topDaysChart = computed(() => {
   .lb-tooltip-wrap { -webkit-tap-highlight-color: transparent; }
   .lb-tooltip {
     position: fixed;
-    top: auto;
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    left: 16px;
-    right: 16px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    bottom: auto;
+    right: auto;
+    width: calc(100vw - 48px);
     max-width: none;
-    font-size: 13px;
-    padding: 10px 14px;
-    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 16px 18px;
+    border-radius: 14px;
     z-index: 9999;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    text-align: center;
+    box-shadow: 0 0 0 1px rgba(255,45,120,0.2), 0 24px 60px rgba(0,0,0,0.75);
   }
   .lb-tooltip::after { display: none; }
   .lb-badges { gap: 8px; }
