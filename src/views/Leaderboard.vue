@@ -79,6 +79,7 @@
                 <span v-if="clinical.holders.has(entry.name)" class="lb-clinical lb-tooltip-wrap" tabindex="0">🎯 Clinical<span class="lb-tooltip">Most goals per game across all teams ({{ clinical.gpg }} g/g)</span></span>
                 <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap" tabindex="0">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
+                <span v-if="mostDraws.holders.has(entry.name)" class="lb-most-draws lb-tooltip-wrap" tabindex="0">🤝 The Diplomat<span class="lb-tooltip">Most draws across all teams ({{ mostDraws.count }})</span></span>
                 <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
                 <span v-if="iMeanCmon.holders.has(entry.name)" class="lb-i-mean-cmon lb-tooltip-wrap" tabindex="0">🙄 Puhleez<span class="lb-tooltip">Top 3 highest-ranked pools by avg FIFA ranking</span></span>
                 <span v-if="madGenius.holders.has(entry.name)" class="lb-mad-genius lb-tooltip-wrap" tabindex="0">💡 Mad Genius?<span class="lb-tooltip">Least likely pool to win the tournament based on pre-tournament odds</span></span>
@@ -906,6 +907,20 @@ const dirtyPool = computed(() => {
   return { count: max, holders }
 })
 
+const mostDraws = computed(() => {
+  const counts = store.leaderboard.map(e => {
+    const teamSet = new Set(e.teams)
+    const draws = store.enrichedMatches
+      .filter(m => m.played && m.home_score != null && m.home_score === m.away_score)
+      .filter(m => teamSet.has(m.home) || teamSet.has(m.away))
+      .length
+    return { name: e.name, draws }
+  })
+  const max = Math.max(...counts.map(c => c.draws))
+  const holders = new Set(counts.filter(c => c.draws === max && max > 0).map(c => c.name))
+  return { count: max, holders }
+})
+
 const lateShow = computed(() => {
   const counts = store.leaderboard.map(e => {
     const teamSet = new Set(e.teams)
@@ -1380,6 +1395,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(80,255,150,0.35);
   white-space: nowrap;
   animation: shield-sparkle 2.4s linear infinite;
+}
+
+.lb-most-draws {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(120,180,255,0.12), rgba(180,220,255,0.22), rgba(120,180,255,0.12));
+  background-size: 200% auto;
+  color: #88c4ff;
+  border: 1px solid rgba(120,180,255,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 2.8s linear infinite;
 }
 
 .lb-dirty-pool {
