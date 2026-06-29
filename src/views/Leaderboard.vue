@@ -66,6 +66,7 @@
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap" tabindex="0">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
                 <span v-if="entry.name === pointsLeader" class="lb-setting-pace lb-tooltip-wrap" tabindex="0">🏊 Setting the Pace<span class="lb-tooltip">Current points leader</span></span>
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
+                <span v-if="entry.name === 'Jason' && pointsLeader === 'Jason'" class="lb-foia lb-tooltip-wrap" tabindex="0">📋 FOIA<span class="lb-tooltip">Yes, Jason is leading but the data is public and can be shared if you are interested. What's your Github @?</span></span>
                 <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap" tabindex="0">🎯 In the Chase<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
                 <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap" tabindex="0">🦅🇺🇸<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
                 <span v-if="entry.teams.includes('England')" class="lb-imperialism lb-tooltip-wrap" tabindex="0">👌🏴󠁧󠁢󠁥󠁮󠁧󠁿<span class="lb-tooltip">Ok with Imperialism — This player is admitting their implicit support for the imperialistic atrocities of England upon the nations they occupied. ¯\_(ツ)_/¯</span></span>
@@ -1206,6 +1207,15 @@ const topDaysChart = computed(() => {
 .lb-center { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
 .lb-trending-fire { font-size: 16px; line-height: 1; }
+
+.lb-foia {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: rgba(180,160,120,0.12);
+  border: 1px solid rgba(180,160,100,0.35);
+  color: #c8b884;
+  white-space: nowrap;
+}
 
 .lb-shield {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
