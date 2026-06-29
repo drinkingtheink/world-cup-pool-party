@@ -1,6 +1,6 @@
 <template>
   <transition name="modal-fade">
-    <div v-if="visible" class="modal-backdrop" @click.self="dismiss">
+    <div v-if="visible" class="modal-backdrop" @click.self="visible = false">
       <div class="modal-card">
         <div class="modal-scroll">
           <img v-if="announcement.image" :src="announcement.image" class="modal-image" />
