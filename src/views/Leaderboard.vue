@@ -68,6 +68,7 @@
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
                 <span v-if="entry.name === 'Jason' && pointsLeader === 'Jason'" class="lb-foia lb-tooltip-wrap" tabindex="0">📋 FOIA<span class="lb-tooltip">Yes, Jason is leading but the data is public and can be shared if you are interested. What's your Github @?</span></span>
                 <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap" tabindex="0">🎯 Chasing<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
+                <span v-if="inReach.holders.has(entry.name)" class="lb-in-reach lb-tooltip-wrap" tabindex="0">📡 In Reach<span class="lb-tooltip">Within {{ IN_REACH_THRESHOLD }} pts of the leader</span></span>
                 <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap" tabindex="0">🦅🇺🇸<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
                 <span v-if="entry.teams.includes('England')" class="lb-imperialism lb-tooltip-wrap" tabindex="0">👌🏴󠁧󠁢󠁥󠁮󠁧󠁿<span class="lb-tooltip">Ok with Imperialism — This player is admitting their implicit support for the imperialistic atrocities of England upon the nations they occupied. ¯\_(ツ)_/¯</span></span>
                 <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap" tabindex="0">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
@@ -807,6 +808,7 @@ const goldenGlove = computed(() => {
 const pointsLeader = computed(() => store.leaderboard[0]?.name ?? null)
 
 const IN_THE_CHASE_THRESHOLD = 10
+const IN_REACH_THRESHOLD = 20
 
 const inTheChase = computed(() => {
   const leader = store.leaderboard[0]?.total ?? 0
@@ -816,6 +818,19 @@ const inTheChase = computed(() => {
       .map(e => e.name)
   )
   return { holders, threshold: IN_THE_CHASE_THRESHOLD }
+})
+
+const inReach = computed(() => {
+  const leader = store.leaderboard[0]?.total ?? 0
+  const holders = new Set(
+    store.leaderboard
+      .filter(e => {
+        const diff = leader - e.total
+        return diff > IN_THE_CHASE_THRESHOLD && diff <= IN_REACH_THRESHOLD
+      })
+      .map(e => e.name)
+  )
+  return { holders }
 })
 
 const tournamentComplete = computed(() =>
@@ -1267,6 +1282,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(0,229,255,0.35);
   white-space: nowrap;
   animation: shield-sparkle 1.6s linear infinite;
+}
+
+.lb-in-reach {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,229,255,0.07), rgba(255,255,255,0.11), rgba(0,229,255,0.07));
+  background-size: 200% auto;
+  color: var(--cyan);
+  border: 1px solid rgba(0,229,255,0.2);
+  white-space: nowrap;
+  animation: shield-sparkle 2.2s linear infinite;
 }
 
 .lb-sus {
