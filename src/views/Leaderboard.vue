@@ -964,6 +964,14 @@ const madGenius = computed(() => {
   const maxRank = Math.max(...avgs.map(a => a.avg))
   avgs.filter(a => a.avg === maxRank).forEach(a => holders.add(a.name))
 
+  // Fewest European teams
+  const euroCounts = store.leaderboard.map(e => ({
+    name: e.name,
+    count: e.teams.filter(t => EUROPEAN_TEAMS.has(t)).length,
+  }))
+  const minEuro = Math.min(...euroCounts.map(c => c.count))
+  euroCounts.filter(c => c.count === minEuro).forEach(c => holders.add(c.name))
+
   return { holders }
 })
 
