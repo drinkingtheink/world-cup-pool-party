@@ -39,7 +39,7 @@
         :key="entry.name"
         class="lb-row card"
         :class="{ 'lb-row--first': entry.rank === 1 }"
-        :style="{ '--i': i, '--pts-pct': ptsPct(entry) + '%' }"
+        :style="{ '--i': i }"
         @click="expanded = expanded === entry.name ? null : entry.name"
       >
         <div class="lb-main">
@@ -741,10 +741,6 @@ function rankClass(r) {
   return ''
 }
 
-function ptsPct(entry) {
-  const max = store.leaderboard[0]?.total ?? 1
-  return max > 0 ? ((entry.total / max) * 100).toFixed(1) : '0'
-}
 
 const lastGroupDate = computed(() => {
   const dates = store.enrichedMatches
@@ -1969,15 +1965,6 @@ const topDaysChart = computed(() => {
   .lb-header-pts { text-align: right; padding-right: 4px; }
 
   .lb-row { position: relative; }
-  .lb-row::before {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0;
-    width: var(--pts-pct, 0%);
-    background: rgba(0,255,159,0.055);
-    pointer-events: none;
-    transition: width .8s cubic-bezier(.4,0,.2,1);
-  }
-  .lb-row--first::before { background: rgba(0,255,159,0.09); }
 
   .lb-main {
     display: grid;
