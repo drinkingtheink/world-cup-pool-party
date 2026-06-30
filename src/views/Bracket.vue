@@ -420,7 +420,9 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   align-items: center;
   justify-content: center;
   overflow: visible;
+  z-index: 1;
 }
+.b-slot:hover { z-index: 20; }
 
 .b-slot--r32 { height: 68px; }
 .b-slot--r16 { height: 136px; }
@@ -492,6 +494,11 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   border: 1px solid var(--border);
   border-radius: 7px;
   overflow: hidden;
+  transition: border-color .15s, box-shadow .15s;
+}
+.b-slot:hover .b-card {
+  border-color: rgba(189,95,255,0.5);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.5);
 }
 .b-card--final {
   border-color: var(--accent);
