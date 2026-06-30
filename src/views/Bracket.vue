@@ -391,21 +391,21 @@ let _particles = []
 let _animId    = null
 
 function _spawn(cx, cy) {
-  // Mostly drift upward and outward; restrict angle to upper hemisphere
-  const angle = Math.PI + Math.random() * Math.PI  // 180°–360° = upward half
-  const speed = 0.3 + Math.random() * 1.4
+  // Upper hemisphere with some sideways spread
+  const angle = Math.PI * 0.75 + Math.random() * Math.PI * 1.5  // ~135°–315°, biased up
+  const speed = 0.4 + Math.random() * 2.2
   _particles.push({
-    x:     cx + (Math.random() - 0.5) * 60,
-    y:     cy + (Math.random() - 0.5) * 30,
+    x:     cx + (Math.random() - 0.5) * 70,
+    y:     cy + (Math.random() - 0.5) * 40,
     vx:    Math.cos(angle) * speed,
     vy:    Math.sin(angle) * speed,
-    life:  0,          // fade in from 0
-    peak:  0.55 + Math.random() * 0.35,   // max opacity
-    decay: 0.0015 + Math.random() * 0.002,
+    life:  0,
+    peak:  0.55 + Math.random() * 0.35,
+    decay: 0.0018 + Math.random() * 0.0025,
     color: SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)],
-    size:  0.7 + Math.random() * 1.4,
+    size:  0.8 + Math.random() * 1.8,
     phase: Math.random() * Math.PI * 2,
-    freq:  0.02 + Math.random() * 0.02,
+    freq:  0.02 + Math.random() * 0.025,
     rising: true,
   })
 }
@@ -426,12 +426,13 @@ function _tick() {
   const ctx = canvas.getContext('2d')
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-  if (fc && _particles.length < 90) {
+  if (fc && _particles.length < 160) {
     const pr = page.getBoundingClientRect()
     const cr = fc.getBoundingClientRect()
     const cx = cr.left - pr.left + cr.width  / 2
     const cy = cr.top  - pr.top  + cr.height / 2
-    if (Math.random() < 0.55) _spawn(cx, cy)  // ~1 per 2 frames
+    const count = Math.random() < 0.45 ? 2 : 1
+    for (let i = 0; i < count; i++) _spawn(cx, cy)
   }
 
   for (let i = _particles.length - 1; i >= 0; i--) {
