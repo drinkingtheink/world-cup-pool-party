@@ -1,11 +1,4 @@
 <template>
-  <!-- Portrait prompt — mobile only -->
-  <div class="bracket-rotate">
-    <span class="bracket-rotate-icon">⟳</span>
-    <p class="bracket-rotate-text">Rotate your device to view the bracket</p>
-  </div>
-
-  <!-- Bracket view -->
   <div class="bracket-page">
     <div class="bracket-scroller">
       <div class="bracket">
@@ -377,40 +370,6 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
 </script>
 
 <style scoped>
-.bracket-rotate {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  gap: 16px;
-  color: var(--text-dim);
-  padding: 32px;
-  text-align: center;
-}
-.bracket-rotate-icon {
-  font-size: 56px;
-  animation: spin 3s linear infinite;
-}
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-.bracket-rotate-text {
-  font-size: 16px; font-weight: 700; letter-spacing: .04em;
-  text-transform: uppercase; color: var(--text-dim);
-}
-
-@media (max-width: 767px) and (orientation: portrait) {
-  .bracket-rotate { display: flex; }
-  .bracket-page   { display: none; }
-}
-@media (max-width: 767px) and (orientation: landscape),
-       (min-width: 768px) {
-  .bracket-rotate { display: none; }
-  .bracket-page   { display: block; }
-}
-
 .bracket-page {
   height: 100%;
   overflow: hidden;
@@ -425,6 +384,7 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   padding: 24px 20px 32px;
   scrollbar-width: thin;
   scrollbar-color: #2e2060 #100c20;
+  -webkit-overflow-scrolling: touch;
 }
 
 .bracket {
@@ -603,5 +563,28 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   text-align: center;
   padding: 3px 4px 4px;
   border-top: 1px solid rgba(46,32,96,0.4);
+}
+
+/* Mobile compact */
+@media (max-width: 767px) {
+  .bracket-scroller { padding: 16px 12px 24px; }
+  .bracket          { gap: 14px; }
+  .b-col            { width: 108px; }
+  .b-slot--r32      { height: 52px; }
+  .b-slot--r16      { height: 104px; }
+  .b-slot--qf       { height: 208px; }
+  .b-slot--sf       { height: 416px; }
+  .b-col--l .b-slot:nth-child(odd)::after,
+  .b-col--l .b-slot:nth-child(even)::after { right: -14px; width: 14px; }
+  .b-col--l.b-col--sf .b-slot::after       { right: -14px; width: 14px; }
+  .b-col--r .b-slot:nth-child(odd)::after,
+  .b-col--r .b-slot:nth-child(even)::after { left: -14px; width: 14px; }
+  .b-col--r.b-col--sf .b-slot::after       { left: -14px; width: 14px; }
+  .b-team-main { padding: 4px 5px; font-size: 10px; gap: 4px; }
+  .b-flag      { font-size: 11px; }
+  .b-score     { font-size: 11px; }
+  .b-players   { padding: 0 5px 4px; gap: 2px; }
+  .b-player    { font-size: 8px; padding: 1px 3px; }
+  .b-label     { font-size: 8px; margin-bottom: 6px; }
 }
 </style>
