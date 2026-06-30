@@ -379,30 +379,34 @@ function poolPlayers(idx, side) {
 const particleCanvas = ref(null)
 const finalCardEl    = ref(null)
 
+// Weighted toward pink/magenta — cyan and white are rare accents
 const SPARK_COLORS = [
-  '#ff2d78','#ff2d78','#ff71ce',
-  '#00e5ff','#00e5ff',
-  '#bd5fff','#bd5fff',
-  '#ffd200','#ffffff',
+  '#ff2d78','#ff2d78','#ff2d78',
+  '#ff71ce','#ff71ce',
+  '#bd5fff',
+  '#00e5ff',
 ]
 
 let _particles = []
 let _animId    = null
 
 function _spawn(cx, cy) {
-  const angle = Math.random() * Math.PI * 2
-  const speed = 0.8 + Math.random() * 6
+  // Mostly drift upward and outward; restrict angle to upper hemisphere
+  const angle = Math.PI + Math.random() * Math.PI  // 180°–360° = upward half
+  const speed = 0.3 + Math.random() * 1.4
   _particles.push({
-    x:  cx + (Math.random() - 0.5) * 80,
-    y:  cy + (Math.random() - 0.5) * 50,
-    vx: Math.cos(angle) * speed,
-    vy: Math.sin(angle) * speed - 1.8,
-    life:  1,
-    decay: 0.003 + Math.random() * 0.005,
+    x:     cx + (Math.random() - 0.5) * 60,
+    y:     cy + (Math.random() - 0.5) * 30,
+    vx:    Math.cos(angle) * speed,
+    vy:    Math.sin(angle) * speed,
+    life:  0,          // fade in from 0
+    peak:  0.55 + Math.random() * 0.35,   // max opacity
+    decay: 0.0015 + Math.random() * 0.002,
     color: SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)],
-    size:  1.2 + Math.random() * 2.8,
+    size:  0.7 + Math.random() * 1.4,
     phase: Math.random() * Math.PI * 2,
-    freq:  0.04 + Math.random() * 0.04,
+    freq:  0.02 + Math.random() * 0.02,
+    rising: true,
   })
 }
 
@@ -422,30 +426,41 @@ function _tick() {
   const ctx = canvas.getContext('2d')
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-  if (fc && _particles.length < 350) {
+  if (fc && _particles.length < 90) {
     const pr = page.getBoundingClientRect()
     const cr = fc.getBoundingClientRect()
     const cx = cr.left - pr.left + cr.width  / 2
     const cy = cr.top  - pr.top  + cr.height / 2
-    for (let i = 0; i < 3; i++) _spawn(cx, cy)
+    if (Math.random() < 0.55) _spawn(cx, cy)  // ~1 per 2 frames
   }
 
   for (let i = _particles.length - 1; i >= 0; i--) {
     const p = _particles[i]
+
+    // Gentle sine drift
     p.phase += p.freq
-    p.vx   += Math.sin(p.phase) * 0.04
-    p.vy   += 0.025
-    p.x    += p.vx
-    p.y    += p.vy
-    p.life -= p.decay
+    p.vx    += Math.sin(p.phase) * 0.012
+    p.vy    += 0.006   // very light gravity
+    p.x     += p.vx
+    p.y     += p.vy
+
+    // Fade in to peak, then decay
+    if (p.rising) {
+      p.life += 0.04
+      if (p.life >= p.peak) p.rising = false
+    } else {
+      p.life -= p.decay
+    }
     if (p.life <= 0) { _particles.splice(i, 1); continue }
 
-    const size = p.size * Math.sqrt(p.life)
+    const alpha = p.life
+    const size  = p.size * (0.5 + 0.5 * p.life)
+
     ctx.save()
-    ctx.globalAlpha  = p.life * 0.85
-    ctx.shadowColor  = p.color
-    ctx.shadowBlur   = size * 4
-    ctx.fillStyle    = p.color
+    ctx.globalAlpha = alpha
+    ctx.shadowColor = p.color
+    ctx.shadowBlur  = 10
+    ctx.fillStyle   = p.color
     ctx.beginPath()
     ctx.arc(p.x, p.y, size, 0, Math.PI * 2)
     ctx.fill()
