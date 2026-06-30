@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <header class="app-header">
+    <header v-if="route.meta.tab !== 'bracket'" class="app-header">
       <div class="header-inner">
         <h1 class="header-title">World Cup Pool Party <span class="header-year">2026</span></h1>
       </div>
