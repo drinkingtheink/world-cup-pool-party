@@ -570,10 +570,10 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   .bracket-scroller { padding: 16px 12px 24px; }
   .bracket          { gap: 14px; }
   .b-col            { width: 108px; }
-  .b-slot--r32      { height: 60px; }
-  .b-slot--r16      { height: 120px; }
-  .b-slot--qf       { height: 240px; }
-  .b-slot--sf       { height: 480px; }
+  .b-slot--r32      { height: 68px; }
+  .b-slot--r16      { height: 136px; }
+  .b-slot--qf       { height: 272px; }
+  .b-slot--sf       { height: 544px; }
   .b-col--l .b-slot:nth-child(odd)::after,
   .b-col--l .b-slot:nth-child(even)::after { right: -14px; width: 14px; }
   .b-col--l.b-col--sf .b-slot::after       { right: -14px; width: 14px; }
