@@ -496,9 +496,17 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   overflow: hidden;
   transition: border-color .15s, box-shadow .15s;
 }
+
+/* Vaporwave heat gradient — cool outer → hot center */
+.b-col--r32  .b-card { background: linear-gradient(160deg, #080d2a 0%, #0e1538 100%); border-color: #1a2050; }
+.b-col--r16  .b-card { background: linear-gradient(160deg, #0e0830 0%, #190b42 100%); border-color: #261555; }
+.b-col--qf   .b-card { background: linear-gradient(160deg, #180830 0%, #2c0c50 100%); border-color: #3a1268; }
+.b-col--sf   .b-card { background: linear-gradient(160deg, #240838 0%, #420a60 100%); border-color: #581278; }
+.b-col--final .b-card { background: linear-gradient(160deg, #3a0858 0%, #6e0870 100%); }
+
 .b-slot:hover .b-card {
-  border-color: rgba(189,95,255,0.5);
-  box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+  border-color: rgba(189,95,255,0.6);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 12px rgba(189,95,255,0.2);
 }
 .b-card--final {
   border-color: var(--accent);
