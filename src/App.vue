@@ -21,13 +21,13 @@
         <Swords class="tab-icon" />
         <span class="tab-label">Matches</span>
       </router-link>
-      <router-link to="/my-teams" class="tab" active-class="tab--active">
-        <ShieldCheck class="tab-icon" />
-        <span class="tab-label">Players</span>
-      </router-link>
       <router-link to="/bracket"  class="tab" active-class="tab--active">
         <GitBranch class="tab-icon" />
         <span class="tab-label">Bracket</span>
+      </router-link>
+      <router-link to="/my-teams" class="tab" active-class="tab--active">
+        <ShieldCheck class="tab-icon" />
+        <span class="tab-label">Players</span>
       </router-link>
       <router-link to="/rules"    class="tab" active-class="tab--active">
         <ScrollText class="tab-icon" />

@@ -17,6 +17,12 @@
       </div>
     </div>
 
+    <button class="bracket-cta-btn" @click="router.push('/bracket')">
+      <GitBranch :size="15" class="schedule-btn-icon" />
+      <span class="schedule-btn-label">View Full Bracket</span>
+      <ChevronRight :size="14" class="schedule-btn-arrow" />
+    </button>
+
     <button class="schedule-btn" @click="router.push('/matches')">
       <CalendarDays :size="15" class="schedule-btn-icon" />
       <span class="schedule-btn-label">See Match Schedule</span>
@@ -413,7 +419,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { CalendarDays, ChevronRight, Link2, Check } from 'lucide-vue-next'
+import { CalendarDays, ChevronRight, Link2, Check, GitBranch } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
 import { quotes, FLAG_MAP, ELIMINATED_TEAMS, tiers } from '../data/index.js'
 import { matchSlug } from '../utils.js'
@@ -1899,6 +1905,62 @@ const topDaysChart = computed(() => {
 
 .schedule-btn-icon { color: var(--accent); flex-shrink: 0; }
 .schedule-btn-arrow { color: var(--cyan); flex-shrink: 0; opacity: 0.7; }
+
+/* ── Bracket CTA ──────────────────────────────────────────────── */
+.bracket-cta-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  padding: 15px 20px;
+  margin: 16px 0 10px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(189,95,255,0.15) 0%, rgba(13,10,30,0.9) 50%, rgba(255,45,120,0.15) 100%);
+  box-shadow:
+    0 0 0 1px rgba(189,95,255,0.5),
+    0 0 18px rgba(189,95,255,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  color: #fff;
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s cubic-bezier(.4,0,.2,1);
+}
+.bracket-cta-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.04) 50%, transparent 80%);
+  background-size: 300% auto;
+  animation: btn-shimmer 7s linear infinite;
+  pointer-events: none;
+}
+.bracket-cta-btn:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px rgba(255,45,120,0.55),
+    0 0 18px rgba(255,45,120,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.bracket-cta-btn:active {
+  transform: translateY(1px) scale(0.97);
+  transition: transform 0.07s ease, box-shadow 0.07s ease;
+}
+.bracket-cta-btn .schedule-btn-label {
+  background: linear-gradient(90deg, var(--purple) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.bracket-cta-btn .schedule-btn-icon { color: var(--purple); }
+.bracket-cta-btn .schedule-btn-arrow { color: var(--accent); opacity: 0.7; }
 
 /* ── Header Quote Card ────────────────────────────────────────── */
 .quote-card {
