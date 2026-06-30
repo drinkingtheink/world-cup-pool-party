@@ -545,10 +545,10 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
 }
 .b-slot:hover { z-index: 20; }
 
-.b-slot--r32 { height: 68px; }
-.b-slot--r16 { height: 136px; }
-.b-slot--qf  { height: 272px; }
-.b-slot--sf  { height: 544px; }
+.b-slot--r32 { height: 96px; }
+.b-slot--r16 { height: 192px; }
+.b-slot--qf  { height: 384px; }
+.b-slot--sf  { height: 768px; }
 
 /* Left side connectors → right */
 .b-col--l .b-slot:nth-child(odd)::after {
@@ -723,10 +723,10 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   .bracket-scroller { padding: 16px 12px 24px; }
   .bracket          { gap: 14px; }
   .b-col            { width: 108px; }
-  .b-slot--r32      { height: 68px; }
-  .b-slot--r16      { height: 136px; }
-  .b-slot--qf       { height: 272px; }
-  .b-slot--sf       { height: 544px; }
+  .b-slot--r32      { height: 96px; }
+  .b-slot--r16      { height: 192px; }
+  .b-slot--qf       { height: 384px; }
+  .b-slot--sf       { height: 768px; }
   .b-col--l .b-slot:nth-child(odd)::after,
   .b-col--l .b-slot:nth-child(even)::after { right: -14px; width: 14px; }
   .b-col--l.b-col--sf .b-slot::after       { right: -14px; width: 14px; }
