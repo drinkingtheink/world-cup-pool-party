@@ -41,6 +41,7 @@
           <span class="b-label">Round of 16</span>
           <div class="b-slots">
             <div v-for="idx in LEFT_R16" :key="idx" class="b-slot b-slot--r16">
+              <span v-if="matchDate(idx)" class="b-match-date">{{ matchDate(idx) }}</span>
               <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'home') }">
                   <div class="b-team-main">
@@ -73,6 +74,7 @@
           <span class="b-label">Quarterfinal</span>
           <div class="b-slots">
             <div v-for="idx in LEFT_QF" :key="idx" class="b-slot b-slot--qf">
+              <span v-if="matchDate(idx)" class="b-match-date">{{ matchDate(idx) }}</span>
               <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'home') }">
                   <div class="b-team-main">
@@ -105,6 +107,7 @@
           <span class="b-label">Semifinal</span>
           <div class="b-slots">
             <div class="b-slot b-slot--sf">
+              <span v-if="matchDate(101)" class="b-match-date">{{ matchDate(101) }}</span>
               <div class="b-card" :class="{ 'b-card--played': isPlayed(101) }">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(101,'home') }">
                   <div class="b-team-main">
@@ -137,6 +140,7 @@
           <span class="b-label">Final</span>
           <div class="b-slots">
             <div class="b-slot b-slot--sf">
+              <span v-if="matchDate(104)" class="b-match-date b-match-date--final">{{ matchDate(104) }}</span>
               <div ref="finalCardEl" class="b-card b-card--final" :class="{ 'b-card--played': isPlayed(104) }">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(104,'home') }">
                   <div class="b-team-main">
@@ -169,6 +173,7 @@
           <span class="b-label">Semifinal</span>
           <div class="b-slots">
             <div class="b-slot b-slot--sf">
+              <span v-if="matchDate(102)" class="b-match-date">{{ matchDate(102) }}</span>
               <div class="b-card" :class="{ 'b-card--played': isPlayed(102) }">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(102,'home') }">
                   <div class="b-team-main">
@@ -201,6 +206,7 @@
           <span class="b-label">Quarterfinal</span>
           <div class="b-slots">
             <div v-for="idx in RIGHT_QF" :key="idx" class="b-slot b-slot--qf">
+              <span v-if="matchDate(idx)" class="b-match-date">{{ matchDate(idx) }}</span>
               <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'home') }">
                   <div class="b-team-main">
@@ -233,6 +239,7 @@
           <span class="b-label">Round of 16</span>
           <div class="b-slots">
             <div v-for="idx in RIGHT_R16" :key="idx" class="b-slot b-slot--r16">
+              <span v-if="matchDate(idx)" class="b-match-date">{{ matchDate(idx) }}</span>
               <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'home') }">
                   <div class="b-team-main">
@@ -351,6 +358,13 @@ function score(idx, side) {
   return side === 'home' ? m.home_score : m.away_score
 }
 function matchTime(idx) { return matchByNum.value[idx]?.time ?? '' }
+function matchDate(idx) {
+  const d = matchByNum.value[idx]?.date
+  if (!d) return ''
+  const [, m, day] = d.split('-')
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  return `${months[+m - 1]} ${+day}`
+}
 function flagOf(team) {
   if (!team || team === 'TBD') return '🏳️'
   return FLAG_MAP[team] ?? ''
@@ -465,7 +479,7 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 40;
+  z-index: 0;
 }
 
 .bracket-scroller {
@@ -669,6 +683,23 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   text-align: center;
   padding: 3px 4px 4px;
   border-top: 1px solid rgba(46,32,96,0.4);
+}
+
+/* Match date label */
+.b-match-date {
+  position: absolute;
+  top: 5px; left: 0; right: 0;
+  text-align: center;
+  font-size: 8px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 2;
+}
+.b-match-date--final {
+  color: var(--accent);
+  opacity: 0.8;
 }
 
 /* Mobile compact */
