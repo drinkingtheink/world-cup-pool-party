@@ -177,6 +177,7 @@ export function enrichMatches(matches) {
     if (played) {
       if (hs > as) result = 'home'
       else if (as > hs) result = 'away'
+      else if (m.penalties_winner) result = m.penalties_winner
       else result = 'draw'
     }
     const bonuses = played ? deriveBonuses(m) : new Set()
