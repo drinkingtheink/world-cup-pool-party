@@ -1,5 +1,6 @@
 <template>
   <div class="bracket-page">
+    <canvas ref="particleCanvas" class="bracket-particles" />
     <div class="bracket-scroller">
       <div class="bracket">
 
@@ -136,7 +137,7 @@
           <span class="b-label">Final</span>
           <div class="b-slots">
             <div class="b-slot b-slot--sf">
-              <div class="b-card b-card--final" :class="{ 'b-card--played': isPlayed(104) }">
+              <div ref="finalCardEl" class="b-card b-card--final" :class="{ 'b-card--played': isPlayed(104) }">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(104,'home') }">
                   <div class="b-team-main">
                     <span class="b-flag">{{ flagOf(home(104)) }}</span>
@@ -297,7 +298,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { usePoolStore } from '../stores/pool.js'
 import { FLAG_MAP } from '../data/index.js'
 
@@ -360,6 +361,88 @@ function poolPlayers(idx, side) {
   return teamToPlayers.value[team] ?? []
 }
 
+// ── Particle system ───────────────────────────────────────────────
+const particleCanvas = ref(null)
+const finalCardEl    = ref(null)
+
+const SPARK_COLORS = [
+  '#ff2d78','#ff2d78','#ff71ce',
+  '#00e5ff','#00e5ff',
+  '#bd5fff','#bd5fff',
+  '#ffd200','#ffffff',
+]
+
+let _particles = []
+let _animId    = null
+
+function _spawn(cx, cy) {
+  const angle = Math.random() * Math.PI * 2
+  const speed = 0.8 + Math.random() * 6
+  _particles.push({
+    x:  cx + (Math.random() - 0.5) * 80,
+    y:  cy + (Math.random() - 0.5) * 50,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed - 1.8,
+    life:  1,
+    decay: 0.003 + Math.random() * 0.005,
+    color: SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)],
+    size:  1.2 + Math.random() * 2.8,
+    phase: Math.random() * Math.PI * 2,
+    freq:  0.04 + Math.random() * 0.04,
+  })
+}
+
+function _tick() {
+  _animId = requestAnimationFrame(_tick)
+
+  const canvas = particleCanvas.value
+  const fc     = finalCardEl.value
+  if (!canvas) return
+
+  const page = canvas.parentElement
+  if (canvas.width !== page.offsetWidth || canvas.height !== page.offsetHeight) {
+    canvas.width  = page.offsetWidth
+    canvas.height = page.offsetHeight
+  }
+
+  const ctx = canvas.getContext('2d')
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+  if (fc && _particles.length < 350) {
+    const pr = page.getBoundingClientRect()
+    const cr = fc.getBoundingClientRect()
+    const cx = cr.left - pr.left + cr.width  / 2
+    const cy = cr.top  - pr.top  + cr.height / 2
+    for (let i = 0; i < 3; i++) _spawn(cx, cy)
+  }
+
+  for (let i = _particles.length - 1; i >= 0; i--) {
+    const p = _particles[i]
+    p.phase += p.freq
+    p.vx   += Math.sin(p.phase) * 0.04
+    p.vy   += 0.025
+    p.x    += p.vx
+    p.y    += p.vy
+    p.life -= p.decay
+    if (p.life <= 0) { _particles.splice(i, 1); continue }
+
+    const size = p.size * Math.sqrt(p.life)
+    ctx.save()
+    ctx.globalAlpha  = p.life * 0.85
+    ctx.shadowColor  = p.color
+    ctx.shadowBlur   = size * 4
+    ctx.fillStyle    = p.color
+    ctx.beginPath()
+    ctx.arc(p.x, p.y, size, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.restore()
+  }
+}
+
+onMounted(()   => { _tick() })
+onUnmounted(() => { cancelAnimationFrame(_animId); _particles = [] })
+
+// ─────────────────────────────────────────────────────────────────
 const LEFT_R32 = [73, 75, 74, 77, 83, 84, 81, 82]
 const LEFT_R16 = [89, 90, 93, 94]
 const LEFT_QF  = [97, 98]
@@ -371,10 +454,18 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
 
 <style scoped>
 .bracket-page {
+  position: relative;
   height: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.bracket-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
 }
 
 .bracket-scroller {
