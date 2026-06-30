@@ -570,17 +570,17 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   .bracket-scroller { padding: 16px 12px 24px; }
   .bracket          { gap: 14px; }
   .b-col            { width: 108px; }
-  .b-slot--r32      { height: 52px; }
-  .b-slot--r16      { height: 104px; }
-  .b-slot--qf       { height: 208px; }
-  .b-slot--sf       { height: 416px; }
+  .b-slot--r32      { height: 60px; }
+  .b-slot--r16      { height: 120px; }
+  .b-slot--qf       { height: 240px; }
+  .b-slot--sf       { height: 480px; }
   .b-col--l .b-slot:nth-child(odd)::after,
   .b-col--l .b-slot:nth-child(even)::after { right: -14px; width: 14px; }
   .b-col--l.b-col--sf .b-slot::after       { right: -14px; width: 14px; }
   .b-col--r .b-slot:nth-child(odd)::after,
   .b-col--r .b-slot:nth-child(even)::after { left: -14px; width: 14px; }
   .b-col--r.b-col--sf .b-slot::after       { left: -14px; width: 14px; }
-  .b-team-main { padding: 4px 5px; font-size: 10px; gap: 4px; }
+  .b-team-main { padding: 5px 5px; font-size: 10px; gap: 4px; }
   .b-flag      { font-size: 11px; }
   .b-score     { font-size: 11px; }
   .b-players   { padding: 0 5px 4px; gap: 2px; }
