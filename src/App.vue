@@ -25,9 +25,9 @@
         <ShieldCheck class="tab-icon" />
         <span class="tab-label">Players</span>
       </router-link>
-      <router-link to="/teams"    class="tab" active-class="tab--active">
-        <Globe class="tab-icon" />
-        <span class="tab-label">Teams</span>
+      <router-link to="/bracket"  class="tab" active-class="tab--active">
+        <GitBranch class="tab-icon" />
+        <span class="tab-label">Bracket</span>
       </router-link>
       <router-link to="/rules"    class="tab" active-class="tab--active">
         <ScrollText class="tab-icon" />
@@ -146,7 +146,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { BarChart2, Swords, ShieldCheck, Globe, ScrollText } from 'lucide-vue-next'
+import { BarChart2, Swords, ShieldCheck, GitBranch, ScrollText } from 'lucide-vue-next'
 import AnnouncementModal from './components/AnnouncementModal.vue'
 import matchesData from './data/matches.json'
 
