@@ -619,11 +619,11 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
 }
 
 /* Vaporwave heat gradient — cool outer → hot center */
-.b-col--r32  .b-card { background: linear-gradient(160deg, #080d2a 0%, #0e1538 100%); border-color: #1a2050; }
-.b-col--r16  .b-card { background: linear-gradient(160deg, #0e0830 0%, #190b42 100%); border-color: #261555; }
-.b-col--qf   .b-card { background: linear-gradient(160deg, #180830 0%, #2c0c50 100%); border-color: #3a1268; }
-.b-col--sf   .b-card { background: linear-gradient(160deg, #240838 0%, #420a60 100%); border-color: #581278; }
-.b-col--final .b-card { background: linear-gradient(160deg, #3a0858 0%, #6e0870 100%); }
+.b-col--r32  .b-card { background: linear-gradient(160deg, #04091e 0%, #090f35 100%); border-color: #0e1e55; }
+.b-col--r16  .b-card { background: linear-gradient(160deg, #0c0530 0%, #1e0858 100%); border-color: #2a0e6a; }
+.b-col--qf   .b-card { background: linear-gradient(160deg, #1a0538 0%, #3c0870 100%); border-color: #500d88; }
+.b-col--sf   .b-card { background: linear-gradient(160deg, #2d0440 0%, #680878 100%); border-color: #7a0ea0; }
+.b-col--final .b-card { background: linear-gradient(160deg, #480548 0%, #a0086a 100%); }
 
 .b-slot:hover .b-card {
   border-color: rgba(189,95,255,0.6);
