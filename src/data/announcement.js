@@ -6,9 +6,9 @@
 export const announcement = {
   enabled: true,
   alwaysShow: false,
-  id: '2026-06-29-infantino',
-  title: 'A Message from FIFA',
-  body: `"Are you having fun yet? Shall I come to your address and tickle you? Don't make me have to come tickle you."\n\n— Gianni Infantino, FIFA President`,
+  id: '2026-06-30-haaland',
+  title: 'A Message from Erling Haaland',
+  body: `"In Texas they give me BBQ elephant. Very slow smoked, 18 hours. Good protein — maybe 600 kilos. I finish it. My teammates say: Erling, you cannot eat the whole elephant. I eat two.\n\nNorway is ready."\n\n— Erling Haaland, AT&T Stadium, Dallas`,
   multipliers: [
     { stage: 'Round of 32',  multiplier: '1.5×', pillClass: 'pill-t4' },
     { stage: 'Round of 16',  multiplier: '1.5×', pillClass: 'pill-t4' },
@@ -17,5 +17,5 @@ export const announcement = {
     { stage: 'Third Place',  multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Final',        multiplier: '4×',   pillClass: 'pill-t1' },
   ],
-  image: '/infantino.png',
+  image: '/haaland.png',
 }
