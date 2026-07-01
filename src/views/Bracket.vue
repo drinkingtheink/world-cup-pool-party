@@ -583,8 +583,8 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   position: absolute;
   right: -20px; top: 50%;
   width: 20px; height: 50%;
-  border-top: 1px solid var(--border);
-  border-right: 1px solid var(--border);
+  border-top: 1px solid rgba(0,229,255,0.25);
+  border-right: 1px solid rgba(0,229,255,0.25);
   pointer-events: none;
 }
 .b-col--l .b-slot:nth-child(even)::after {
@@ -592,8 +592,8 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   position: absolute;
   right: -20px; top: 0;
   width: 20px; height: 50%;
-  border-bottom: 1px solid var(--border);
-  border-right: 1px solid var(--border);
+  border-bottom: 1px solid rgba(0,229,255,0.25);
+  border-right: 1px solid rgba(0,229,255,0.25);
   pointer-events: none;
 }
 .b-col--l.b-col--sf .b-slot::after {
@@ -601,7 +601,7 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   position: absolute;
   right: -20px; top: 50%;
   width: 20px; height: 0;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(0,229,255,0.25);
   border-right: none;
   pointer-events: none;
 }
@@ -612,8 +612,8 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   position: absolute;
   left: -20px; top: 50%;
   width: 20px; height: 50%;
-  border-top: 1px solid var(--border);
-  border-left: 1px solid var(--border);
+  border-top: 1px solid rgba(0,229,255,0.25);
+  border-left: 1px solid rgba(0,229,255,0.25);
   pointer-events: none;
 }
 .b-col--r .b-slot:nth-child(even)::after {
@@ -621,8 +621,8 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   position: absolute;
   left: -20px; top: 0;
   width: 20px; height: 50%;
-  border-bottom: 1px solid var(--border);
-  border-left: 1px solid var(--border);
+  border-bottom: 1px solid rgba(0,229,255,0.25);
+  border-left: 1px solid rgba(0,229,255,0.25);
   pointer-events: none;
 }
 .b-col--r.b-col--sf .b-slot::after {
@@ -630,9 +630,18 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   position: absolute;
   left: -20px; top: 50%;
   width: 20px; height: 0;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(0,229,255,0.25);
   border-left: none;
   pointer-events: none;
+}
+
+.b-col--l .b-slot:nth-child(odd)::after,
+.b-col--l .b-slot:nth-child(even)::after,
+.b-col--l.b-col--sf .b-slot::after,
+.b-col--r .b-slot:nth-child(odd)::after,
+.b-col--r .b-slot:nth-child(even)::after,
+.b-col--r.b-col--sf .b-slot::after {
+  filter: drop-shadow(0 0 3px rgba(0,229,255,0.4));
 }
 
 /* Match card */
