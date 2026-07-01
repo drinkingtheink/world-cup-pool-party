@@ -360,7 +360,7 @@
         <span>{{ matchupsLinkCopied ? 'Copied!' : 'Copy link' }}</span>
       </button>
     </div>
-    <p class="strength-sub">Group stage matches where players have skin in the game on both sides</p>
+    <p class="strength-sub">Matches across all stages where players have skin in the game on both sides</p>
     <div class="mu-summary">
       <div v-for="type in matchupStats.sortedTypes" :key="type" class="mu-chip" :class="`mu-intensity-${matchupStats.intensity[type]}`">
         <span class="mu-chip-type">{{ type.replace('v', ' v ') }}</span>
@@ -638,7 +638,6 @@ const matchupStats = computed(() => {
   const byType = {}
 
   store.enrichedMatches
-    .filter(m => m.stage === 'Group Stage')
     .forEach(m => {
       const h = m.homePlayers.length
       const a = m.awayPlayers.length
