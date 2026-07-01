@@ -28,7 +28,7 @@
             />
           </div>
         </div>
-        <button class="modal-btn" @click="dismiss">Slow Smoked for 90 Mins</button>
+        <button class="modal-btn" @click="dismiss">Feed Erling Braut</button>
       </div>
     </div>
   </transition>
