@@ -73,7 +73,7 @@
                 <span v-if="positionChange.risers.has(entry.name)" class="lb-on-the-rise lb-tooltip-wrap" tabindex="0">🚀 On the Rise<span class="lb-tooltip">Biggest jump in the standings since yesterday (+{{ positionChange.riseCount }} place{{ positionChange.riseCount !== 1 ? 's' : '' }})</span></span>
                 <span v-if="positionChange.fallers.has(entry.name)" class="lb-sinker lb-tooltip-wrap" tabindex="0">🪨 Sinker<span class="lb-tooltip">Biggest drop in the standings since yesterday (-{{ positionChange.fallCount }} place{{ positionChange.fallCount !== 1 ? 's' : '' }})</span></span>
                 <span v-if="entry.name === pointsLeader" class="lb-setting-pace lb-tooltip-wrap" tabindex="0">🏊 Pacer<span class="lb-tooltip">Current points leader</span></span>
-                <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage</span></span>
+                <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage ({{ communityShieldPts }})</span></span>
                 <span v-if="entry.name === 'Jason' && pointsLeader === 'Jason'" class="lb-foia lb-tooltip-wrap" tabindex="0">📋 FOIA<span class="lb-tooltip">Yes, Jason is leading but the data is public and can be shared if you are interested. What's your Github @?</span></span>
                 <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap" tabindex="0">🎯 Chasing<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
                 <span v-if="inReach.holders.has(entry.name)" class="lb-in-reach lb-tooltip-wrap" tabindex="0">📡 In Reach<span class="lb-tooltip">Within {{ IN_REACH_THRESHOLD }} pts of the leader</span></span>
@@ -759,6 +759,19 @@ const lastGroupDate = computed(() => {
     .map(m => m.date)
     .sort()
   return dates[dates.length - 1] ?? null
+})
+
+const communityShieldPts = computed(() => {
+  const jason = store.players.find(p => p.name === 'Jason')
+  if (!jason) return 0
+  const teams = new Set(playerTeams(jason))
+  let total = 0
+  store.enrichedMatches.forEach(m => {
+    if (m.stage !== 'Group Stage' || !m.played || m.snapshot_minute) return
+    if (teams.has(m.home)) total += matchPointsForTeam(m.home, m)
+    if (teams.has(m.away)) total += matchPointsForTeam(m.away, m)
+  })
+  return Math.round(total * 10) / 10
 })
 
 const playerPointsByDate = computed(() => {
