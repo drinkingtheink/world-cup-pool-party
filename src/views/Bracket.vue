@@ -1,7 +1,7 @@
 <template>
   <div class="bracket-page">
     <canvas ref="particleCanvas" class="bracket-particles" />
-    <div class="bracket-scroller">
+    <div ref="scrollerEl" class="bracket-scroller">
       <div class="bracket">
 
         <!-- LEFT R32 -->
@@ -378,6 +378,7 @@ function poolPlayers(idx, side) {
 // ── Particle system ───────────────────────────────────────────────
 const particleCanvas = ref(null)
 const finalCardEl    = ref(null)
+const scrollerEl     = ref(null)
 
 // Weighted toward pink/magenta — cyan and white are rare accents
 const SPARK_COLORS = [
@@ -469,7 +470,14 @@ function _tick() {
   }
 }
 
-onMounted(()   => { _tick() })
+onMounted(() => {
+  _tick()
+  // Start scrolled so the Final card is horizontally centered
+  if (scrollerEl.value) {
+    const s = scrollerEl.value
+    s.scrollLeft = (s.scrollWidth - s.clientWidth) / 2
+  }
+})
 onUnmounted(() => { cancelAnimationFrame(_animId); _particles = [] })
 
 // ─────────────────────────────────────────────────────────────────
@@ -514,6 +522,7 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   align-items: stretch;
   gap: 20px;
   min-width: max-content;
+  margin: 0 auto;
 }
 
 .b-col {
