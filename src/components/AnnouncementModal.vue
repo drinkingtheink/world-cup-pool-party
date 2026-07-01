@@ -7,6 +7,11 @@
           <div class="modal-body">
             <p class="modal-title">{{ announcement.title }}</p>
             <p v-if="announcement.body" class="modal-text" style="white-space: pre-line">{{ announcement.body }}</p>
+            <button class="modal-bracket-btn" @click="dismiss(); router.push('/bracket')">
+              <GitBranch :size="14" class="modal-bracket-icon" />
+              <span class="modal-bracket-label">Check out the BRACKET</span>
+              <ChevronRight :size="13" class="modal-bracket-arrow" />
+            </button>
             <table v-if="announcement.multipliers" class="modal-table">
               <thead>
                 <tr><th>Round</th><th>Multiplier</th></tr>
@@ -36,13 +41,15 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { GitBranch, ChevronRight } from 'lucide-vue-next'
 import { announcement } from '../data/announcement.js'
 import { usePoolStore } from '../stores/pool.js'
 import MatchCard from './MatchCard.vue'
 
 const store = usePoolStore()
 const route = useRoute()
+const router = useRouter()
 const STORAGE_KEY = `announcement_seen_${announcement.id}`
 const visible = ref(false)
 
@@ -145,4 +152,62 @@ function dismiss() {
 
 .modal-fade-enter-active, .modal-fade-leave-active { transition: opacity .2s; }
 .modal-fade-enter-from, .modal-fade-leave-to { opacity: 0; }
+
+.modal-bracket-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  margin: 4px 0 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(189,95,255,0.15) 0%, rgba(13,10,30,0.9) 50%, rgba(255,45,120,0.15) 100%);
+  box-shadow:
+    0 0 0 1px rgba(189,95,255,0.5),
+    0 0 14px rgba(189,95,255,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: transform 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.18s cubic-bezier(.4,0,.2,1);
+}
+.modal-bracket-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255,255,255,0.04) 50%, transparent 80%);
+  background-size: 300% auto;
+  animation: btn-shimmer 7s linear infinite;
+  pointer-events: none;
+}
+@keyframes btn-shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -100% center; }
+}
+.modal-bracket-btn:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px rgba(255,45,120,0.55),
+    0 0 14px rgba(255,45,120,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.modal-bracket-btn:active {
+  transform: translateY(1px) scale(0.97);
+  transition: transform 0.07s ease, box-shadow 0.07s ease;
+}
+.modal-bracket-label {
+  background: linear-gradient(90deg, #bd5fff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.modal-bracket-icon { color: #bd5fff; flex-shrink: 0; }
+.modal-bracket-arrow { color: var(--accent); flex-shrink: 0; opacity: 0.7; }
 </style>

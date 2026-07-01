@@ -8,7 +8,7 @@ export const announcement = {
   alwaysShow: false,
   id: '2026-06-30-haaland',
   title: 'A Message from Erling Haaland',
-  body: `"In Texas they give me BBQ elephant. Very slow smoked, 18 hours. Good protein — maybe 600 kilos. I finish it. My teammates say: Erling, you cannot eat the whole elephant. I eat two.\n\nNorway is ready."\n\n— Erling Haaland, AT&T Stadium, Dallas`,
+  body: `"In Texas they give me BBQ elephant. Slow smoked for 90+ mins. My teammates say: Erling, you cannot eat the whole elephant. I eat two."\n\n— Erling Haaland, AT&T Stadium, Dallas`,
   multipliers: [
     { stage: 'Round of 32',  multiplier: '1.5×', pillClass: 'pill-t4' },
     { stage: 'Round of 16',  multiplier: '1.5×', pillClass: 'pill-t4' },
