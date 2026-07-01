@@ -28,7 +28,7 @@
             />
           </div>
         </div>
-        <button class="modal-btn" @click="dismiss">I'll have what he's having.</button>
+        <button class="modal-btn" @click="dismiss">Click Here to Feed Erling Braut</button>
       </div>
     </div>
   </transition>
