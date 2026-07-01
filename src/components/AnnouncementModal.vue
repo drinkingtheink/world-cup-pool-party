@@ -28,7 +28,7 @@
             />
           </div>
         </div>
-        <button class="modal-btn" @click="dismiss">Please don't tickle me, Gianni.</button>
+        <button class="modal-btn" @click="dismiss">I'll have what he's having.</button>
       </div>
     </div>
   </transition>
