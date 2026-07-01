@@ -724,14 +724,30 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   width: 38px;
   pointer-events: none;
   z-index: 3;
-  filter:
-    drop-shadow(0 0 6px rgba(247, 215, 88, 0.7))
-    drop-shadow(0 0 18px rgba(250, 183, 56, 0.4));
-  animation: trophy-float 3.2s ease-in-out infinite;
+  animation:
+    trophy-float 3.2s ease-in-out infinite,
+    trophy-shine 3.6s ease-in-out infinite;
 }
 @keyframes trophy-float {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50%       { transform: translateX(-50%) translateY(-10px); }
+}
+@keyframes trophy-shine {
+  0%, 100% {
+    filter:
+      brightness(1.05)
+      saturate(1.2)
+      drop-shadow(0 0 4px rgba(247, 215, 88, 0.7))
+      drop-shadow(0 0 14px rgba(250, 160, 40, 0.4));
+  }
+  50% {
+    filter:
+      brightness(1.3)
+      saturate(1.5)
+      drop-shadow(0 0 6px rgba(255, 248, 180, 0.9))
+      drop-shadow(0 0 20px rgba(247, 215, 88, 0.8))
+      drop-shadow(0 0 38px rgba(250, 183, 56, 0.45));
+  }
 }
 
 /* Match date label */
