@@ -165,6 +165,10 @@
                 </div>
                 <div v-if="!isPlayed(104)" class="b-time">{{ matchTime(104) }}</div>
               </div>
+              <div v-if="daysUntilFinal" class="b-days-until">
+                <span class="b-days-until__num">{{ daysUntilFinal }}</span>
+                <span class="b-days-until__label">days until</span>
+              </div>
             </div>
           </div>
         </div>
@@ -359,6 +363,15 @@ function score(idx, side) {
   return side === 'home' ? m.home_score : m.away_score
 }
 function matchTime(idx) { return matchByNum.value[idx]?.time ?? '' }
+const daysUntilFinal = computed(() => {
+  const d = matchByNum.value[104]?.date
+  if (!d) return null
+  const finalMs = new Date(d + 'T12:00:00').getTime()
+  const todayMs = new Date(new Date().toDateString()).getTime()
+  const days = Math.round((finalMs - todayMs) / 86400000)
+  return days > 0 ? days : null
+})
+
 function matchDate(idx) {
   const d = matchByNum.value[idx]?.date
   if (!d) return ''
@@ -748,6 +761,38 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
       drop-shadow(0 0 20px rgba(247, 215, 88, 0.8))
       drop-shadow(0 0 38px rgba(250, 183, 56, 0.45));
   }
+}
+
+/* Days-until-Final counter */
+.b-days-until {
+  position: absolute;
+  top: calc(50% + 68px);
+  left: 0; right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  pointer-events: none;
+  z-index: 2;
+}
+.b-days-until__num {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  background: linear-gradient(160deg, #fdfbd4 0%, #f7d75c 40%, #f39f2d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(247, 215, 88, 0.6));
+}
+.b-days-until__label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  opacity: 0.6;
 }
 
 /* Match date label */
