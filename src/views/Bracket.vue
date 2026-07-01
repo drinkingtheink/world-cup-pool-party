@@ -140,6 +140,7 @@
           <span class="b-label">Final</span>
           <div class="b-slots">
             <div class="b-slot b-slot--sf">
+              <img src="/trophy.svg" class="b-trophy" alt="" />
               <span v-if="matchDate(104)" class="b-match-date b-match-date--final">{{ matchDate(104) }}</span>
               <div ref="finalCardEl" class="b-card b-card--final" :class="{ 'b-card--played': isPlayed(104) }">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(104,'home') }">
@@ -483,13 +484,13 @@ onMounted(() => {
 onUnmounted(() => { cancelAnimationFrame(_animId); _particles = [] })
 
 // ─────────────────────────────────────────────────────────────────
-const LEFT_R32 = [73, 75, 74, 77, 83, 84, 81, 82]
+const LEFT_R32 = [73, 76, 75, 78, 83, 84, 81, 82]
 const LEFT_R16 = [89, 90, 93, 94]
 const LEFT_QF  = [97, 98]
 
 const RIGHT_QF  = [99, 100]
 const RIGHT_R16 = [91, 92, 95, 96]
-const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
+const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
 </script>
 
 <style scoped>
@@ -712,6 +713,25 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   text-align: center;
   padding: 3px 4px 4px;
   border-top: 1px solid rgba(46,32,96,0.4);
+}
+
+/* Trophy */
+.b-trophy {
+  position: absolute;
+  left: 50%;
+  bottom: calc(50% + 58px);
+  transform: translateX(-50%);
+  width: 38px;
+  pointer-events: none;
+  z-index: 3;
+  filter:
+    drop-shadow(0 0 6px rgba(247, 215, 88, 0.7))
+    drop-shadow(0 0 18px rgba(250, 183, 56, 0.4));
+  animation: trophy-float 3.2s ease-in-out infinite;
+}
+@keyframes trophy-float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(-10px); }
 }
 
 /* Match date label */
