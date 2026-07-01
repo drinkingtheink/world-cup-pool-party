@@ -305,7 +305,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { usePoolStore } from '../stores/pool.js'
 import { FLAG_MAP } from '../data/index.js'
 
@@ -472,11 +472,13 @@ function _tick() {
 
 onMounted(() => {
   _tick()
-  // Start scrolled so the Final card is horizontally centered
-  if (scrollerEl.value) {
-    const s = scrollerEl.value
-    s.scrollLeft = (s.scrollWidth - s.clientWidth) / 2
-  }
+  // Wait for layout before measuring scroll dimensions
+  nextTick(() => {
+    if (scrollerEl.value) {
+      const s = scrollerEl.value
+      s.scrollLeft = (s.scrollWidth - s.clientWidth) / 2
+    }
+  })
 })
 onUnmounted(() => { cancelAnimationFrame(_animId); _particles = [] })
 
@@ -514,6 +516,9 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   scrollbar-width: thin;
   scrollbar-color: #2e2060 #100c20;
   -webkit-overflow-scrolling: touch;
+  display: flex;
+  align-items: flex-start;
+  justify-content: safe center;
 }
 
 .bracket {
@@ -522,7 +527,6 @@ const RIGHT_R32 = [76, 78, 79, 80, 86, 88, 85, 87]
   align-items: stretch;
   gap: 20px;
   min-width: max-content;
-  margin: 0 auto;
 }
 
 .b-col {
