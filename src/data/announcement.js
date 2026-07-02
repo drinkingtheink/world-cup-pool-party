@@ -4,11 +4,12 @@
 // Set `image` to a path like '/knockout-banner.png' or null to omit.
 
 export const announcement = {
-  enabled: false,
-  alwaysShow: false,
-  id: '2026-06-30-haaland',
-  title: 'A Message from Erling Haaland',
-  body: `"In Texas they give me BBQ elephant. Slow smoked for 90+ mins. My teammates say: Erling, you cannot eat the whole elephant. I eat two."\n\n— Erling Haaland, AT&T Stadium, Dallas`,
+  enabled: true,
+  alwaysShow: true,
+  id: '2026-07-02-spain',
+  title: 'Spain. Again.',
+  body: `Spain beat Austria 3-0 today and are through to the Round of 16. Again.\n\nLa Roja have now won all three group stage matches and haven't conceded a single goal. Jacuzzi Bros officially thrown into a tizzy!\n\nYou had one job, Austria.`,
+  cta: 'Someone Please Disinfect This Jacuzzi',
   multipliers: [
     { stage: 'Round of 32',  multiplier: '1.5×', pillClass: 'pill-t4' },
     { stage: 'Round of 16',  multiplier: '1.5×', pillClass: 'pill-t4' },
@@ -17,5 +18,5 @@ export const announcement = {
     { stage: 'Third Place',  multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Final',        multiplier: '4×',   pillClass: 'pill-t1' },
   ],
-  image: '/haaland.png',
+  image: '/hot-tub.png',
 }

@@ -33,7 +33,7 @@
             />
           </div>
         </div>
-        <button class="modal-btn" @click="dismiss">Feed Erling Braut</button>
+        <button class="modal-btn" @click="dismiss">{{ announcement.cta ?? 'Got it' }}</button>
       </div>
     </div>
   </transition>
