@@ -9,7 +9,7 @@
           <span class="b-label">Round of 32</span>
           <div class="b-slots">
             <div v-for="idx in LEFT_R32" :key="idx" class="b-slot b-slot--r32">
-              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }">
+              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }" @click="goToMatch(idx)">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'home') }">
                   <div class="b-team-main">
                     <span class="b-flag">{{ flagOf(home(idx)) }}</span>
@@ -42,7 +42,7 @@
           <div class="b-slots">
             <div v-for="idx in LEFT_R16" :key="idx" class="b-slot b-slot--r16">
               <span v-if="matchDate(idx)" class="b-match-date">{{ matchDate(idx) }}</span>
-              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }">
+              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }" @click="goToMatch(idx)">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'home') }">
                   <div class="b-team-main">
                     <span class="b-flag">{{ flagOf(home(idx)) }}</span>
@@ -75,7 +75,7 @@
           <div class="b-slots">
             <div v-for="idx in LEFT_QF" :key="idx" class="b-slot b-slot--qf">
               <span v-if="matchDate(idx)" class="b-match-date">{{ matchDate(idx) }}</span>
-              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }">
+              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }" @click="goToMatch(idx)">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'home') }">
                   <div class="b-team-main">
                     <span class="b-flag">{{ flagOf(home(idx)) }}</span>
@@ -212,7 +212,7 @@
           <div class="b-slots">
             <div v-for="idx in RIGHT_QF" :key="idx" class="b-slot b-slot--qf">
               <span v-if="matchDate(idx)" class="b-match-date">{{ matchDate(idx) }}</span>
-              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }">
+              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }" @click="goToMatch(idx)">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'home') }">
                   <div class="b-team-main">
                     <span class="b-flag">{{ flagOf(home(idx)) }}</span>
@@ -245,7 +245,7 @@
           <div class="b-slots">
             <div v-for="idx in RIGHT_R16" :key="idx" class="b-slot b-slot--r16">
               <span v-if="matchDate(idx)" class="b-match-date">{{ matchDate(idx) }}</span>
-              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }">
+              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }" @click="goToMatch(idx)">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'home') }">
                   <div class="b-team-main">
                     <span class="b-flag">{{ flagOf(home(idx)) }}</span>
@@ -277,7 +277,7 @@
           <span class="b-label">Round of 32</span>
           <div class="b-slots">
             <div v-for="idx in RIGHT_R32" :key="idx" class="b-slot b-slot--r32">
-              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }">
+              <div class="b-card" :class="{ 'b-card--played': isPlayed(idx) }" @click="goToMatch(idx)">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'home') }">
                   <div class="b-team-main">
                     <span class="b-flag">{{ flagOf(home(idx)) }}</span>
@@ -311,10 +311,19 @@
 
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import { FLAG_MAP } from '../data/index.js'
+import { matchSlug } from '../utils.js'
 
+const router = useRouter()
 const store = usePoolStore()
+
+function goToMatch(idx) {
+  const m = matchByNum.value[idx]
+  if (!m) return
+  router.push({ path: '/matches', hash: `#${matchSlug(m)}` })
+}
 
 const matchByNum = computed(() => {
   const map = {}
@@ -651,6 +660,7 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   border: 1px solid var(--border);
   border-radius: 7px;
   overflow: hidden;
+  cursor: pointer;
   transition: border-color .15s, box-shadow .15s;
 }
 
