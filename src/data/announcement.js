@@ -4,7 +4,7 @@
 // Set `image` to a path like '/knockout-banner.png' or null to omit.
 
 export const announcement = {
-  enabled: true,
+  enabled: false,
   alwaysShow: false,
   id: '2026-06-30-haaland',
   title: 'A Message from Erling Haaland',
