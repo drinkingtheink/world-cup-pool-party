@@ -8,7 +8,7 @@ export const announcement = {
   alwaysShow: true,
   id: '2026-07-02-spain',
   title: 'Spain. Again.',
-  body: `Spain beat Austria 3-0 today and are through to the Round of 16. Again.\n\nJacuzzi Bros officially thrown into a tizzy!\n\nYou had one job, Austria.`,
+  body: `Spain beat Austria 3-0 and are through to the Round of 16. Again.\n\nJacuzzi Bros officially thrown into a tizzy!\n\nYou had one job, Austria.`,
   cta: 'Someone Please Disinfect This Jacuzzi',
   multipliers: [
     { stage: 'Round of 32',  multiplier: '1.5×', pillClass: 'pill-t4' },
