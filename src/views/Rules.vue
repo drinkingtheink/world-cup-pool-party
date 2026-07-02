@@ -68,6 +68,7 @@ const multipliers = [
   { stage: 'Round of 32 / Round of 16', mult: 1.5 },
   { stage: 'Quarterfinal',              mult: 2   },
   { stage: 'Semifinal',                 mult: 3   },
+  { stage: 'Third Place',               mult: 3   },
   { stage: 'Final',                     mult: 4   },
 ]
 const bonuses = [
