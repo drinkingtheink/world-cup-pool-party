@@ -113,8 +113,20 @@
             </div>
             <div class="lb-stats-row">
               <span class="lb-stat"><span class="lb-stat-value">{{ playerGamesPlayed[entry.name].played }}</span><span class="lb-stat-label">Matches</span></span>
-              <span class="lb-stat"><span class="lb-stat-value">{{ playerGoals[entry.name] }}</span><span class="lb-stat-label">Goals</span></span>
-              <span class="lb-stat"><span class="lb-stat-value">{{ playerGoalsPerGame[entry.name] }}</span><span class="lb-stat-label">Goals/Game</span></span>
+              <span class="lb-stat">
+                <span class="lb-stat-value lb-tooltip-wrap" :class="{ 'lb-stat-value--shimmer': playerGoals[entry.name] === maxPlayerGoals }" :tabindex="playerGoals[entry.name] === maxPlayerGoals ? 0 : -1">
+                  {{ playerGoals[entry.name] }}
+                  <span v-if="playerGoals[entry.name] === maxPlayerGoals" class="lb-tooltip">Most goals scored in the pool ({{ maxPlayerGoals }})</span>
+                </span>
+                <span class="lb-stat-label">Goals</span>
+              </span>
+              <span class="lb-stat">
+                <span class="lb-stat-value lb-tooltip-wrap" :class="{ 'lb-stat-value--shimmer': playerGoalsPerGame[entry.name] !== '—' && Number(playerGoalsPerGame[entry.name]) === maxPlayerGpg }" :tabindex="playerGoalsPerGame[entry.name] !== '—' && Number(playerGoalsPerGame[entry.name]) === maxPlayerGpg ? 0 : -1">
+                  {{ playerGoalsPerGame[entry.name] }}
+                  <span v-if="playerGoalsPerGame[entry.name] !== '—' && Number(playerGoalsPerGame[entry.name]) === maxPlayerGpg" class="lb-tooltip">Best goals per game in the pool ({{ maxPlayerGpg.toFixed(2) }} g/g)</span>
+                </span>
+                <span class="lb-stat-label">Goals/Game</span>
+              </span>
             </div>
           </div>
           <span class="lb-pts">{{ entry.total }} <span class="lb-pts-label">pts</span></span>
@@ -495,6 +507,8 @@ const playerGoalsPerGame = computed(() => {
   })
   return map
 })
+const maxPlayerGoals = computed(() => Math.max(...Object.values(playerGoals.value)))
+const maxPlayerGpg   = computed(() => Math.max(...Object.values(playerGoalsPerGame.value).map(Number).filter(n => !isNaN(n))))
 
 const playerGamesPlayed = computed(() => {
   const map = {}
@@ -1630,6 +1644,7 @@ const topDaysChart = computed(() => {
   display: none;
   position: absolute; top: calc(100% + 6px); left: 0;
   background: var(--surface2); color: var(--text);
+  -webkit-text-fill-color: var(--text);
   border: 1px solid var(--border);
   font-size: 11px; font-weight: 500; letter-spacing: 0;
   white-space: normal; max-width: min(260px, calc(100vw - 32px)); padding: 4px 8px; border-radius: 6px;
@@ -1659,6 +1674,17 @@ const topDaysChart = computed(() => {
 .lb-stats-row { display: flex; align-items: stretch; gap: 12px; margin-top: 10px; }
 .lb-stat { display: flex; flex-direction: column; gap: 1px; min-width: 0; padding-top: 6px; }
 .lb-stat-value { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.2; }
+.lb-stat-value--shimmer {
+  background: linear-gradient(90deg, var(--green) 0%, #fff 45%, #afffdc 55%, var(--green) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: lb-stat-shimmer 2s linear infinite;
+}
+@keyframes lb-stat-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
 .lb-stat-label { font-size: 9px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-dim); line-height: 1.25; white-space: nowrap; }
 @media (max-width: 380px) {
   .lb-stats-row { gap: 8px; }
