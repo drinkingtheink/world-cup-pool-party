@@ -86,7 +86,7 @@
   {"date":"2026-07-02","stage":"Round of 32","home":"Switzerland","away":"Algeria","home_score":"2","away_score":"0","goals":[{"team":"home","minute":10,"scorer":"Embolo"},{"team":"home","minute":46,"scorer":"Ndoye"}],"cards":[{"team":"away","minute":36,"type":"yellow"},{"team":"away","minute":72,"type":"yellow"}],"penalties_winner":null,"time":"10:00 PM CT","snapshot_minute":null},
   {"date":"2026-07-03","stage":"Round of 32","home":"Australia","away":"Egypt","home_score":"1","away_score":"1","goals":[{"team":"away","minute":13,"scorer":"Ashour"},{"team":"away","minute":55,"scorer":"Hany (OG)"}],"cards":[],"penalties_winner":null,"time":"1:00 PM CT","snapshot_minute":56},
   {"date":"2026-07-03","stage":"Round of 32","home":"Argentina","away":"Cape Verde","home_score":"","away_score":"","goals":[],"cards":[],"penalties_winner":null,"time":"5:00 PM CT"},
-  {"date":"2026-07-03","stage":"Round of 32","home":"Colombia","away":"Ghana","home_score":"","away_score":"","goals":[],"cards":[],"penalties_winner":null,"time":"7:30 PM CT"},
+  {"date":"2026-07-03","stage":"Round of 32","home":"Colombia","away":"Ghana","home_score":"","away_score":"","goals":[],"cards":[],"penalties_winner":null,"time":"8:30 PM CT"},
   {"date":"2026-07-04","stage":"Round of 16","home":"Canada","away":"Morocco","home_score":"","away_score":"","goals":[],"cards":[],"penalties_winner":null,"time":"12:00 PM CT"},
   {"date":"2026-07-04","stage":"Round of 16","home":"Paraguay","away":"France","home_score":"","away_score":"","goals":[],"cards":[],"penalties_winner":null,"time":"4:00 PM CT"},
   {"date":"2026-07-05","stage":"Round of 16","home":"Brazil","away":"Norway","home_score":"","away_score":"","goals":[],"cards":[],"penalties_winner":null,"time":"3:00 PM CT"},
