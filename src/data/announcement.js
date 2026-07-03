@@ -5,11 +5,11 @@
 
 export const announcement = {
   enabled: true,
-  alwaysShow: true,
-  id: '2026-07-03-cr7',
+  alwaysShow: false,
+  id: '2026-07-03-cr7-v2',
   title: 'Day 23 of the World Cup 2026',
   body: `"DJT owed me a favor. I collected. Croatia is gone.\n\nYou're welcome, Tommy."\n\n— Cristiano Ronaldo`,
-  cta: 'I Accept this Ronaldomaxxing',
+  cta: 'Down with Ronaldomaxxing',
   multipliers: [
     { stage: 'Round of 32',  multiplier: '1.5×', pillClass: 'pill-t4' },
     { stage: 'Round of 16',  multiplier: '1.5×', pillClass: 'pill-t4' },
