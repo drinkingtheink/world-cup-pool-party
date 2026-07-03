@@ -98,6 +98,7 @@
                 <span v-if="twoPumpChump.holders.has(entry.name)" class="lb-two-pump lb-tooltip-wrap" tabindex="0">💦 Early Finisher<span class="lb-tooltip">Majority of goals scored in the first half</span></span>
                 <span v-if="goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Gold Boot<span class="lb-tooltip">Most total goals scored ({{ goldenBoot.goals }})</span></span>
                 <span v-if="floaties.has(entry.name)" class="lb-floaties lb-tooltip-wrap" tabindex="0">🤽 Floaties<span class="lb-tooltip">4 or more teams still alive</span></span>
+                <span v-if="treadingWater.has(entry.name)" class="lb-treading-water lb-tooltip-wrap" tabindex="0">🏊 Treading Water<span class="lb-tooltip">Exactly half your teams have been eliminated</span></span>
                 <span v-if="lastLeg.has(entry.name)" class="lb-last-leg lb-tooltip-wrap" tabindex="0">🦵 Last Leg<span class="lb-tooltip">Only 2 teams still alive</span></span>
                 <span v-if="washedUp.holders.has(entry.name)" class="lb-washed-up lb-tooltip-wrap" tabindex="0">🧼 Washed Up<span class="lb-tooltip">First pool player with all teams eliminated</span></span>
                 <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap" tabindex="0">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
@@ -1176,6 +1177,15 @@ const lastLeg = computed(() => new Set(
     .map(p => p.name)
 ))
 
+const treadingWater = computed(() => new Set(
+  store.players
+    .filter(p => {
+      const teams = playerTeams(p)
+      return teams.length > 0 && teams.filter(t => ELIMINATED_TEAMS.has(t)).length === Math.floor(teams.length / 2)
+    })
+    .map(p => p.name)
+))
+
 const washedUp = computed(() => {
   // Find last played-match date per eliminated team
   const teamLastDate = {}
@@ -1716,6 +1726,16 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(0,200,255,0.35);
   white-space: nowrap;
   animation: shield-sparkle 2s linear infinite;
+}
+.lb-treading-water {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,160,180,0.14), rgba(80,210,200,0.22), rgba(0,160,180,0.14));
+  background-size: 200% auto;
+  color: #40d0c0;
+  border: 1px solid rgba(0,190,180,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 3s linear infinite;
 }
 .lb-last-leg {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
