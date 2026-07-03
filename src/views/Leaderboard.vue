@@ -101,6 +101,7 @@
                 <span v-if="lastLeg.has(entry.name)" class="lb-last-leg lb-tooltip-wrap" tabindex="0">🦵 Last Leg<span class="lb-tooltip">Only 2 teams still alive</span></span>
                 <span v-if="washedUp.holders.has(entry.name)" class="lb-washed-up lb-tooltip-wrap" tabindex="0">🧼 Washed Up<span class="lb-tooltip">First pool player with all teams eliminated</span></span>
                 <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap" tabindex="0">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
+                <span v-if="backToBack.holders.has(entry.name)" class="lb-back-to-back lb-tooltip-wrap" tabindex="0">🥇 2 20+<span class="lb-tooltip">Back to Back 20+ point match days</span></span>
                 <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap" tabindex="0">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
                 <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap" tabindex="0">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
                 <span v-if="!entry.teams.includes('USA')" class="lb-sus lb-tooltip-wrap" tabindex="0">👀 sus<span class="lb-tooltip">Did not select the US in their pool. The US Government has been notified.</span></span>
@@ -1147,6 +1148,22 @@ const groundskeeper = computed(() => {
   return { count: max, holders }
 })
 
+const backToBack = computed(() => {
+  const holders = new Set()
+  const scores = {}
+  store.players.forEach(p => {
+    const days = playerPointsByDate.value[p.name] ?? []
+    let streak = 0, run = []
+    for (const { pts } of days) {
+      if (pts >= 20) {
+        streak++; run.push(pts)
+        if (streak >= 2) { holders.add(p.name); scores[p.name] = run.slice(-2); break }
+      } else { streak = 0; run = [] }
+    }
+  })
+  return { holders, scores }
+})
+
 const floaties = computed(() => new Set(
   store.players
     .filter(p => playerTeams(p).filter(t => !ELIMINATED_TEAMS.has(t)).length >= 4)
@@ -1662,6 +1679,16 @@ const topDaysChart = computed(() => {
   animation: shield-sparkle 2s linear infinite;
 }
 
+.lb-back-to-back {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,255,159,0.15), rgba(255,255,255,0.2), rgba(0,255,159,0.15));
+  background-size: 200% auto;
+  color: var(--green);
+  border: 1px solid rgba(0,255,159,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 2s linear infinite;
+}
 .lb-floaties {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
   padding: 2px 7px; border-radius: 20px;
