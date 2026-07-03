@@ -1825,7 +1825,7 @@ const topDaysChart = computed(() => {
 
 .lb-name-line { display: flex; align-items: center; gap: 8px; }
 
-.lb-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.lb-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; width: 100%; }
 
 .lb-live-btn {
   display: inline-flex; align-items: center; gap: 5px;
