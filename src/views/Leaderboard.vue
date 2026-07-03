@@ -53,7 +53,7 @@
           <div class="lb-center">
             <div class="lb-name-row">
               <div class="lb-name-line">
-                <span class="lb-name">{{ entry.name }}</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="Lifeguard Duty">🛟</span>
+                <span class="lb-name" :class="{ 'lb-name--shimmer': entry.name === pointsLeader, 'lb-name--vaporfire': trending.holders.has(entry.name) && entry.name !== pointsLeader }">{{ entry.name }}</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="Lifeguard Duty">🛟</span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending-fire" aria-hidden="true">🔥</span>
                 <button
                   v-if="playerLiveMatches[entry.name]?.length"
@@ -1360,6 +1360,24 @@ const topDaysChart = computed(() => {
 
 .lb-center { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
+.lb-name--shimmer {
+  background: linear-gradient(90deg, var(--green) 0%, #fff 45%, #afffdc 55%, var(--green) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: lb-stat-shimmer 2s linear infinite;
+}
+.lb-name--vaporfire {
+  background: linear-gradient(90deg, #ff2d95 0%, #ff5500 25%, #ffcc00 50%, #ff2d00 75%, #ff2d95 100%);
+  background-size: 300% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: lb-vaporfire 2.4s linear infinite;
+}
+@keyframes lb-vaporfire {
+  0%   { background-position: 0% center; }
+  100% { background-position: 300% center; }
+}
 .lb-name-crown { font-size: 14px; line-height: 1; }
 .lb-name-lifeguard { font-size: 14px; line-height: 1; opacity: 0.85; }
 .lb-trending-fire { font-size: 16px; line-height: 1; }
