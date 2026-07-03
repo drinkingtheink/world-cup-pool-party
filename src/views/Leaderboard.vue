@@ -97,6 +97,7 @@
                 <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
                 <span v-if="twoPumpChump.holders.has(entry.name)" class="lb-two-pump lb-tooltip-wrap" tabindex="0">💦 Early Finisher<span class="lb-tooltip">Majority of goals scored in the first half</span></span>
                 <span v-if="goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Gold Boot<span class="lb-tooltip">Most total goals scored ({{ goldenBoot.goals }})</span></span>
+                <span v-if="playerMatchDays[entry.name].today === 0" class="lb-poolside lb-tooltip-wrap" tabindex="0">🍹 Poolside<span class="lb-tooltip">No matches scheduled today</span></span>
                 <span v-if="floaties.has(entry.name)" class="lb-floaties lb-tooltip-wrap" tabindex="0">🤽 Floaties<span class="lb-tooltip">4 or more teams still alive</span></span>
                 <span v-if="halfDead.has(entry.name)" class="lb-half-dead lb-tooltip-wrap" tabindex="0">💀 Half-Dead<span class="lb-tooltip">Half your teams have been eliminated</span></span>
                 <span v-if="treadingWater.has(entry.name)" class="lb-treading-water lb-tooltip-wrap" tabindex="0">🏊 Treading Water<span class="lb-tooltip">Only 2 teams still alive</span></span>
@@ -1733,6 +1734,16 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(0,200,255,0.35);
   white-space: nowrap;
   animation: shield-sparkle 2s linear infinite;
+}
+.lb-poolside {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,200,80,0.13), rgba(255,230,140,0.20), rgba(255,200,80,0.13));
+  background-size: 200% auto;
+  color: #f5c842;
+  border: 1px solid rgba(240,190,60,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 3.2s linear infinite;
 }
 .lb-half-dead {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
