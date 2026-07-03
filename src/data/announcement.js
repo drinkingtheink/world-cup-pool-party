@@ -6,10 +6,10 @@
 export const announcement = {
   enabled: true,
   alwaysShow: true,
-  id: '2026-07-02-spain',
-  title: 'Spain. Again.',
-  body: `Spain beat Austria 3-0 and are through to the Round of 16. Again.\n\nJacuzzi Bros officially thrown into a tizzy!\n\nYou had one job, Austria.`,
-  cta: 'Someone Please Disinfect This Jacuzzi',
+  id: '2026-07-03-cr7',
+  title: 'Day 23 of the World Cup 2026',
+  body: `"DJT owed me a favor. I collected. Croatia is gone.\n\nYou're welcome, Tommy."\n\n— Cristiano Ronaldo`,
+  cta: 'I Accept this Ronaldomaxxing',
   multipliers: [
     { stage: 'Round of 32',  multiplier: '1.5×', pillClass: 'pill-t4' },
     { stage: 'Round of 16',  multiplier: '1.5×', pillClass: 'pill-t4' },
@@ -18,5 +18,5 @@ export const announcement = {
     { stage: 'Third Place',  multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Final',        multiplier: '4×',   pillClass: 'pill-t1' },
   ],
-  image: '/hot-tub.png',
+  image: '/cr7-bust.png',
 }
