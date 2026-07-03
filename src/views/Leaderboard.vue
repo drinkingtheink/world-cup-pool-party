@@ -99,7 +99,7 @@
                 <span v-if="goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Gold Boot<span class="lb-tooltip">Most total goals scored ({{ goldenBoot.goals }})</span></span>
                 <span v-if="playerMatchDays[entry.name].today === 0" class="lb-poolside lb-tooltip-wrap" tabindex="0">🍹 Poolside<span class="lb-tooltip">No matches scheduled today</span></span>
                 <span v-if="floaties.has(entry.name)" class="lb-floaties lb-tooltip-wrap" tabindex="0">🤽 Floaties<span class="lb-tooltip">4 or more teams still alive</span></span>
-                <span v-if="halfDead.has(entry.name)" class="lb-half-dead lb-tooltip-wrap" tabindex="0">💀 1/2 Sunk<span class="lb-tooltip">Half your teams have been eliminated</span></span>
+                <span v-if="halfDead.has(entry.name)" class="lb-half-dead lb-tooltip-wrap" tabindex="0">🤿 1/2 Sunk<span class="lb-tooltip">Half your teams have been eliminated</span></span>
                 <span v-if="treadingWater.has(entry.name)" class="lb-treading-water lb-tooltip-wrap" tabindex="0">🏊 Treading Water<span class="lb-tooltip">Only 2 teams still alive</span></span>
                 <span v-if="lastLeg.has(entry.name)" class="lb-last-leg lb-tooltip-wrap" tabindex="0">🦵 Last Leg<span class="lb-tooltip">Only 1 team still alive</span></span>
                 <span v-if="washedUp.holders.has(entry.name)" class="lb-washed-up lb-tooltip-wrap" tabindex="0">🧼 Washed Up<span class="lb-tooltip">First pool player with all teams eliminated</span></span>
