@@ -97,6 +97,7 @@
                 <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
                 <span v-if="twoPumpChump.holders.has(entry.name)" class="lb-two-pump lb-tooltip-wrap" tabindex="0">💦 Early Finisher<span class="lb-tooltip">Majority of goals scored in the first half</span></span>
                 <span v-if="goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Gold Boot<span class="lb-tooltip">Most total goals scored ({{ goldenBoot.goals }})</span></span>
+                <span v-if="washedUp.holders.has(entry.name)" class="lb-washed-up lb-tooltip-wrap" tabindex="0">🧼 Washed Up<span class="lb-tooltip">First pool player with all teams eliminated</span></span>
                 <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap" tabindex="0">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
                 <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap" tabindex="0">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
                 <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap" tabindex="0">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
@@ -1144,6 +1145,37 @@ const groundskeeper = computed(() => {
   return { count: max, holders }
 })
 
+const washedUp = computed(() => {
+  // Find last played-match date per eliminated team
+  const teamLastDate = {}
+  store.enrichedMatches
+    .filter(m => m.played && !m.snapshot_minute)
+    .forEach(m => {
+      for (const side of ['home', 'away']) {
+        const team = side === 'home' ? m.home : m.away
+        if (ELIMINATED_TEAMS.has(team) && (!teamLastDate[team] || m.date > teamLastDate[team]))
+          teamLastDate[team] = m.date
+      }
+    })
+  // Players with every team eliminated; find when their last team went out
+  const eligible = store.players
+    .filter(p => {
+      const teams = playerTeams(p)
+      return teams.length > 0 && teams.every(t => ELIMINATED_TEAMS.has(t))
+    })
+    .map(p => ({
+      name: p.name,
+      finishedOn: playerTeams(p).reduce((max, t) => {
+        const d = teamLastDate[t] ?? '9999'
+        return d > max ? d : max
+      }, '0000'),
+    }))
+  if (!eligible.length) return { holders: new Set() }
+  const earliest = eligible.reduce((a, b) => a.finishedOn <= b.finishedOn ? a : b).finishedOn
+  const holders = new Set(eligible.filter(e => e.finishedOn === earliest).map(e => e.name))
+  return { holders }
+})
+
 const trending = computed(() => {
   const allDates = [...new Set(
     store.enrichedMatches.filter(m => m.played && !m.snapshot_minute).map(m => m.date)
@@ -1614,6 +1646,16 @@ const topDaysChart = computed(() => {
   animation: shield-sparkle 2s linear infinite;
 }
 
+.lb-washed-up {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(120,140,180,0.15), rgba(200,210,230,0.22), rgba(120,140,180,0.15));
+  background-size: 200% auto;
+  color: #a0b0cc;
+  border: 1px solid rgba(140,160,200,0.3);
+  white-space: nowrap;
+  animation: shield-sparkle 3s linear infinite;
+}
 .lb-groundskeeper {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
   padding: 2px 7px; border-radius: 20px;
