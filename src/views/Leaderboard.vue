@@ -1674,6 +1674,27 @@ const topDaysChart = computed(() => {
 .lb-stats-row { display: flex; align-items: stretch; gap: 12px; margin-top: 10px; }
 .lb-stat { display: flex; flex-direction: column; gap: 1px; min-width: 0; padding-top: 6px; }
 .lb-stat-value { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.2; }
+
+@media (max-width: 479px) {
+  .lb-stats-row {
+    gap: 0;
+    margin-top: 8px;
+    border-top: 1px solid var(--border);
+    padding-top: 2px;
+    justify-content: space-between;
+  }
+  .lb-stat {
+    flex: 1;
+    align-items: center;
+    text-align: center;
+    padding: 6px 4px 2px;
+    border-right: 1px solid var(--border);
+  }
+  .lb-stat:last-child { border-right: none; }
+  .lb-stat-value { font-size: 15px; }
+  .lb-stat-label { font-size: 8px; white-space: normal; text-align: center; }
+}
+
 .lb-stat-value--shimmer {
   background: linear-gradient(90deg, var(--green) 0%, #fff 45%, #afffdc 55%, var(--green) 100%);
   background-size: 200% auto;
@@ -1686,10 +1707,6 @@ const topDaysChart = computed(() => {
   100% { background-position: -200% center; }
 }
 .lb-stat-label { font-size: 9px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-dim); line-height: 1.25; white-space: nowrap; }
-@media (max-width: 380px) {
-  .lb-stats-row { gap: 8px; }
-  .lb-stat-label { white-space: normal; }
-}
 .lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
 .lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
 
