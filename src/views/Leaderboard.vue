@@ -1686,9 +1686,15 @@ const topDaysChart = computed(() => {
   .lb-stat {
     flex: 1;
     align-items: center;
+    justify-content: center;
+    gap: 3px;
     text-align: center;
-    padding: 6px 4px 2px;
+    padding: 6px 4px;
     border-right: 1px solid var(--border);
+  }
+  .lb-stat .lb-tooltip-wrap[tabindex] {
+    min-height: unset;
+    display: inline;
   }
   .lb-stat:last-child { border-right: none; }
   .lb-stat-value { font-size: 15px; }
