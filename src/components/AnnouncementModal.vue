@@ -1,6 +1,6 @@
 <template>
   <transition name="modal-fade">
-    <div v-if="visible" class="modal-backdrop" @click.self="dismiss">
+    <div v-if="visible" class="modal-backdrop" @click.self="closeTemporarily">
       <div class="modal-card">
         <div class="modal-scroll">
           <img v-if="announcement.image" :src="announcement.image" class="modal-image" />
@@ -68,6 +68,10 @@ function maybeShow() {
 
 onMounted(maybeShow)
 watch(() => route.path, maybeShow)
+
+function closeTemporarily() {
+  visible.value = false
+}
 
 function dismiss() {
   if (!announcement.alwaysShow) localStorage.setItem(STORAGE_KEY, '1')
