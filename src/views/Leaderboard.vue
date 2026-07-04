@@ -53,7 +53,7 @@
           <div class="lb-center">
             <div class="lb-name-row">
               <div class="lb-name-line">
-                <span class="lb-name" :class="{ 'lb-name--shimmer': entry.name === pointsLeader, 'lb-name--vaporfire': trending.holders.has(entry.name) && entry.name !== pointsLeader }">{{ entry.name }}</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="Lifeguard Duty">🛟</span>
+                <span class="lb-name" :class="{ 'lb-name--shimmer': entry.name === pointsLeader, 'lb-name--vaporfire': trending.holders.has(entry.name) && entry.name !== pointsLeader }">{{ entry.name }}</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="LG Duty">🛟</span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending-fire" aria-hidden="true">🔥</span>
                 <button
                   v-if="playerLiveMatches[entry.name]?.length"
@@ -73,6 +73,8 @@
                 <span v-if="positionChange.risers.has(entry.name)" class="lb-on-the-rise lb-tooltip-wrap" tabindex="0">🚀 On the Rise<span class="lb-tooltip">Biggest jump in the standings since yesterday (+{{ positionChange.riseCount }} place{{ positionChange.riseCount !== 1 ? 's' : '' }})</span></span>
                 <span v-if="positionChange.fallers.has(entry.name)" class="lb-sinker lb-tooltip-wrap" tabindex="0">🪨 Sinker<span class="lb-tooltip">Biggest drop in the standings since yesterday (-{{ positionChange.fallCount }} place{{ positionChange.fallCount !== 1 ? 's' : '' }})</span></span>
                 <span v-if="entry.name === pointsLeader" class="lb-setting-pace lb-tooltip-wrap" tabindex="0">🏊 Pacer<span class="lb-tooltip">Current points leader</span></span>
+                <span v-if="firstTimeLead.holders.has(entry.name)" class="lb-first-lead lb-tooltip-wrap" tabindex="0">🌊 1st Wave<span class="lb-tooltip">First time reaching 1st place in the pool</span></span>
+                <span v-if="madeWaves[entry.name]" class="lb-made-waves lb-tooltip-wrap" tabindex="0">🌊 {{ madeWaves[entry.name] }}d<span class="lb-tooltip">Made Waves — led the pool on {{ madeWaves[entry.name] }} match day{{ madeWaves[entry.name] !== 1 ? 's' : '' }}</span></span>
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage ({{ communityShieldPts }})</span></span>
                 <span v-if="entry.name === 'Jason' && pointsLeader === 'Jason'" class="lb-foia lb-tooltip-wrap" tabindex="0">📋 FOIA<span class="lb-tooltip">Yes, Jason is leading but the data is public and can be shared if you are interested. What's your Github @?</span></span>
                 <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap" tabindex="0">🎯 Chasing<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
@@ -88,7 +90,7 @@
                 <span v-if="clinical.holders.has(entry.name)" class="lb-clinical lb-tooltip-wrap" tabindex="0">🎯 Clinical<span class="lb-tooltip">Most goals per game across all teams ({{ clinical.gpg }} g/g)</span></span>
                 <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap" tabindex="0">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
-                <span v-if="mostDraws.holders.has(entry.name)" class="lb-most-draws lb-tooltip-wrap" tabindex="0">🪄 Wash Wizard<span class="lb-tooltip">Most draws across all teams ({{ mostDraws.count }})</span></span>
+                <span v-if="mostDraws.holders.has(entry.name)" class="lb-most-draws lb-tooltip-wrap" tabindex="0">🪄 Wash Wiz<span class="lb-tooltip">Most draws across all teams ({{ mostDraws.count }})</span></span>
                 <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
                 <span v-if="iMeanCmon.holders.has(entry.name)" class="lb-i-mean-cmon lb-tooltip-wrap" tabindex="0">🙄 Puhleez<span class="lb-tooltip">Top 3 highest-ranked pools by avg FIFA ranking</span></span>
                 <span v-if="madGenius.holders.has(entry.name)" class="lb-mad-genius lb-tooltip-wrap" tabindex="0">💡 Mad Genius?<span class="lb-tooltip">Least likely pool to win the tournament based on pre-tournament odds</span></span>
@@ -103,7 +105,7 @@
                 <span v-if="treadingWater.has(entry.name)" class="lb-treading-water lb-tooltip-wrap" tabindex="0">🏊 Undertow<span class="lb-tooltip">Only 2 teams still alive</span></span>
                 <span v-if="lastLeg.has(entry.name)" class="lb-last-leg lb-tooltip-wrap" tabindex="0">🦵 Last Leg<span class="lb-tooltip">Only 1 team still alive</span></span>
                 <span v-if="washedUp.holders.has(entry.name)" class="lb-washed-up lb-tooltip-wrap" tabindex="0">🧼 Washed Up<span class="lb-tooltip">First pool player with all teams eliminated</span></span>
-                <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap" tabindex="0">🛟 Lifeguard Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
+                <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap" tabindex="0">🛟 LG Duty<span class="lb-tooltip">Most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
                 <span v-if="backToBack.holders.has(entry.name)" class="lb-back-to-back lb-tooltip-wrap" tabindex="0">🥇 2 20+<span class="lb-tooltip">Back to Back 20+ point match days</span></span>
                 <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap" tabindex="0">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
                 <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap" tabindex="0">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
@@ -848,6 +850,51 @@ const goldenGlove = computed(() => {
 
 const pointsLeader = computed(() => store.leaderboard[0]?.name ?? null)
 
+const leadHistory = computed(() => {
+  const playedDates = [...new Set(
+    store.enrichedMatches
+      .filter(m => m.played && !m.snapshot_minute)
+      .map(m => m.date)
+  )].sort()
+  const running = Object.fromEntries(store.players.map(p => [p.name, 0]))
+  const firstLead = {}
+  const leadCount = Object.fromEntries(store.players.map(p => [p.name, 0]))
+  for (const date of playedDates) {
+    for (const p of store.players) {
+      const entry = (playerPointsByDate.value[p.name] ?? []).find(d => d.date === date)
+      if (entry) running[p.name] += entry.pts
+    }
+    const max = Math.max(...Object.values(running))
+    if (max <= 0) continue
+    for (const [name, pts] of Object.entries(running)) {
+      if (pts === max) {
+        if (!firstLead[name]) firstLead[name] = date
+        leadCount[name]++
+      }
+    }
+  }
+  return { firstLead, leadCount }
+})
+
+const firstTimeLead = computed(() => {
+  const { firstLead } = leadHistory.value
+  const holders = new Set(
+    store.players
+      .filter(p => p.name === pointsLeader.value && firstLead[p.name] === today)
+      .map(p => p.name)
+  )
+  return { holders }
+})
+
+const madeWaves = computed(() => {
+  const { leadCount } = leadHistory.value
+  return Object.fromEntries(
+    store.players
+      .filter(p => leadCount[p.name] > 0)
+      .map(p => [p.name, leadCount[p.name]])
+  )
+})
+
 const IN_THE_CHASE_THRESHOLD = 10
 const IN_REACH_THRESHOLD = 20
 
@@ -1433,6 +1480,28 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(0,229,255,0.45);
   white-space: nowrap;
   animation: shield-sparkle 1.5s linear infinite;
+}
+
+.lb-first-lead {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,229,255,0.18), rgba(255,255,255,0.30), rgba(0,255,180,0.18));
+  background-size: 200% auto;
+  color: #fff;
+  border: 1px solid rgba(0,229,255,0.55);
+  white-space: nowrap;
+  animation: shield-sparkle 1.2s linear infinite;
+}
+
+.lb-made-waves {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(0,180,220,0.14), rgba(100,220,255,0.22), rgba(0,180,220,0.14));
+  background-size: 200% auto;
+  color: #44ccee;
+  border: 1px solid rgba(0,200,240,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 2.2s linear infinite;
 }
 
 .lb-in-the-chase {
