@@ -63,14 +63,14 @@ const todayMatches = computed(() =>
 )
 
 function maybeShow() {
-  if (announcement.enabled && !localStorage.getItem(STORAGE_KEY)) visible.value = true
+  if (announcement.enabled && (announcement.alwaysShow || !localStorage.getItem(STORAGE_KEY))) visible.value = true
 }
 
 onMounted(maybeShow)
 watch(() => route.path, maybeShow)
 
 function dismiss() {
-  localStorage.setItem(STORAGE_KEY, '1')
+  if (!announcement.alwaysShow) localStorage.setItem(STORAGE_KEY, '1')
   visible.value = false
   fetch('/.netlify/functions/notify-dismiss', {
     method: 'POST',

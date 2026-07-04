@@ -6,17 +6,16 @@
 export const announcement = {
   enabled: true,
   alwaysShow: false,
-  id: '2026-07-03-cr7-v2',
-  title: 'Day 23 of World Cup 2026',
-  body: `"DJT owed me a favor. I collected. Croatia is gone.\n\nYou're welcome, Tommy."\n\n— Cristiano Ronaldo`,
-  cta: 'Down with Ronaldomaxxing',
+  id: '2026-07-04-blue-sharks',
+  title: 'Day 24 of World Cup 2026',
+  body: `Nobody picked Cape Verde to be here. \n\nThey pushed Argentina to extra time yesterday and had a gorgeous equalizer in the 103rd minute. The Blue Sharks go home with their cephalofoils held high.\n\nHappy first day of Round of 16!`,
+  cta: 'Would have been a lot cooler if you did',
   multipliers: [
-    { stage: 'Round of 32',  multiplier: '1.5×', pillClass: 'pill-t4' },
     { stage: 'Round of 16',  multiplier: '1.5×', pillClass: 'pill-t4' },
     { stage: 'Quarterfinal', multiplier: '2×',   pillClass: 'pill-t3' },
     { stage: 'Semifinal',    multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Third Place',  multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Final',        multiplier: '4×',   pillClass: 'pill-t1' },
   ],
-  image: '/cr7-bust.png',
+  image: '/blue-sharks.png',
 }
