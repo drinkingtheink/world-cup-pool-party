@@ -69,7 +69,7 @@
                 </button>
               </div>
               <div class="lb-badges">
-                <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage ({{ communityShieldPts }})</span></span>
+                <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 {{ communityShieldPts }}<span class="lb-tooltip">Community Shield — most points through Group Stage</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ GB - GS {{ goldenBootGroup.goals }}<span class="lb-tooltip">Gold Boot — most goals scored in the Group Stage</span></span>
                 <span v-if="goldenBootKnockout.holders.has(entry.name)" class="lb-golden-boot-ko lb-tooltip-wrap" tabindex="0">⚡ GB - KO {{ goldenBootKnockout.goals }}<span class="lb-tooltip">Gold Boot — most goals scored in the Knockout Rounds</span></span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap" tabindex="0">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
