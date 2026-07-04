@@ -1982,7 +1982,7 @@ const topDaysChart = computed(() => {
   100% { background-position: -200% center; }
 }
 .lb-stat-label { font-size: 9px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-dim); line-height: 1.25; white-space: nowrap; }
-.lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
+.lb-pts { font-size: 20px; font-weight: 800; color: var(--accent); flex-shrink: 0; white-space: nowrap; }
 .lb-pts-label { font-size: 13px; font-weight: 500; color: var(--text-dim); }
 
 .lb-name-row { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
