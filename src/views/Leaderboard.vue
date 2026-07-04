@@ -71,6 +71,7 @@
               <div class="lb-badges">
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage ({{ communityShieldPts }})</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ GB - GS {{ goldenBootGroup.goals }}<span class="lb-tooltip">Gold Boot — most goals scored in the Group Stage</span></span>
+                <span v-if="goldenBootKnockout.holders.has(entry.name)" class="lb-golden-boot-ko lb-tooltip-wrap" tabindex="0">⚡ GB - KO {{ goldenBootKnockout.goals }}<span class="lb-tooltip">Gold Boot — most goals scored in the Knockout Rounds</span></span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap" tabindex="0">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
                 <span v-if="positionChange.risers.has(entry.name)" class="lb-on-the-rise lb-tooltip-wrap" tabindex="0">🚀 On the Rise<span class="lb-tooltip">Biggest jump in the standings since yesterday (+{{ positionChange.riseCount }} place{{ positionChange.riseCount !== 1 ? 's' : '' }})</span></span>
                 <span v-if="positionChange.fallers.has(entry.name)" class="lb-sinker lb-tooltip-wrap" tabindex="0">🪨 Sinker<span class="lb-tooltip">Biggest drop in the standings since yesterday (-{{ positionChange.fallCount }} place{{ positionChange.fallCount !== 1 ? 's' : '' }})</span></span>
@@ -942,6 +943,24 @@ const goldenBootGroup = computed(() => {
   return { goals: max, holders }
 })
 
+const KNOCKOUT_STAGES = new Set(['Round of 32', 'Round of 16', 'Quarterfinal', 'Semifinal', 'Third Place', 'Final'])
+const goldenBootKnockout = computed(() => {
+  const totals = store.leaderboard.map(e => {
+    const teamSet = new Set(e.teams)
+    const goals = store.enrichedMatches
+      .filter(m => m.played && !m.snapshot_minute && KNOCKOUT_STAGES.has(m.stage))
+      .reduce((sum, m) => {
+        if (teamSet.has(m.home)) sum += Number(m.home_score)
+        if (teamSet.has(m.away)) sum += Number(m.away_score)
+        return sum
+      }, 0)
+    return { name: e.name, goals }
+  })
+  const max = Math.max(...totals.map(t => t.goals))
+  const holders = new Set(totals.filter(t => t.goals === max && max > 0).map(t => t.name))
+  return { goals: max, holders }
+})
+
 const coldBoots = computed(() => {
   const totals = store.leaderboard.map(e => {
     const teamSet = new Set(e.teams)
@@ -1626,6 +1645,17 @@ const topDaysChart = computed(() => {
   background-size: 200% auto;
   color: #ffd200;
   border: 1px solid rgba(255,210,0,0.4);
+  white-space: nowrap;
+  animation: shield-sparkle 2.2s linear infinite;
+}
+
+.lb-golden-boot-ko {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,160,0,0.15), rgba(255,255,255,0.22), rgba(255,160,0,0.15));
+  background-size: 200% auto;
+  color: #ffaa00;
+  border: 1px solid rgba(255,160,0,0.4);
   white-space: nowrap;
   animation: shield-sparkle 2.2s linear infinite;
 }
