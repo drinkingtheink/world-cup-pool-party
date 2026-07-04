@@ -32,7 +32,7 @@ export const ELIMINATED_TEAMS = new Set([
   'New Zealand', 'Saudi Arabia', 'Uruguay', 'Iraq', 'Jordan', 'Panama',
   'South Korea', 'Scotland', 'Iran', 'Uzbekistan', 'Japan', 'Netherlands', 
   'Germany', 'South Africa', 'Côte d\'Ivoire', 'Sweden', 'DR Congo',
-  'Bosnia & Herzegovina', 'Senegal', 'Ecuador', 'Austria', 'Croatia', 'Algeria', 'Australia'
+  'Bosnia & Herzegovina', 'Senegal', 'Ecuador', 'Austria', 'Croatia', 'Algeria', 'Australia', 'Cape Verde'
 ])
 
 export const tiers = [

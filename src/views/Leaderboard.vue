@@ -1987,7 +1987,7 @@ const topDaysChart = computed(() => {
 
 .lb-name-row { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 
-.lb-name-line { display: flex; align-items: center; gap: 8px; }
+.lb-name-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
 .lb-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; width: 100%; }
 
