@@ -92,6 +92,7 @@
                 <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap" tabindex="0">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 {{ comebackKid.count }}<span class="lb-tooltip">Comeback Kid — most comeback wins (teams that trailed but won)</span></span>
                 <span v-if="mostDraws.holders.has(entry.name)" class="lb-most-draws lb-tooltip-wrap" tabindex="0">🪄 Wiz {{ mostDraws.count }}<span class="lb-tooltip">Wash Wizard — most draws across all teams</span></span>
+                <span v-if="cleanPool.holders.has(entry.name)" class="lb-clean-pool lb-tooltip-wrap" tabindex="0">🧽 Spotless<span class="lb-tooltip">Fewest total cards across all teams ({{ cleanPool.count }})</span></span>
                 <span v-if="dirtyPool.counts[entry.name] > 0" class="lb-dirty-pool lb-tooltip-wrap" :class="{ 'lb-dirty-pool--leader': dirtyPool.holders.has(entry.name) }" tabindex="0">{{ dirtyPool.holders.has(entry.name) ? '👑' : '' }}🟨 {{ dirtyPool.counts[entry.name] }}<span class="lb-tooltip">{{ dirtyPool.holders.has(entry.name) ? 'Dirty Pool — most yellow cards across all teams' : 'Your yellow card count' }}</span></span>
                 <span v-if="iMeanCmon.holders.has(entry.name)" class="lb-i-mean-cmon lb-tooltip-wrap" tabindex="0">🙄 Puhleez<span class="lb-tooltip">Highest-ranked pools by avg FIFA ranking</span></span>
                 <span v-if="madGenius.holders.has(entry.name)" class="lb-mad-genius lb-tooltip-wrap" tabindex="0">💡 Mad Genius?<span class="lb-tooltip">Least likely pool to win the tournament based on pre-tournament odds</span></span>
@@ -1183,6 +1184,25 @@ const earlyShower = computed(() => {
   return { count: max, holders, counts: countMap }
 })
 
+const cleanPool = computed(() => {
+  const counts = store.leaderboard.map(e => {
+    const teamSet = new Set(e.teams)
+    const cards = store.enrichedMatches
+      .filter(m => m.played && m.cards?.length)
+      .reduce((sum, m) => {
+        for (const c of m.cards) {
+          const team = c.team === 'home' ? m.home : m.away
+          if (teamSet.has(team)) sum++
+        }
+        return sum
+      }, 0)
+    return { name: e.name, cards }
+  })
+  const min = Math.min(...counts.map(c => c.cards))
+  const holders = new Set(counts.filter(c => c.cards === min).map(c => c.name))
+  return { count: min, holders }
+})
+
 const twoPumpChump = computed(() => {
   const holders = new Set(
     store.leaderboard
@@ -1694,6 +1714,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(120,180,255,0.35);
   white-space: nowrap;
   animation: shield-sparkle 2.8s linear infinite;
+}
+
+.lb-clean-pool {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(200,240,255,0.1), rgba(220,255,240,0.18), rgba(200,240,255,0.1));
+  background-size: 200% auto;
+  color: #b8f0e0;
+  border: 1px solid rgba(180,240,220,0.38);
+  white-space: nowrap;
+  animation: shield-sparkle 3s linear infinite;
 }
 
 .lb-dirty-pool {
