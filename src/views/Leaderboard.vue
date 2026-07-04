@@ -89,6 +89,7 @@
                 <span v-if="eskimoBros.holders.has(entry.name)" class="lb-eskimo-bros lb-tooltip-wrap" tabindex="0">🛁 'Cuzzi Bros<span class="lb-tooltip">All picked {{ eskimoBros.team }} — the most-shared team in the pool ({{ eskimoBros.count }} players)</span></span>
                 <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap" tabindex="0">🧤 GG {{ goldenGlove.conceded }}<span class="lb-tooltip">Gold Glove — fewest goals conceded in the Group Stage</span></span>
                 <span v-if="clinical.holders.has(entry.name)" class="lb-clinical lb-tooltip-wrap" tabindex="0">🎯 Clinical<span class="lb-tooltip">Most goals per game across all teams ({{ clinical.gpg }} g/g)</span></span>
+                <span v-if="peakGPG.holders.has(entry.name)" class="lb-peak-gpg lb-tooltip-wrap" tabindex="0">📈 {{ peakGPG.gpg }} g/g<span class="lb-tooltip">Peak GPG — all-time highest goals per game average ever achieved in this pool</span></span>
                 <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap" tabindex="0">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 {{ comebackKid.count }}<span class="lb-tooltip">Comeback Kid — most comeback wins (teams that trailed but won)</span></span>
                 <span v-if="mostDraws.holders.has(entry.name)" class="lb-most-draws lb-tooltip-wrap" tabindex="0">🪄 Wiz {{ mostDraws.count }}<span class="lb-tooltip">Wash Wizard — most draws across all teams</span></span>
@@ -1081,6 +1082,32 @@ const clinical = computed(() => {
   return { holders, gpg: max.toFixed(2) }
 })
 
+const peakGPG = computed(() => {
+  const played = store.enrichedMatches.filter(m => m.played && !m.snapshot_minute)
+  const dates = [...new Set(played.map(m => m.date))].sort()
+  const goalTotals = Object.fromEntries(store.leaderboard.map(e => [e.name, 0]))
+  const gameTotals = Object.fromEntries(store.leaderboard.map(e => [e.name, 0]))
+  let peak = 0
+  let peakHolders = new Set()
+  for (const date of dates) {
+    const dateMatches = played.filter(m => m.date === date)
+    for (const entry of store.leaderboard) {
+      const teamSet = new Set(entry.teams)
+      for (const m of dateMatches) {
+        if (teamSet.has(m.home)) { goalTotals[entry.name] += Number(m.home_score); gameTotals[entry.name]++ }
+        if (teamSet.has(m.away)) { goalTotals[entry.name] += Number(m.away_score); gameTotals[entry.name]++ }
+      }
+    }
+    for (const entry of store.leaderboard) {
+      if (!gameTotals[entry.name]) continue
+      const gpg = goalTotals[entry.name] / gameTotals[entry.name]
+      if (gpg > peak) { peak = gpg; peakHolders = new Set([entry.name]) }
+      else if (gpg === peak && peak > 0) peakHolders.add(entry.name)
+    }
+  }
+  return { holders: peakHolders, gpg: peak.toFixed(2) }
+})
+
 const madGenius = computed(() => {
   const holders = new Set()
 
@@ -1659,6 +1686,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(255,100,20,0.4);
   white-space: nowrap;
   animation: shield-sparkle 1.8s linear infinite;
+}
+
+.lb-peak-gpg {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,60,0,0.12), rgba(255,180,0,0.2), rgba(255,60,0,0.12));
+  background-size: 200% auto;
+  color: #ffb840;
+  border: 1px solid rgba(255,140,0,0.42);
+  white-space: nowrap;
+  animation: shield-sparkle 2.2s linear infinite;
 }
 
 .lb-golden-boot {
