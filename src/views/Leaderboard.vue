@@ -99,7 +99,7 @@
                 <span v-if="earlyShower.holders.has(entry.name)" class="lb-dirty-pool-plus lb-tooltip-wrap" tabindex="0">🟥 {{ earlyShower.count }}<span class="lb-tooltip">Dirty Pool+ — most red cards across all teams</span></span>
                 <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
                 <span v-if="twoPumpChump.holders.has(entry.name)" class="lb-two-pump lb-tooltip-wrap" tabindex="0">💦 Early Finisher<span class="lb-tooltip">Majority of goals scored in the first half</span></span>
-                <span v-if="goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Gold Boot<span class="lb-tooltip">Most total goals scored ({{ goldenBoot.goals }})</span></span>
+                <span v-if="goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ GB {{ goldenBoot.goals }}<span class="lb-tooltip">Overall Gold Boot — most total goals scored</span></span>
                 <span v-if="playerMatchDays[entry.name].today === 0" class="lb-poolside lb-tooltip-wrap" tabindex="0">🍹 Poolside<span class="lb-tooltip">No matches scheduled today</span></span>
                 <span v-if="floaties.has(entry.name)" class="lb-floaties lb-tooltip-wrap" tabindex="0">🤽 Floaties<span class="lb-tooltip">4 or more teams still alive</span></span>
                 <span v-if="halfDead.has(entry.name)" class="lb-half-dead lb-tooltip-wrap" tabindex="0">🐟 1/2 Sunk<span class="lb-tooltip">Half your teams have been eliminated</span></span>
