@@ -53,7 +53,7 @@
           <div class="lb-center">
             <div class="lb-name-row">
               <div class="lb-name-line">
-                <span class="lb-name" :class="{ 'lb-name--shimmer': entry.name === pointsLeader, 'lb-name--vaporfire': trending.holders.has(entry.name) && entry.name !== pointsLeader }">{{ entry.name }}</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="LG Duty">🛟</span>
+                <span class="lb-name" :class="{ 'lb-name--shimmer': entry.name === pointsLeader, 'lb-name--vaporfire': trending.holders.has(entry.name) && entry.name !== pointsLeader }">{{ entry.name }}</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="LG Duty">🛟</span><span v-if="goldenGlove.holders.has(entry.name)" class="lb-name-glove" title="Gold Glove">🧤</span><span v-if="positionChange.risers.has(entry.name)" class="lb-name-rocket" aria-hidden="true">🚀</span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending-fire" aria-hidden="true">🔥</span>
                 <button
                   v-if="playerLiveMatches[entry.name]?.length"
@@ -69,33 +69,33 @@
                 </button>
               </div>
               <div class="lb-badges">
+                <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage ({{ communityShieldPts }})</span></span>
+                <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ GB - GS {{ goldenBootGroup.goals }}<span class="lb-tooltip">Gold Boot — most goals scored in the Group Stage</span></span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap" tabindex="0">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
                 <span v-if="positionChange.risers.has(entry.name)" class="lb-on-the-rise lb-tooltip-wrap" tabindex="0">🚀 On the Rise<span class="lb-tooltip">Biggest jump in the standings since yesterday (+{{ positionChange.riseCount }} place{{ positionChange.riseCount !== 1 ? 's' : '' }})</span></span>
                 <span v-if="positionChange.fallers.has(entry.name)" class="lb-sinker lb-tooltip-wrap" tabindex="0">🪨 Sinker<span class="lb-tooltip">Biggest drop in the standings since yesterday (-{{ positionChange.fallCount }} place{{ positionChange.fallCount !== 1 ? 's' : '' }})</span></span>
                 <span v-if="entry.name === pointsLeader" class="lb-setting-pace lb-tooltip-wrap" tabindex="0">🏊 Pacer<span class="lb-tooltip">Current points leader</span></span>
                 <span v-if="firstTimeLead.holders.has(entry.name)" class="lb-first-lead lb-tooltip-wrap" tabindex="0">🌊 1st Wave<span class="lb-tooltip">First time reaching 1st place in the pool</span></span>
                 <span v-if="madeWaves[entry.name]" class="lb-made-waves lb-tooltip-wrap" tabindex="0">🌊 {{ madeWaves[entry.name] }}d<span class="lb-tooltip">Made Waves — led the pool on {{ madeWaves[entry.name] }} match day{{ madeWaves[entry.name] !== 1 ? 's' : '' }}</span></span>
-                <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 Community Shield<span class="lb-tooltip">Most Points Through Group Stage ({{ communityShieldPts }})</span></span>
                 <span v-if="entry.name === 'Jason' && pointsLeader === 'Jason'" class="lb-foia lb-tooltip-wrap" tabindex="0">📋 FOIA<span class="lb-tooltip">Yes, Jason is leading but the data is public and can be shared if you are interested. What's your Github @?</span></span>
-                <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap" tabindex="0">🎯 Chasing<span class="lb-tooltip">Within {{ inTheChase.threshold }} pts of the leader</span></span>
-                <span v-if="inReach.holders.has(entry.name)" class="lb-in-reach lb-tooltip-wrap" tabindex="0">📡 In Reach<span class="lb-tooltip">Within {{ IN_REACH_THRESHOLD }} pts of the leader</span></span>
+                <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap" tabindex="0">🎯 -{{ inTheChase.gaps[entry.name] }}<span class="lb-tooltip">Chasing — within {{ inTheChase.threshold }} pts of the leader</span></span>
+                <span v-if="inReach.holders.has(entry.name)" class="lb-in-reach lb-tooltip-wrap" tabindex="0">📡 -{{ inReach.gaps[entry.name] }}<span class="lb-tooltip">In Reach — within {{ IN_REACH_THRESHOLD }} pts of the leader</span></span>
                 <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap" tabindex="0">🦅🇺🇸<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
                 <span v-if="entry.teams.includes('England')" class="lb-imperialism lb-tooltip-wrap" tabindex="0">👌🏴󠁧󠁢󠁥󠁮󠁧󠁿<span class="lb-tooltip">Ok with Imperialism — This player is admitting their implicit support for the imperialistic atrocities of England upon the nations they occupied. ¯\_(ツ)_/¯</span></span>
                 <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap" tabindex="0">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
                 <span v-if="herdMentality.holders.has(entry.name)" class="lb-herd lb-tooltip-wrap" tabindex="0">🍍 Pro-Poly<span class="lb-tooltip">Most teams shared with other players in the pool</span></span>
                 <span v-if="goYourOwnWay.holders.has(entry.name)" class="lb-go-own-way lb-tooltip-wrap" tabindex="0">🥁 Diff Beat<span class="lb-tooltip">Most teams no one else picked ({{ goYourOwnWay.count }})</span></span>
-                <span v-if="eskimoBros.holders.has(entry.name)" class="lb-eskimo-bros lb-tooltip-wrap" tabindex="0">🛁 Jacuzzi Bros<span class="lb-tooltip">All picked {{ eskimoBros.team }} — the most-shared team in the pool ({{ eskimoBros.count }} players)</span></span>
-                <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap" tabindex="0">🧤 Gold Glove<span class="lb-tooltip">Fewest goals conceded in the Group Stage ({{ goldenGlove.conceded }})</span></span>
-                <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ Gold Boot - GS<span class="lb-tooltip">Most goals scored in the Group Stage ({{ goldenBootGroup.goals }})</span></span>
+                <span v-if="eskimoBros.holders.has(entry.name)" class="lb-eskimo-bros lb-tooltip-wrap" tabindex="0">🛁 'Cuzzi Bros<span class="lb-tooltip">All picked {{ eskimoBros.team }} — the most-shared team in the pool ({{ eskimoBros.count }} players)</span></span>
+                <span v-if="goldenGlove.holders.has(entry.name)" class="lb-golden-glove lb-tooltip-wrap" tabindex="0">🧤 GG {{ goldenGlove.conceded }}<span class="lb-tooltip">Gold Glove — fewest goals conceded in the Group Stage</span></span>
                 <span v-if="clinical.holders.has(entry.name)" class="lb-clinical lb-tooltip-wrap" tabindex="0">🎯 Clinical<span class="lb-tooltip">Most goals per game across all teams ({{ clinical.gpg }} g/g)</span></span>
                 <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap" tabindex="0">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 Comeback Kid<span class="lb-tooltip">Most comeback wins — teams that trailed but won ({{ comebackKid.count }})</span></span>
                 <span v-if="mostDraws.holders.has(entry.name)" class="lb-most-draws lb-tooltip-wrap" tabindex="0">🪄 Wash Wiz<span class="lb-tooltip">Most draws across all teams ({{ mostDraws.count }})</span></span>
-                <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 Dirty Pool<span class="lb-tooltip">Most yellow cards across all teams ({{ dirtyPool.count }} yellows)</span></span>
+                <span v-if="dirtyPool.holders.has(entry.name)" class="lb-dirty-pool lb-tooltip-wrap" tabindex="0">🟨 {{ dirtyPool.count }}<span class="lb-tooltip">Dirty Pool — most yellow cards across all teams</span></span>
                 <span v-if="iMeanCmon.holders.has(entry.name)" class="lb-i-mean-cmon lb-tooltip-wrap" tabindex="0">🙄 Puhleez<span class="lb-tooltip">Top 3 highest-ranked pools by avg FIFA ranking</span></span>
                 <span v-if="madGenius.holders.has(entry.name)" class="lb-mad-genius lb-tooltip-wrap" tabindex="0">💡 Mad Genius?<span class="lb-tooltip">Least likely pool to win the tournament based on pre-tournament odds</span></span>
                 <span v-if="bellyFlop.holders.has(entry.name)" class="lb-belly-flop lb-tooltip-wrap" tabindex="0">🫃 Swim Test<span class="lb-tooltip">Lowest-ranked pool by avg FIFA ranking (avg: #{{ bellyFlop.avg }})</span></span>
-                <span v-if="earlyShower.holders.has(entry.name)" class="lb-dirty-pool-plus lb-tooltip-wrap" tabindex="0">🟥 Dirty Pool+<span class="lb-tooltip">Most red cards across all teams ({{ earlyShower.count }})</span></span>
+                <span v-if="earlyShower.holders.has(entry.name)" class="lb-dirty-pool-plus lb-tooltip-wrap" tabindex="0">🟥 {{ earlyShower.count }}<span class="lb-tooltip">Dirty Pool+ — most red cards across all teams</span></span>
                 <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 Late Show<span class="lb-tooltip">Most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
                 <span v-if="twoPumpChump.holders.has(entry.name)" class="lb-two-pump lb-tooltip-wrap" tabindex="0">💦 Early Finisher<span class="lb-tooltip">Majority of goals scored in the first half</span></span>
                 <span v-if="goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ Gold Boot<span class="lb-tooltip">Most total goals scored ({{ goldenBoot.goals }})</span></span>
@@ -900,25 +900,21 @@ const IN_REACH_THRESHOLD = 20
 
 const inTheChase = computed(() => {
   const leader = store.leaderboard[0]?.total ?? 0
-  const holders = new Set(
-    store.leaderboard
-      .filter(e => e.total < leader && leader - e.total <= IN_THE_CHASE_THRESHOLD)
-      .map(e => e.name)
-  )
-  return { holders, threshold: IN_THE_CHASE_THRESHOLD }
+  const entries = store.leaderboard.filter(e => e.total < leader && leader - e.total <= IN_THE_CHASE_THRESHOLD)
+  const holders = new Set(entries.map(e => e.name))
+  const gaps = Object.fromEntries(entries.map(e => [e.name, leader - e.total]))
+  return { holders, gaps, threshold: IN_THE_CHASE_THRESHOLD }
 })
 
 const inReach = computed(() => {
   const leader = store.leaderboard[0]?.total ?? 0
-  const holders = new Set(
-    store.leaderboard
-      .filter(e => {
-        const diff = leader - e.total
-        return diff > IN_THE_CHASE_THRESHOLD && diff <= IN_REACH_THRESHOLD
-      })
-      .map(e => e.name)
-  )
-  return { holders }
+  const entries = store.leaderboard.filter(e => {
+    const diff = leader - e.total
+    return diff > IN_THE_CHASE_THRESHOLD && diff <= IN_REACH_THRESHOLD
+  })
+  const holders = new Set(entries.map(e => e.name))
+  const gaps = Object.fromEntries(entries.map(e => [e.name, leader - e.total]))
+  return { holders, gaps }
 })
 
 const tournamentComplete = computed(() =>
@@ -1445,6 +1441,8 @@ const topDaysChart = computed(() => {
 }
 .lb-name-crown { font-size: 14px; line-height: 1; }
 .lb-name-lifeguard { font-size: 14px; line-height: 1; opacity: 0.85; }
+.lb-name-glove { font-size: 14px; line-height: 1; opacity: 0.9; }
+.lb-name-rocket { font-size: 14px; line-height: 1; }
 .lb-trending-fire { font-size: 16px; line-height: 1; }
 
 .lb-foia {
