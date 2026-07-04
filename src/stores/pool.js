@@ -156,7 +156,11 @@ export const usePoolStore = defineStore('pool', () => {
 
       const end = new Date(start.getTime() + 115 * 60 * 1000)
       const autoLive = now.value >= start && now.value < end
-      if (!autoLive) return base
+      if (!autoLive) {
+        const msUntil = start.getTime() - now.value.getTime()
+        if (msUntil > 0 && msUntil <= 30 * 60 * 1000) return { ...base, startingSoon: true }
+        return base
+      }
       return { ...base, autoLive, liveMinute: estimateMinute(start, now.value, anchor) }
     })
   )

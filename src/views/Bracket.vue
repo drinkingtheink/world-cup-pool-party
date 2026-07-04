@@ -30,7 +30,7 @@
                     <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
                   </div>
                 </div>
-                <div v-if="!isPlayed(idx)" class="b-time">{{ matchTime(idx) }}</div>
+                <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ STARTING SOON' : matchTime(idx) }}</div>
               </div>
             </div>
           </div>
@@ -63,7 +63,7 @@
                     <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
                   </div>
                 </div>
-                <div v-if="!isPlayed(idx)" class="b-time">{{ matchTime(idx) }}</div>
+                <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ STARTING SOON' : matchTime(idx) }}</div>
               </div>
             </div>
           </div>
@@ -96,7 +96,7 @@
                     <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
                   </div>
                 </div>
-                <div v-if="!isPlayed(idx)" class="b-time">{{ matchTime(idx) }}</div>
+                <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ STARTING SOON' : matchTime(idx) }}</div>
               </div>
             </div>
           </div>
@@ -129,7 +129,7 @@
                     <span v-for="p in poolPlayers(101,'away')" :key="p" class="b-player">{{ p }}</span>
                   </div>
                 </div>
-                <div v-if="!isPlayed(101)" class="b-time">{{ matchTime(101) }}</div>
+                <div v-if="!isPlayed(101)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(101) }">{{ isStartingSoon(101) ? '◈ STARTING SOON' : matchTime(101) }}</div>
               </div>
             </div>
           </div>
@@ -163,7 +163,7 @@
                     <span v-for="p in poolPlayers(104,'away')" :key="p" class="b-player">{{ p }}</span>
                   </div>
                 </div>
-                <div v-if="!isPlayed(104)" class="b-time">{{ matchTime(104) }}</div>
+                <div v-if="!isPlayed(104)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(104) }">{{ isStartingSoon(104) ? '◈ STARTING SOON' : matchTime(104) }}</div>
               </div>
               <div v-if="daysUntilFinal" class="b-days-until">
                 <span class="b-days-until__num">{{ daysUntilFinal }}</span>
@@ -200,7 +200,7 @@
                     <span v-for="p in poolPlayers(102,'away')" :key="p" class="b-player">{{ p }}</span>
                   </div>
                 </div>
-                <div v-if="!isPlayed(102)" class="b-time">{{ matchTime(102) }}</div>
+                <div v-if="!isPlayed(102)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(102) }">{{ isStartingSoon(102) ? '◈ STARTING SOON' : matchTime(102) }}</div>
               </div>
             </div>
           </div>
@@ -233,7 +233,7 @@
                     <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
                   </div>
                 </div>
-                <div v-if="!isPlayed(idx)" class="b-time">{{ matchTime(idx) }}</div>
+                <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ STARTING SOON' : matchTime(idx) }}</div>
               </div>
             </div>
           </div>
@@ -266,7 +266,7 @@
                     <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
                   </div>
                 </div>
-                <div v-if="!isPlayed(idx)" class="b-time">{{ matchTime(idx) }}</div>
+                <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ STARTING SOON' : matchTime(idx) }}</div>
               </div>
             </div>
           </div>
@@ -298,7 +298,7 @@
                     <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
                   </div>
                 </div>
-                <div v-if="!isPlayed(idx)" class="b-time">{{ matchTime(idx) }}</div>
+                <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ STARTING SOON' : matchTime(idx) }}</div>
               </div>
             </div>
           </div>
@@ -372,6 +372,7 @@ function score(idx, side) {
   return side === 'home' ? m.home_score : m.away_score
 }
 function matchTime(idx) { return matchByNum.value[idx]?.time ?? '' }
+function isStartingSoon(idx) { return matchByNum.value[idx]?.startingSoon ?? false }
 const daysUntilFinal = computed(() => {
   const d = matchByNum.value[104]?.date
   if (!d) return null
@@ -745,6 +746,14 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   text-align: center;
   padding: 3px 4px 4px;
   border-top: 1px solid rgba(46,32,96,0.4);
+}
+.b-time--soon {
+  color: #f5a300; opacity: 1;
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
 }
 
 /* Trophy */

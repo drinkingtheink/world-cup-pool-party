@@ -1,7 +1,8 @@
 <template>
-  <div class="match-row" :class="{ 'match-row--divider': showDivider, 'match-row--orphan': isOrphan, 'match-row--live': match.snapshot_minute || match.autoLive, 'match-row--played': match.played && !match.snapshot_minute }">
+  <div class="match-row" :class="{ 'match-row--divider': showDivider, 'match-row--orphan': isOrphan, 'match-row--live': match.snapshot_minute || match.autoLive, 'match-row--soon': match.startingSoon, 'match-row--played': match.played && !match.snapshot_minute }">
     <div class="match-stage-pill">
       <span v-if="match.snapshot_minute || match.autoLive" class="match-time match-time--live">● LIVE</span>
+      <span v-else-if="match.startingSoon" class="match-time match-time--soon">◈ STARTING SOON</span>
       <span v-else-if="match.time" class="match-time">{{ match.time }}</span>
     </div>
 
@@ -153,6 +154,10 @@ function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
   background: rgba(0,255,159,0.04);
   box-shadow: inset 3px 0 0 rgba(0,255,159,0.5);
 }
+.match-row--soon {
+  background: rgba(245,163,0,0.04);
+  box-shadow: inset 3px 0 0 rgba(245,163,0,0.5);
+}
 .match-row--played {
   background: rgba(0,0,0,0.12);
   box-shadow: inset 3px 0 0 rgba(255,255,255,0.07);
@@ -164,6 +169,10 @@ function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
 .match-time { font-size: 13px; color: var(--text-dim); }
 .match-time--live {
   color: var(--green); font-weight: 700;
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+.match-time--soon {
+  color: #f5a300; font-weight: 700;
   animation: live-pulse 1.5s ease-in-out infinite;
 }
 @keyframes live-pulse {
