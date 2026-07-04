@@ -77,7 +77,7 @@
                 <span v-if="positionChange.fallers.has(entry.name)" class="lb-sinker lb-tooltip-wrap" tabindex="0">🪨 Sinker<span class="lb-tooltip">Biggest drop in the standings since yesterday (-{{ positionChange.fallCount }} place{{ positionChange.fallCount !== 1 ? 's' : '' }})</span></span>
                 <span v-if="entry.name === pointsLeader" class="lb-setting-pace lb-tooltip-wrap" tabindex="0">🏊 Pacer<span class="lb-tooltip">Current points leader</span></span>
                 <span v-if="firstTimeLead.holders.has(entry.name)" class="lb-first-lead lb-tooltip-wrap" tabindex="0">🌊 1st Wave<span class="lb-tooltip">First time reaching 1st place in the pool</span></span>
-                <span v-if="madeWaves[entry.name]" class="lb-made-waves lb-tooltip-wrap" tabindex="0">🌊 {{ madeWaves[entry.name] }}d<span class="lb-tooltip">Made Waves — led the pool on {{ madeWaves[entry.name] }} match day{{ madeWaves[entry.name] !== 1 ? 's' : '' }}</span></span>
+                <span v-if="madeWaves[entry.name]" class="lb-made-waves lb-tooltip-wrap" tabindex="0">{{ madeWaves[entry.name] === madeWavesMax ? '👑' : '' }}🌊 {{ madeWaves[entry.name] }}d<span class="lb-tooltip">Made Waves — led the pool on {{ madeWaves[entry.name] }} match day{{ madeWaves[entry.name] !== 1 ? 's' : '' }}</span></span>
                 <span v-if="entry.name === 'Jason' && pointsLeader === 'Jason'" class="lb-foia lb-tooltip-wrap" tabindex="0">📋 FOIA<span class="lb-tooltip">Yes, Jason is leading but the data is public and can be shared if you are interested. What's your Github @?</span></span>
                 <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap" tabindex="0">🎯 -{{ inTheChase.gaps[entry.name] }}<span class="lb-tooltip">Chasing — within {{ inTheChase.threshold }} pts of the leader</span></span>
                 <span v-if="inReach.holders.has(entry.name)" class="lb-in-reach lb-tooltip-wrap" tabindex="0">📡 -{{ inReach.gaps[entry.name] }}<span class="lb-tooltip">In Reach — within {{ IN_REACH_THRESHOLD }} pts of the leader</span></span>
@@ -897,6 +897,8 @@ const madeWaves = computed(() => {
       .map(p => [p.name, leadCount[p.name]])
   )
 })
+
+const madeWavesMax = computed(() => Math.max(0, ...Object.values(madeWaves.value)))
 
 const IN_THE_CHASE_THRESHOLD = 10
 const IN_REACH_THRESHOLD = 20
