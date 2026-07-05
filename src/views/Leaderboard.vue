@@ -92,7 +92,7 @@
                 <span v-if="coldBoots.holders.has(entry.name)" class="lb-shrinkage lb-tooltip-wrap" tabindex="0">🧊 Shrinkage<span class="lb-tooltip">Fewest goals scored in the Group Stage ({{ coldBoots.scored }})</span></span>
                 <span v-if="comebackKid.holders.has(entry.name)" class="lb-comeback lb-tooltip-wrap" tabindex="0">🪃 {{ comebackKid.count }}<span class="lb-tooltip">Comeback Kid — most comeback wins (teams that trailed but won)</span></span>
                 <span v-if="mostDraws.holders.has(entry.name)" class="lb-most-draws lb-tooltip-wrap" tabindex="0">🪄 Wiz {{ mostDraws.count }}<span class="lb-tooltip">Wash Wizard — most draws across all teams</span></span>
-                <span v-if="cleanPool.holders.has(entry.name)" class="lb-clean-pool lb-tooltip-wrap" tabindex="0">🧽 Spotless<span class="lb-tooltip">Fewest total cards across all teams ({{ cleanPool.count }})</span></span>
+                <span v-if="cleanPool.holders.has(entry.name)" class="lb-clean-pool lb-tooltip-wrap" tabindex="0">🧽 Spotless<span class="lb-tooltip">Fewest total cards across all teams ({{ cleanPool.count }}) with zero red cards</span></span>
                 <span v-if="dirtyPool.counts[entry.name] > 0" class="lb-dirty-pool lb-tooltip-wrap" :class="{ 'lb-dirty-pool--leader': dirtyPool.holders.has(entry.name) }" tabindex="0">{{ dirtyPool.holders.has(entry.name) ? '👑' : '' }}🟨 {{ dirtyPool.counts[entry.name] }}<span class="lb-tooltip">{{ dirtyPool.holders.has(entry.name) ? 'Dirty Pool — most yellow cards across all teams' : 'Your yellow card count' }}</span></span>
                 <span v-if="iMeanCmon.holders.has(entry.name)" class="lb-i-mean-cmon lb-tooltip-wrap" tabindex="0">🙄 Puhleez<span class="lb-tooltip">Highest-ranked pools by avg FIFA ranking</span></span>
                 <span v-if="madGenius.holders.has(entry.name)" class="lb-mad-genius lb-tooltip-wrap" tabindex="0">💡 Mad Genius?<span class="lb-tooltip">Least likely pool to win the tournament based on pre-tournament odds</span></span>
@@ -1220,19 +1220,19 @@ const earlyShower = computed(() => {
 const cleanPool = computed(() => {
   const counts = store.leaderboard.map(e => {
     const teamSet = new Set(e.teams)
-    const cards = store.enrichedMatches
+    let total = 0, reds = 0
+    store.enrichedMatches
       .filter(m => m.played && m.cards?.length)
-      .reduce((sum, m) => {
+      .forEach(m => {
         for (const c of m.cards) {
           const team = c.team === 'home' ? m.home : m.away
-          if (teamSet.has(team)) sum++
+          if (teamSet.has(team)) { total++; if (c.type === 'red') reds++ }
         }
-        return sum
-      }, 0)
-    return { name: e.name, cards }
+      })
+    return { name: e.name, cards: total, reds }
   })
   const min = Math.min(...counts.map(c => c.cards))
-  const holders = new Set(counts.filter(c => c.cards === min).map(c => c.name))
+  const holders = new Set(counts.filter(c => c.cards === min && c.reds === 0).map(c => c.name))
   return { count: min, holders }
 })
 
