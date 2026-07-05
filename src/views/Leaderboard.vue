@@ -35,8 +35,7 @@
       <div class="lb-header">
         <span></span>
         <span>Player</span>
-        <span>Teams</span>
-        <span>Stats</span>
+        <span>Teams &amp; Stats</span>
         <span class="lb-header-pts">Points</span>
       </div>
 
@@ -120,6 +119,8 @@
                 {{ playerMatchDays[entry.name].tomorrow }} Tomorrow
               </span>
             </div>
+          </div>
+          <div class="lb-right">
             <div class="lb-flags">
               <span v-for="team in rankedTeams(entry.teams)" :key="team" class="lb-flag" :class="{ 'lb-flag--eliminated': ELIMINATED_TEAMS.has(team) }" :title="team"><span class="lb-flag-emoji">{{ FLAG_MAP[team] ?? '🏳' }}</span><span v-if="ELIMINATED_TEAMS.has(team)" class="lb-flag-x">✕</span></span>
             </div>
@@ -1478,11 +1479,16 @@ const topDaysChart = computed(() => {
 .lb-row--first { border-color: var(--accent); }
 
 .lb-main {
-  display: flex; align-items: flex-start; gap: 12px;
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 0 12px;
   padding: 14px 16px;
 }
 
 .lb-rank {
+  grid-column: 1; grid-row: 1 / 3;
+  align-self: start;
   width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 14px; font-weight: 800; background: var(--surface2); color: var(--text-dim);
@@ -1492,7 +1498,16 @@ const topDaysChart = computed(() => {
 .rank-silver { background: #2a2e3a; color: #d0d8e8; }
 .rank-bronze { background: #2e2018; color: #e89060; }
 
-.lb-center { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.lb-center {
+  grid-column: 2; grid-row: 1;
+  display: flex; flex-direction: column; gap: 5px; min-width: 0;
+}
+.lb-right {
+  grid-column: 2; grid-row: 2;
+  display: flex; flex-direction: column; gap: 5px; min-width: 0;
+  margin-top: 6px;
+}
+.lb-pts { grid-column: 3; grid-row: 1 / 3; align-self: center; }
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
 .lb-name--shimmer {
   background: linear-gradient(90deg, var(--green) 0%, #fff 45%, #afffdc 55%, var(--green) 100%);
@@ -2028,7 +2043,7 @@ const topDaysChart = computed(() => {
 .lb-flags { display: flex; gap: 3px; flex-wrap: nowrap; }
 .lb-flag { font-size: 24px; line-height: 1; cursor: default; flex-shrink: 0; display: inline-flex; flex-direction: column; align-items: center; gap: 1px; }
 .lb-flag-x { font-size: 9px; font-weight: 900; color: #ffffff; line-height: 1; }
-.lb-stats-row { display: flex; align-items: stretch; gap: 12px; margin-top: 10px; }
+.lb-stats-row { display: flex; align-items: flex-start; gap: 12px; margin-top: 10px; }
 .lb-stat { display: flex; flex-direction: column; gap: 1px; min-width: 0; padding-top: 6px; }
 .lb-stat-value { font-size: 14px; font-weight: 800; color: #fff; line-height: 1.2; }
 
@@ -2551,7 +2566,7 @@ const topDaysChart = computed(() => {
 @media (min-width: 768px) {
   .lb-header {
     display: grid;
-    grid-template-columns: 44px 1fr 180px 195px 90px;
+    grid-template-columns: 44px 1fr auto auto;
     gap: 0 16px;
     padding: 0 20px 8px;
     font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
@@ -2565,26 +2580,43 @@ const topDaysChart = computed(() => {
 
   .lb-main {
     display: grid;
-    grid-template-columns: 44px 1fr 180px 195px 90px;
-    align-items: center;
+    grid-template-columns: 44px 1fr auto auto;
+    align-items: stretch;
     gap: 0 16px;
     padding: 12px 20px;
   }
-  .lb-center { display: contents; }
+
+  .lb-rank {
+    grid-column: 1; grid-row: 1;
+    align-self: center;
+    width: 32px; height: 32px; font-size: 15px;
+  }
+  .lb-center {
+    grid-column: 2; grid-row: 1;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .lb-right {
+    grid-column: 3; grid-row: 1;
+    display: flex; flex-direction: column;
+    align-items: flex-end; justify-content: center;
+    gap: 10px; margin-top: 0;
+  }
+  .lb-pts {
+    grid-column: 4; grid-row: 1;
+    align-self: center;
+    font-size: 24px; text-align: right;
+  }
 
   .lb-name { font-size: 20px; }
 
   .lb-flags { gap: 5px; }
   .lb-flag { font-size: 26px; }
 
-  .lb-stats-row { margin-top: 0; justify-content: space-between; }
+  .lb-stats-row { margin-top: 0; gap: 20px; }
   .lb-stat { padding-top: 0; }
   .lb-stat-value { font-size: 16px; }
 
-  .lb-pts { font-size: 24px; text-align: right; }
   .lb-pts-label { font-size: 14px; }
-
-  .lb-rank { width: 32px; height: 32px; font-size: 15px; }
 
   .lb-breakdown {
     display: grid;
