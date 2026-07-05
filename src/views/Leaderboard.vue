@@ -115,7 +115,7 @@
                 <span v-if="!entry.teams.includes('USA')" class="lb-sus lb-tooltip-wrap" tabindex="0">👀 sus<span class="lb-tooltip">Did not select the US in their pool. The US Government has been notified.</span></span>
               </div>
               <span class="lb-today-tomorrow">
-                <span class="lb-tt-label">MATCHES:</span> {{ playerMatchDays[entry.name].today }} Today
+                <span class="lb-tt-label">MATCHES:</span> {{ playerMatchDays[entry.name].today }} Today<template v-if="playerMatchDays[entry.name].todayTeams > playerMatchDays[entry.name].today"> · {{ playerMatchDays[entry.name].todayTeams }} Teams</template>
                 <span class="lb-tt-sep">/</span>
                 {{ playerMatchDays[entry.name].tomorrow }} Tomorrow
               </span>
@@ -556,13 +556,16 @@ const playerMatchDays = computed(() => {
   const result = {}
   store.players.forEach(p => {
     const teams = new Set(playerTeams(p))
-    let todayCount = 0, tomorrowCount = 0
+    let todayCount = 0, todayTeams = 0, tomorrowCount = 0
     store.matches.forEach(m => {
       if (!teams.has(m.home) && !teams.has(m.away)) return
-      if (m.date === today) todayCount++
-      else if (m.date === tomorrowStr) tomorrowCount++
+      if (m.date === today) {
+        todayCount++
+        if (teams.has(m.home)) todayTeams++
+        if (teams.has(m.away)) todayTeams++
+      } else if (m.date === tomorrowStr) tomorrowCount++
     })
-    result[p.name] = { today: todayCount, tomorrow: tomorrowCount }
+    result[p.name] = { today: todayCount, todayTeams, tomorrow: tomorrowCount }
   })
   return result
 })
@@ -2099,6 +2102,10 @@ const topDaysChart = computed(() => {
   letter-spacing: .02em; white-space: nowrap;
 }
 .lb-tt-label { text-transform: uppercase; letter-spacing: .06em; font-size: 10px; }
+@media (min-width: 480px) {
+  .lb-today-tomorrow { font-size: 14px; }
+  .lb-tt-label { font-size: 12px; }
+}
 .lb-tt-sep { margin: 0 4px; opacity: 0.4; }
 
 .lb-breakdown {
