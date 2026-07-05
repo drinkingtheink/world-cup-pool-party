@@ -1507,7 +1507,7 @@ const topDaysChart = computed(() => {
   display: flex; flex-direction: column; gap: 5px; min-width: 0;
   margin-top: 6px;
 }
-.lb-pts { grid-column: 3; grid-row: 1 / 3; align-self: center; }
+.lb-pts { grid-column: 3; grid-row: 1 / 3; align-self: start; }
 .lb-name { font-size: 18px; font-weight: 600; color: #ffffff; }
 .lb-name--shimmer {
   background: linear-gradient(90deg, var(--green) 0%, #fff 45%, #afffdc 55%, var(--green) 100%);
