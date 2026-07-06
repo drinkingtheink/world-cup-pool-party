@@ -4,7 +4,7 @@
 // Set `image` to a path like '/knockout-banner.png' or null to omit.
 
 export const announcement = {
-  enabled: true,
+  enabled: false,
   alwaysShow: false,
   id: '2026-07-05-eng-mex',
   title: 'Mexico vs England — Tonight at 7 PM CT',
