@@ -98,7 +98,7 @@
                 <span v-if="madGenius.holders.has(entry.name)" class="lb-mad-genius lb-tooltip-wrap" tabindex="0">💡 Mad Genius?<span class="lb-tooltip">Least likely pool to win the tournament based on pre-tournament odds</span></span>
                 <span v-if="bellyFlop.holders.has(entry.name)" class="lb-belly-flop lb-tooltip-wrap" tabindex="0">🫃 Swim Test<span class="lb-tooltip">Lowest-ranked pool by avg FIFA ranking (avg: #{{ bellyFlop.avg }})</span></span>
                 <span v-if="earlyShower.counts[entry.name] > 0" class="lb-dirty-pool-plus lb-tooltip-wrap" :class="{ 'lb-dirty-pool-plus--leader': earlyShower.holders.has(entry.name) }" tabindex="0">{{ earlyShower.holders.has(entry.name) ? '👑' : '' }}🟥 {{ earlyShower.counts[entry.name] }}<span class="lb-tooltip">{{ earlyShower.holders.has(entry.name) ? 'Dirty Pool+ — most red cards across all teams' : 'Your red card count' }}</span></span>
-                <span v-if="lateShow.holders.has(entry.name)" class="lb-late-show lb-tooltip-wrap" tabindex="0">🌙 {{ lateShow.count }}<span class="lb-tooltip">Late Show: most goals scored after the 80th minute ({{ lateShow.count }})</span></span>
+                <span v-if="lateShow.perPlayer[entry.name] > 0" class="lb-late-show lb-tooltip-wrap" :class="{ 'lb-late-show--leader': lateShow.holders.has(entry.name) }" tabindex="0">{{ lateShow.holders.has(entry.name) ? '👑' : '' }}🌙 {{ lateShow.perPlayer[entry.name] }}<span class="lb-tooltip">{{ lateShow.holders.has(entry.name) ? 'Late Show leader — most goals after the 80th minute' : 'Goals scored after the 80th minute' }} ({{ lateShow.perPlayer[entry.name] }})</span></span>
                 <span v-if="twoPumpChump.holders.has(entry.name)" class="lb-two-pump lb-tooltip-wrap" tabindex="0">💦 Early Finisher<span class="lb-tooltip">Majority of goals scored in the first half</span></span>
                 <span v-if="goldenBoot.holders.has(entry.name)" class="lb-golden-boot-overall lb-tooltip-wrap" tabindex="0">⚡ GB {{ goldenBoot.goals }}<span class="lb-tooltip">Overall Gold Boot — most total goals scored</span></span>
                 <span v-if="playerMatchDays[entry.name].today === 0" class="lb-poolside lb-tooltip-wrap" tabindex="0">🍹 Poolside<span class="lb-tooltip">No matches scheduled today</span></span>
@@ -1065,7 +1065,8 @@ const lateShow = computed(() => {
   })
   const max = Math.max(...counts.map(c => c.goals))
   const holders = new Set(counts.filter(c => c.goals === max && max > 0).map(c => c.name))
-  return { count: max, holders }
+  const perPlayer = Object.fromEntries(counts.map(c => [c.name, c.goals]))
+  return { count: max, holders, perPlayer }
 })
 
 const fifaRankMap = Object.fromEntries(tiers.map(t => [t.team, t.fifaRank]))
@@ -1855,11 +1856,15 @@ const topDaysChart = computed(() => {
 .lb-late-show {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
   padding: 2px 7px; border-radius: 20px;
+  background: rgba(120,80,220,0.1);
+  color: #c4a0ff;
+  border: 1px solid rgba(150,100,255,0.25);
+  white-space: nowrap;
+}
+.lb-late-show--leader {
   background: linear-gradient(90deg, rgba(120,80,220,0.15), rgba(180,140,255,0.22), rgba(120,80,220,0.15));
   background-size: 200% auto;
-  color: #c4a0ff;
-  border: 1px solid rgba(150,100,255,0.38);
-  white-space: nowrap;
+  border-color: rgba(150,100,255,0.38);
   animation: shield-sparkle 3.2s linear infinite;
 }
 
