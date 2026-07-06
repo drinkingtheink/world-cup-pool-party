@@ -17,7 +17,7 @@
                     <span class="b-score">{{ score(idx,'home') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'home').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'away') }">
@@ -27,7 +27,7 @@
                     <span class="b-score">{{ score(idx,'away') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'away').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ SOON · ' + matchTime(idx) : matchTime(idx) }}</div>
@@ -50,7 +50,7 @@
                     <span class="b-score">{{ score(idx,'home') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'home').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'away') }">
@@ -60,7 +60,7 @@
                     <span class="b-score">{{ score(idx,'away') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'away').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ SOON · ' + matchTime(idx) : matchTime(idx) }}</div>
@@ -83,7 +83,7 @@
                     <span class="b-score">{{ score(idx,'home') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'home').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'away') }">
@@ -93,7 +93,7 @@
                     <span class="b-score">{{ score(idx,'away') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'away').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ SOON · ' + matchTime(idx) : matchTime(idx) }}</div>
@@ -220,7 +220,7 @@
                     <span class="b-score">{{ score(idx,'home') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'home').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'away') }">
@@ -230,7 +230,7 @@
                     <span class="b-score">{{ score(idx,'away') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'away').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ SOON · ' + matchTime(idx) : matchTime(idx) }}</div>
@@ -253,7 +253,7 @@
                     <span class="b-score">{{ score(idx,'home') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'home').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'away') }">
@@ -263,7 +263,7 @@
                     <span class="b-score">{{ score(idx,'away') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'away').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ SOON · ' + matchTime(idx) : matchTime(idx) }}</div>
@@ -285,7 +285,7 @@
                     <span class="b-score">{{ score(idx,'home') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'home').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'home')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div class="b-team" :class="{ 'b-team--win': isWinner(idx,'away') }">
@@ -295,7 +295,7 @@
                     <span class="b-score">{{ score(idx,'away') }}</span>
                   </div>
                   <div v-if="poolPlayers(idx,'away').length" class="b-players">
-                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player">{{ p }}</span>
+                    <span v-for="p in poolPlayers(idx,'away')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
                   </div>
                 </div>
                 <div v-if="!isPlayed(idx)" class="b-time" :class="{ 'b-time--soon': isStartingSoon(idx) }">{{ isStartingSoon(idx) ? '◈ SOON · ' + matchTime(idx) : matchTime(idx) }}</div>
@@ -318,6 +318,8 @@ import { matchSlug } from '../utils.js'
 
 const router = useRouter()
 const store = usePoolStore()
+
+function goToPlayer(name) { router.push({ path: '/my-teams', query: { player: name } }) }
 
 function goToMatch(idx) {
   const m = matchByNum.value[idx]
@@ -728,7 +730,9 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   border-radius: 3px;
   padding: 1px 4px;
   white-space: nowrap;
+  cursor: pointer;
 }
+.b-player:hover { text-decoration: underline; }
 .b-team--win .b-player {
   background: rgba(0,229,255,0.14);
   border-color: rgba(0,229,255,0.35);
