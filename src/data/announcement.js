@@ -8,7 +8,7 @@ export const announcement = {
   alwaysShow: false,
   id: '2026-07-07-usa-eliminated',
   title: 'Day 27 of World Cup 2026',
-  body: `The USA is eliminated easily at the hands of Belgium in the Round of 16. Maybe that's why only 2 players in the Pool selected the US.\n\nWe'll get 'em next year.`,
+  body: `The US of A is eliminated easily at the hands of Belgium in the Round of 16. Maybe that's why only 2 players in the Pool selected the US?\n\nWe'll get 'em next year.`,
   cta: 'Ba wit da ba',
   multipliers: [
     { stage: 'Round of 16',  multiplier: '1.5×', pillClass: 'pill-t4' },
