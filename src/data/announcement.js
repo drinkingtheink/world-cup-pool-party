@@ -6,16 +6,15 @@
 export const announcement = {
   enabled: true,
   alwaysShow: false,
-  id: '2026-07-07-usa-eliminated',
-  title: 'Day 27 of World Cup 2026',
-  body: `The US of A is eliminated easily at the hands of Belgium in the Round of 16. Maybe that's why only 2 players in the Pool selected the US?\n\nWe'll get 'em next year.`,
-  cta: 'Ba wit da ba',
+  id: '2026-07-08-wc-cold-turkey',
+  title: 'World Cup Cold Turkey Day',
+  body: `We have just undergone 27 days of continual matches. Now they cut us off Cold Turkey with no games today. About to get real Lord of the Flies in here!`,
+  cta: 'Hello Darkness',
   multipliers: [
-    { stage: 'Round of 16',  multiplier: '1.5×', pillClass: 'pill-t4' },
     { stage: 'Quarterfinal', multiplier: '2×',   pillClass: 'pill-t3' },
     { stage: 'Semifinal',    multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Third Place',  multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Final',        multiplier: '4×',   pillClass: 'pill-t1' },
   ],
-  image: '/usa-eliminated.png',
+  image: '/wc-lonely.png',
 }
