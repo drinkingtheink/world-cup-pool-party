@@ -68,8 +68,12 @@ onMounted(() => nextTick(() => {
     const liveMatch = store.enrichedMatches.find(m => m.snapshot_minute || m.autoLive)
     if (liveMatch) {
       scrollTo(document.querySelector('#' + matchSlug(liveMatch)))
-    } else {
+    } else if (todayEl.value) {
       scrollTo(todayEl.value)
+    } else {
+      const today = todayStr()
+      const nextGroup = grouped.value.find(g => g.date > today)
+      if (nextGroup) scrollTo(document.getElementById('date-' + nextGroup.date))
     }
   }
 }))
