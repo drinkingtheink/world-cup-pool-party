@@ -9,7 +9,7 @@ export const announcement = {
   id: '2026-07-09-qtrfinals1',
   title: 'The Quarters Are Upon Us',
   body: `Cancel the emergency alarms. Games return today with France v Morocco in a Semifinal rerun. Play it again, Sam!`,
-  cta: 'Hello Darkness',
+  cta: 'Here\'s looking at you, kid',
   multipliers: [
     { stage: 'Quarterfinal', multiplier: '2×',   pillClass: 'pill-t3' },
     { stage: 'Semifinal',    multiplier: '3×',   pillClass: 'pill-t2' },
