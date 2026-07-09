@@ -849,6 +849,7 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   text-transform: uppercase; color: #cd7f32;
   text-align: center;
 }
+.b-third-place-wrap .b-match-date { position: static; }
 .b-card--third {
   background: linear-gradient(160deg, #1a1206 0%, #2e1f08 100%);
   border-color: rgba(205,127,50,0.35);
