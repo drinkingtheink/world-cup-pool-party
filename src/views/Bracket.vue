@@ -141,7 +141,10 @@
           <div class="b-slots">
             <div class="b-slot b-slot--sf">
               <img src="/trophy.svg" class="b-trophy" alt="" />
-              <span v-if="matchDate(104)" class="b-match-date b-match-date--final">{{ matchDate(104) }}</span>
+              <div class="b-first-place-wrap">
+                <span class="b-first-place-label">🥇 1st Place</span>
+                <span v-if="matchDate(104)" class="b-match-date b-match-date--final">{{ matchDate(104) }}</span>
+              </div>
               <div ref="finalCardEl" class="b-card b-card--final" :class="{ 'b-card--played': isPlayed(104) }">
                 <div class="b-team" :class="{ 'b-team--win': isWinner(104,'home') }">
                   <div class="b-team-main">
@@ -791,7 +794,7 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
 .b-trophy {
   position: absolute;
   left: 50%;
-  bottom: calc(50% + 58px);
+  bottom: calc(50% + 90px);
   transform: translateX(-50%);
   width: 38px;
   pointer-events: none;
@@ -834,6 +837,22 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   pointer-events: none;
   z-index: 2;
 }
+.b-first-place-wrap {
+  position: absolute;
+  bottom: calc(50% + 52px);
+  left: 0; right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+}
+.b-first-place-label {
+  font-size: 9px; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--accent);
+  text-align: center;
+}
+.b-first-place-wrap .b-match-date { position: static; }
 .b-third-place-wrap {
   position: absolute;
   top: calc(50% + 136px);
