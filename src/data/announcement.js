@@ -6,9 +6,9 @@
 export const announcement = {
   enabled: true,
   alwaysShow: false,
-  id: '2026-07-08-wc-cold-turkey',
-  title: 'World Cup Cold Turkey Day',
-  body: `We have just undergone 27 days of continual matches. Now they cut us off Cold Turkey with no games today. About to get real Lord of the Flies in here!`,
+  id: '2026-07-09-qtrfinals1',
+  title: 'The Quarters Are Upon Us',
+  body: `Cancel the emergency alarms. Games return today with France v Morocco in a Semifinal rerun. Play it again, Sam!`,
   cta: 'Hello Darkness',
   multipliers: [
     { stage: 'Quarterfinal', multiplier: '2×',   pillClass: 'pill-t3' },
@@ -16,5 +16,5 @@ export const announcement = {
     { stage: 'Third Place',  multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Final',        multiplier: '4×',   pillClass: 'pill-t1' },
   ],
-  image: '/wc-lonely.png',
+  image: '/casablanca.png',
 }
