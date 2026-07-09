@@ -169,6 +169,33 @@
                 <span class="b-days-until__num">{{ daysUntilFinal }}</span>
                 <span class="b-days-until__label">days until</span>
               </div>
+              <div class="b-third-place-wrap">
+                <span class="b-third-place-label">🥉 3rd Place</span>
+                <span v-if="matchDate(103)" class="b-match-date">{{ matchDate(103) }}</span>
+                <div class="b-card b-card--third" :class="{ 'b-card--played': isPlayed(103) }" @click="goToMatch(103)">
+                  <div class="b-team" :class="{ 'b-team--win': isWinner(103,'home') }">
+                    <div class="b-team-main">
+                      <span class="b-flag">{{ flagOf(home(103)) }}</span>
+                      <span class="b-name">{{ home(103) }}</span>
+                      <span class="b-score">{{ score(103,'home') }}</span>
+                    </div>
+                    <div v-if="poolPlayers(103,'home').length" class="b-players">
+                      <span v-for="p in poolPlayers(103,'home')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
+                    </div>
+                  </div>
+                  <div class="b-team" :class="{ 'b-team--win': isWinner(103,'away') }">
+                    <div class="b-team-main">
+                      <span class="b-flag">{{ flagOf(away(103)) }}</span>
+                      <span class="b-name">{{ away(103) }}</span>
+                      <span class="b-score">{{ score(103,'away') }}</span>
+                    </div>
+                    <div v-if="poolPlayers(103,'away').length" class="b-players">
+                      <span v-for="p in poolPlayers(103,'away')" :key="p" class="b-player" @click.stop="goToPlayer(p)">{{ p }}</span>
+                    </div>
+                  </div>
+                  <div v-if="!isPlayed(103)" class="b-time">{{ matchTime(103) }}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -806,6 +833,26 @@ const RIGHT_R32 = [74, 77, 79, 80, 86, 87, 85, 88]
   gap: 1px;
   pointer-events: none;
   z-index: 2;
+}
+.b-third-place-wrap {
+  position: absolute;
+  top: calc(50% + 136px);
+  left: 0; right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+}
+.b-third-place-label {
+  font-size: 9px; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: #cd7f32;
+  text-align: center;
+}
+.b-card--third {
+  background: linear-gradient(160deg, #1a1206 0%, #2e1f08 100%);
+  border-color: rgba(205,127,50,0.35);
+  width: 100%;
 }
 .b-days-until__num {
   font-size: 28px;
