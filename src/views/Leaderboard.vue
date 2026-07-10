@@ -1486,7 +1486,7 @@ const topDaysChart = computed(() => {
 }
 @keyframes lb-critical {
   0%, 100% { box-shadow: 0 0 0 0 rgba(255,50,50,0), inset 0 0 0 0 rgba(255,50,50,0); }
-  50%       { box-shadow: 0 0 18px 4px rgba(255,50,50,0.5), inset 0 0 24px 4px rgba(255,50,50,0.18); }
+  50%       { box-shadow: 0 0 18px 4px rgba(255,50,50,0.5), inset 0 0 40px 8px rgba(255,50,50,0.35); }
 }
 
 .lb-main {
