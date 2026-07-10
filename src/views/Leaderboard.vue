@@ -23,6 +23,10 @@
           <span class="stat-label">Days Played</span>
         </div>
         <div class="stat-item">
+          <span class="stat-value">{{ teamsRemaining }}</span>
+          <span class="stat-label">Teams Left</span>
+        </div>
+        <div class="stat-item">
           <span class="stat-value">{{ daysToGo }}</span>
           <span class="stat-label">Days to Go</span>
         </div>
@@ -498,6 +502,8 @@ function todayStr() {
 const today = todayStr()
 
 const totalGoals    = computed(() => store.matches.reduce((sum, m) => sum + (m.goals?.length ?? 0), 0))
+
+const teamsRemaining = computed(() => tiers.filter(t => !ELIMINATED_TEAMS.has(t.team)).length)
 
 const daysPlayed = computed(() => new Set(
   store.matches.filter(m => m.home_score !== '' && !m.snapshot_minute).map(m => m.date)
