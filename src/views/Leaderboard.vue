@@ -69,7 +69,7 @@
               </div>
               <div class="lb-badges">
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 {{ communityShieldPts }}<span class="lb-tooltip">Community Shield — most points through Group Stage</span></span>
-                <span v-if="groupStagePts[entry.name] > 0 && !goldenBootGroup.holders.has(entry.name)" class="lb-gs-pts lb-tooltip-wrap" tabindex="0">🌊 GS {{ groupStagePts[entry.name] }}<span class="lb-tooltip">Points earned during the Group Stage</span></span>
+                <span v-if="groupStagePts[entry.name] > 0 && !goldenBootGroup.holders.has(entry.name)" class="lb-gs-pts lb-tooltip-wrap" :class="{ 'lb-gs-pts--silver': gsPointsRank[entry.name] === 2, 'lb-gs-pts--bronze': gsPointsRank[entry.name] === 3 }" tabindex="0">{{ gsPointsRank[entry.name] === 2 ? '🥈' : gsPointsRank[entry.name] === 3 ? '🥉' : '🌊' }} GS {{ groupStagePts[entry.name] }}<span class="lb-tooltip">{{ gsPointsRank[entry.name] === 2 ? '2nd most' : gsPointsRank[entry.name] === 3 ? '3rd most' : '' }} Points earned during the Group Stage</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ GB - GS {{ goldenBootGroup.goals }}<span class="lb-tooltip">Gold Boot — most goals scored in the Group Stage</span></span>
                 <span v-if="goldenBootKnockout.holders.has(entry.name)" class="lb-golden-boot-ko lb-tooltip-wrap" tabindex="0">⚡ GB - KO {{ goldenBootKnockout.goals }}<span class="lb-tooltip">Gold Boot — most goals scored in the Knockout Rounds</span></span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap" tabindex="0">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
@@ -816,6 +816,14 @@ const groupStagePts = computed(() => {
     })
     map[p.name] = Math.round(total * 10) / 10
   })
+  return map
+})
+
+const gsPointsRank = computed(() => {
+  const map = {}
+  Object.entries(groupStagePts.value)
+    .sort(([, a], [, b]) => b - a)
+    .forEach(([name], i) => { map[name] = i + 1 })
   return map
 })
 
@@ -1594,6 +1602,16 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(96,184,255,0.35);
   white-space: nowrap;
   animation: shield-sparkle 3s linear infinite;
+}
+.lb-gs-pts--silver {
+  background: linear-gradient(90deg, rgba(184,197,214,0.12), rgba(255,255,255,0.22), rgba(184,197,214,0.12));
+  color: #b8c5d6;
+  border-color: rgba(184,197,214,0.45);
+}
+.lb-gs-pts--bronze {
+  background: linear-gradient(90deg, rgba(200,121,65,0.12), rgba(255,255,255,0.2), rgba(200,121,65,0.12));
+  color: #c87941;
+  border-color: rgba(200,121,65,0.45);
 }
 .lb-setting-pace {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
