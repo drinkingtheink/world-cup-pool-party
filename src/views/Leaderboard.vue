@@ -43,7 +43,7 @@
         v-for="(entry, i) in store.leaderboard"
         :key="entry.name"
         class="lb-row card"
-        :class="{ 'lb-row--first': entry.rank === 1 }"
+        :class="{ 'lb-row--first': entry.rank === 1, 'lb-row--critical': lastLeg.has(entry.name), 'lb-row--low-health': treadingWater.has(entry.name) }"
         :style="{ '--i': i }"
         @click="expanded = expanded === entry.name ? null : entry.name"
       >
@@ -1478,6 +1478,16 @@ const topDaysChart = computed(() => {
 .lb-row:has(.lb-tooltip-wrap:hover),
 .lb-row:has(.lb-tooltip-wrap:focus) { z-index: 50; }
 .lb-row--first { border-color: var(--accent); }
+.lb-row--low-health { animation: lb-low-health 3s ease-in-out infinite; }
+.lb-row--critical   { animation: lb-critical 2s ease-in-out infinite; }
+@keyframes lb-low-health {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,140,0,0); }
+  50%       { box-shadow: 0 0 12px 2px rgba(255,140,0,0.35); }
+}
+@keyframes lb-critical {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,50,50,0); }
+  50%       { box-shadow: 0 0 18px 4px rgba(255,50,50,0.5); }
+}
 
 .lb-main {
   display: grid;
