@@ -15,6 +15,14 @@
         <span class="stat-value">{{ goalsPerGame }}</span>
         <span class="stat-label">Goals / Game</span>
       </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ daysPlayed }}</span>
+        <span class="stat-label">Days Played</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">{{ daysToGo }}</span>
+        <span class="stat-label">Days to Go</span>
+      </div>
     </div>
 
     <button class="bracket-cta-btn" @click="router.push('/bracket')">
@@ -498,6 +506,17 @@ function todayStr() {
 const today = todayStr()
 
 const totalGoals    = computed(() => store.matches.reduce((sum, m) => sum + (m.goals?.length ?? 0), 0))
+
+const daysPlayed = computed(() => new Set(
+  store.matches.filter(m => m.home_score !== '' && !m.snapshot_minute).map(m => m.date)
+).size)
+
+const daysToGo = computed(() => {
+  const finalMatch = store.matches.find(m => m.stage === 'Final')
+  if (!finalMatch) return '—'
+  const diff = Math.ceil((new Date(finalMatch.date) - new Date(today)) / 86400000)
+  return Math.max(0, diff)
+})
 
 const playerGoals = computed(() => {
   const map = {}
