@@ -3,39 +3,31 @@
     <p class="view-title">Full Tournament Stats</p>
 
     <div class="tourney-stats card">
-      <div class="stat-item">
-        <span class="stat-value">{{ totalGoals }}</span>
-        <span class="stat-label">Goals</span>
+      <div class="tourney-stats-row">
+        <div class="stat-item">
+          <span class="stat-value">{{ totalGoals }}</span>
+          <span class="stat-label">Goals</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ matchesPlayed }} <span class="stat-of">/ {{ totalMatches }}</span></span>
+          <span class="stat-label">Matches</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ goalsPerGame }}</span>
+          <span class="stat-label">Goals / Game</span>
+        </div>
       </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ matchesPlayed }} <span class="stat-of">/ {{ totalMatches }}</span></span>
-        <span class="stat-label">Matches</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ goalsPerGame }}</span>
-        <span class="stat-label">Goals / Game</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ daysPlayed }}</span>
-        <span class="stat-label">Days Played</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">{{ daysToGo }}</span>
-        <span class="stat-label">Days to Go</span>
+      <div class="tourney-stats-row tourney-stats-row--days">
+        <div class="stat-item">
+          <span class="stat-value">{{ daysPlayed }}</span>
+          <span class="stat-label">Days Played</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ daysToGo }}</span>
+          <span class="stat-label">Days to Go</span>
+        </div>
       </div>
     </div>
-
-    <button class="bracket-cta-btn" @click="router.push('/bracket')">
-      <GitBranch :size="15" class="schedule-btn-icon" />
-      <span class="schedule-btn-label">View Full Bracket</span>
-      <ChevronRight :size="14" class="schedule-btn-arrow" />
-    </button>
-
-    <button class="schedule-btn" @click="router.push('/matches')">
-      <CalendarDays :size="15" class="schedule-btn-icon" />
-      <span class="schedule-btn-label">See Match Schedule</span>
-      <ChevronRight :size="14" class="schedule-btn-arrow" />
-    </button>
 
     <p class="view-title"></p>
 
@@ -453,7 +445,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { CalendarDays, ChevronRight, Link2, Check, GitBranch } from 'lucide-vue-next'
+import { Link2, Check } from 'lucide-vue-next'
 import { usePoolStore } from '../stores/pool.js'
 import { quotes, FLAG_MAP, ELIMINATED_TEAMS, tiers } from '../data/index.js'
 import { matchSlug } from '../utils.js'
@@ -1500,8 +1492,15 @@ const topDaysChart = computed(() => {
 
 <style scoped>
 .tourney-stats {
-  display: flex; align-items: center; justify-content: space-around;
+  display: flex; flex-direction: column; gap: 12px;
   padding: 16px; margin-bottom: 16px;
+}
+.tourney-stats-row {
+  display: flex; align-items: center; justify-content: space-around;
+}
+.tourney-stats-row--days {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
 }
 .stat-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .stat-value {
