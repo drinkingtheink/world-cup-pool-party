@@ -52,7 +52,7 @@
           <div class="lb-center">
             <div class="lb-name-row">
               <div class="lb-name-line">
-                <span class="lb-name" :class="{ 'lb-name--shimmer': entry.name === pointsLeader, 'lb-name--vaporfire': trending.holders.has(entry.name) && entry.name !== pointsLeader }">{{ entry.name }}</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="LG Duty">🛟</span><span v-if="goldenGlove.holders.has(entry.name)" class="lb-name-glove" title="Gold Glove">🧤</span><span v-if="positionChange.risers.has(entry.name)" class="lb-name-rocket" aria-hidden="true">🚀</span><span v-if="goldenBoot.holders.has(entry.name) || goldenBootGroup.holders.has(entry.name) || goldenBootKnockout.holders.has(entry.name)" class="lb-name-boot" title="Gold Boot">⚡</span>
+                <span class="lb-name" :class="{ 'lb-name--shimmer': entry.name === pointsLeader, 'lb-name--vaporfire': trending.holders.has(entry.name) && entry.name !== pointsLeader, 'lb-name--critical': lastLeg.has(entry.name), 'lb-name--low-health': treadingWater.has(entry.name) && !lastLeg.has(entry.name) }">{{ entry.name }}</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="LG Duty">🛟</span><span v-if="goldenGlove.holders.has(entry.name)" class="lb-name-glove" title="Gold Glove">🧤</span><span v-if="positionChange.risers.has(entry.name)" class="lb-name-rocket" aria-hidden="true">🚀</span><span v-if="goldenBoot.holders.has(entry.name) || goldenBootGroup.holders.has(entry.name) || goldenBootKnockout.holders.has(entry.name)" class="lb-name-boot" title="Gold Boot">⚡</span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending-fire" aria-hidden="true">🔥</span>
                 <button
                   v-if="playerLiveMatches[entry.name]?.length"
@@ -1561,6 +1561,16 @@ const topDaysChart = computed(() => {
 @keyframes lb-vaporfire {
   0%   { background-position: 0% center; }
   100% { background-position: 300% center; }
+}
+.lb-name--low-health { animation: lb-name-low-health 3s ease-in-out infinite; }
+@keyframes lb-name-low-health {
+  0%, 100% { text-shadow: none; }
+  50%       { text-shadow: 0 0 10px rgba(255,140,0,0.9), 0 0 22px rgba(255,140,0,0.4); }
+}
+.lb-name--critical { animation: lb-name-critical 2s ease-in-out infinite; }
+@keyframes lb-name-critical {
+  0%, 100% { text-shadow: none; }
+  50%       { text-shadow: 0 0 12px rgba(255,50,50,1), 0 0 28px rgba(255,50,50,0.6); }
 }
 .lb-name-crown { font-size: 14px; line-height: 1; }
 .lb-name-lifeguard { font-size: 14px; line-height: 1; opacity: 0.85; }
