@@ -4,7 +4,7 @@
 // Set `image` to a path like '/knockout-banner.png' or null to omit.
 
 export const announcement = {
-  enabled: false,
+  enabled: true,
   alwaysShow: false,
   id: '2026-07-10-qtrs-spain-belgium',
   title: 'Hot Tub, Cold Truth',
