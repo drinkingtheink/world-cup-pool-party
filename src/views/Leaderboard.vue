@@ -69,6 +69,7 @@
               </div>
               <div class="lb-badges">
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 {{ communityShieldPts }}<span class="lb-tooltip">Community Shield — most points through Group Stage</span></span>
+                <span v-if="groupStagePts[entry.name] > 0 && !goldenBootGroup.holders.has(entry.name)" class="lb-gs-pts lb-tooltip-wrap" tabindex="0">🌊 GS {{ groupStagePts[entry.name] }}<span class="lb-tooltip">Points earned during the Group Stage</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ GB - GS {{ goldenBootGroup.goals }}<span class="lb-tooltip">Gold Boot — most goals scored in the Group Stage</span></span>
                 <span v-if="goldenBootKnockout.holders.has(entry.name)" class="lb-golden-boot-ko lb-tooltip-wrap" tabindex="0">⚡ GB - KO {{ goldenBootKnockout.goals }}<span class="lb-tooltip">Gold Boot — most goals scored in the Knockout Rounds</span></span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending lb-tooltip-wrap" tabindex="0">🔥 Trending<span class="lb-tooltip">Most points over the last 3 matchdays (+{{ trending.pts }})</span></span>
@@ -801,6 +802,21 @@ const communityShieldPts = computed(() => {
     if (teams.has(m.away)) total += matchPointsForTeam(m.away, m)
   })
   return Math.round(total * 10) / 10
+})
+
+const groupStagePts = computed(() => {
+  const map = {}
+  store.players.forEach(p => {
+    const teams = new Set(playerTeams(p))
+    let total = 0
+    store.enrichedMatches.forEach(m => {
+      if (m.stage !== 'Group Stage' || !m.played || m.snapshot_minute) return
+      if (teams.has(m.home)) total += matchPointsForTeam(m.home, m)
+      if (teams.has(m.away)) total += matchPointsForTeam(m.away, m)
+    })
+    map[p.name] = Math.round(total * 10) / 10
+  })
+  return map
 })
 
 const playerPointsByDate = computed(() => {
@@ -1569,6 +1585,16 @@ const topDaysChart = computed(() => {
   100% { background-position: 0% center; }
 }
 
+.lb-gs-pts {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(96,184,255,0.12), rgba(255,255,255,0.18), rgba(96,184,255,0.12));
+  background-size: 200% auto;
+  color: #60b8ff;
+  border: 1px solid rgba(96,184,255,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 3s linear infinite;
+}
 .lb-setting-pace {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
   padding: 2px 7px; border-radius: 20px;
