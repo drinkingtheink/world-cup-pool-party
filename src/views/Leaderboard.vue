@@ -114,6 +114,7 @@
                 <span v-if="treadingWater.has(entry.name)" class="lb-treading-water lb-tooltip-wrap" tabindex="0">🏊 Undertow<span class="lb-tooltip">Only 2 teams still alive</span></span>
                 <span v-if="lastLeg.has(entry.name)" class="lb-last-leg lb-tooltip-wrap" tabindex="0">🦵 Last Leg<span class="lb-tooltip">Only 1 team still alive</span></span>
                 <span v-if="washedUp.holders.has(entry.name)" class="lb-washed-up lb-tooltip-wrap" tabindex="0">🧼 Washed Up<span class="lb-tooltip">First pool player with all teams eliminated</span></span>
+                <span v-if="outOfPool.has(entry.name)" class="lb-out-of-pool lb-tooltip-wrap" tabindex="0">🚿 Out of the Pool<span class="lb-tooltip">All teams eliminated</span></span>
                 <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap" tabindex="0">🛟 LG Duty<span class="lb-tooltip">Lifeguard Duty — most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
                 <span v-if="backToBack.holders.has(entry.name)" class="lb-back-to-back lb-tooltip-wrap" tabindex="0">🥇 2 20+<span class="lb-tooltip">Back to Back 20+ point match days</span></span>
                 <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap" tabindex="0">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
@@ -1386,6 +1387,15 @@ const washedUp = computed(() => {
   return { holders }
 })
 
+const outOfPool = computed(() => new Set(
+  store.players
+    .filter(p => {
+      const teams = playerTeams(p)
+      return teams.length > 0 && teams.every(t => ELIMINATED_TEAMS.has(t)) && !washedUp.holders.has(p.name)
+    })
+    .map(p => p.name)
+))
+
 const trending = computed(() => {
   const allDates = [...new Set(
     store.enrichedMatches.filter(m => m.played && !m.snapshot_minute).map(m => m.date)
@@ -2081,6 +2091,16 @@ const topDaysChart = computed(() => {
   background-size: 200% auto;
   color: #a0b0cc;
   border: 1px solid rgba(140,160,200,0.3);
+  white-space: nowrap;
+  animation: shield-sparkle 3s linear infinite;
+}
+.lb-out-of-pool {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(200,50,50,0.14), rgba(255,100,100,0.22), rgba(200,50,50,0.14));
+  background-size: 200% auto;
+  color: #ff6b6b;
+  border: 1px solid rgba(220,80,80,0.35);
   white-space: nowrap;
   animation: shield-sparkle 3s linear infinite;
 }
