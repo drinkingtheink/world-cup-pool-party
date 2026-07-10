@@ -19,16 +19,16 @@
       </div>
       <div class="tourney-stats-row tourney-stats-row--days">
         <div class="stat-item">
-          <span class="stat-value">{{ daysPlayed }}</span>
-          <span class="stat-label">Days Played</span>
+          <span class="stat-value">{{ daysToGo }}</span>
+          <span class="stat-label">Days to Go</span>
         </div>
         <div class="stat-item">
           <span class="stat-value">{{ teamsRemaining }}</span>
           <span class="stat-label">Teams Left</span>
         </div>
         <div class="stat-item">
-          <span class="stat-value">{{ daysToGo }}</span>
-          <span class="stat-label">Days to Go</span>
+          <span class="stat-value">{{ daysPlayed }}</span>
+          <span class="stat-label">Days Played</span>
         </div>
       </div>
     </div>
