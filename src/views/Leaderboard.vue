@@ -57,6 +57,8 @@
             <div class="lb-name-row">
               <div class="lb-name-line">
                 <span class="lb-name" :class="{ 'lb-name--shimmer': entry.name === pointsLeader, 'lb-name--vaporfire': trending.holders.has(entry.name) && entry.name !== pointsLeader, 'lb-name--critical': lastLeg.has(entry.name), 'lb-name--low-health': treadingWater.has(entry.name) && !lastLeg.has(entry.name) }">{{ entry.name }}</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="LG Duty">🛟</span><span v-if="goldenGlove.holders.has(entry.name)" class="lb-name-glove" title="Gold Glove">🧤</span><span v-if="positionChange.risers.has(entry.name)" class="lb-name-rocket" aria-hidden="true">🚀</span><span v-if="goldenBoot.holders.has(entry.name) || goldenBootGroup.holders.has(entry.name) || goldenBootKnockout.holders.has(entry.name)" class="lb-name-boot" title="Gold Boot">⚡</span>
+                <span v-if="lastLeg.has(entry.name)" class="lb-teams-left lb-teams-left--critical">1 Team Left</span>
+                <span v-else-if="treadingWater.has(entry.name)" class="lb-teams-left lb-teams-left--low">2 Teams Left</span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending-fire" aria-hidden="true">🔥</span>
                 <button
                   v-if="playerLiveMatches[entry.name]?.length"
@@ -1596,6 +1598,9 @@ const topDaysChart = computed(() => {
   0%, 100% { text-shadow: none; }
   50%       { text-shadow: 0 0 12px rgba(255,50,50,1), 0 0 28px rgba(255,50,50,0.6); }
 }
+.lb-teams-left { font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.lb-teams-left--low      { color: #ffaa00; }
+.lb-teams-left--critical { color: #ff4040; }
 .lb-name-crown { font-size: 14px; line-height: 1; }
 .lb-name-lifeguard { font-size: 14px; line-height: 1; opacity: 0.85; }
 .lb-name-glove { font-size: 14px; line-height: 1; opacity: 0.9; }
