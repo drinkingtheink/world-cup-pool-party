@@ -8,7 +8,7 @@ export const announcement = {
   alwaysShow: false,
   id: '2026-07-11-qtrs-messi-vikings',
   title: 'Day 31/39 — Can Messi Keep Up the Magic? Can the Vikings Fend Off the English Incursion?',
-  body: `Charley is somehow cheering for both Norway and England today. Tommy has Argentina and Switzerland tonight. Neither can lose a game — but only one of them rakes in more points. That's the actual match worth watching.`,
+  body: `Charley is somehow cheering for both Norway and England today. Tommy has Argentina and Switzerland tonight. Neither can lose a game — but only one of them rakes in more points.`,
   cta: 'May the best hedge win',
   multipliers: [
     { stage: 'Quarterfinal', multiplier: '2×',   pillClass: 'pill-t3' },
