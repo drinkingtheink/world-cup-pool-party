@@ -4,17 +4,17 @@
 // Set `image` to a path like '/knockout-banner.png' or null to omit.
 
 export const announcement = {
-  enabled: false,
+  enabled: true,
   alwaysShow: false,
-  id: '2026-07-10-qtrs-spain-belgium',
-  title: 'Hot Tub, Cold Truth',
-  body: `Spain vs Belgium today — and multiple pool entries could cook in their own soup before dinner. La Roja run hot. Will Belgium survive the soak?`,
-  cta: 'Press to turn on jets',
+  id: '2026-07-11-qtrs-messi-vikings',
+  title: 'Day 31/39 — Can Messi Keep Up the Magic? Can the Vikings Fend Off the English Incursion?',
+  body: `Charley is somehow cheering for both Norway and England today. Tommy has Argentina and Switzerland tonight. Neither can lose a game — but only one of them rakes in more points. That's the actual match worth watching.`,
+  cta: 'May the best hedge win',
   multipliers: [
     { stage: 'Quarterfinal', multiplier: '2×',   pillClass: 'pill-t3' },
     { stage: 'Semifinal',    multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Third Place',  multiplier: '3×',   pillClass: 'pill-t2' },
     { stage: 'Final',        multiplier: '4×',   pillClass: 'pill-t1' },
   ],
-  image: '/jacuzzi-bros.png',
+  image: '/messi-shocked.png',
 }
