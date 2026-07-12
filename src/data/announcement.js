@@ -4,7 +4,7 @@
 // Set `image` to a path like '/knockout-banner.png' or null to omit.
 
 export const announcement = {
-  enabled: true,
+  enabled: false,
   alwaysShow: false,
   id: '2026-07-11-qtrs-messi-vikings',
   title: 'Day 31/39 — Can Messi Keep Up the Magic? Can the Vikings Fend Off the English Incursion?',
