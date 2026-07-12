@@ -87,6 +87,7 @@
                 <span v-if="entry.name === 'Jason' && pointsLeader === 'Jason'" class="lb-foia lb-tooltip-wrap" tabindex="0">📋 FOIA<span class="lb-tooltip">Yes, Jason is leading but the data is public and can be shared if you are interested. What's your Github @?</span></span>
                 <span v-if="inTheChase.holders.has(entry.name)" class="lb-in-the-chase lb-tooltip-wrap" tabindex="0">🎯 -{{ inTheChase.gaps[entry.name] }}<span class="lb-tooltip">Chasing — within {{ inTheChase.threshold }} pts of the leader</span></span>
                 <span v-if="inReach.holders.has(entry.name)" class="lb-in-reach lb-tooltip-wrap" tabindex="0">📡 -{{ inReach.gaps[entry.name] }}<span class="lb-tooltip">In Reach — within {{ IN_REACH_THRESHOLD }} pts of the leader</span></span>
+                <span v-if="beyondReach[entry.name]" class="lb-beyond-reach lb-tooltip-wrap" tabindex="0">−{{ beyondReach[entry.name] }} pts<span class="lb-tooltip">Points behind the leader</span></span>
                 <span v-if="entry.teams.includes('USA')" class="lb-real-american lb-tooltip-wrap" tabindex="0">🦅🇺🇸<span class="lb-tooltip">Real American — picked the US in their Pool</span></span>
                 <span v-if="entry.teams.includes('England')" class="lb-imperialism lb-tooltip-wrap" tabindex="0">👌🏴󠁧󠁢󠁥󠁮󠁧󠁿<span class="lb-tooltip">Ok with Imperialism — This player is admitting their implicit support for the imperialistic atrocities of England upon the nations they occupied. ¯\_(ツ)_/¯</span></span>
                 <span v-if="ballsy.holders.has(entry.name)" class="lb-ballsy lb-tooltip-wrap" tabindex="0">💪 Ballsy<span class="lb-tooltip">Below average European teams picked (avg: {{ ballsy.avg }})</span></span>
@@ -970,6 +971,12 @@ const inReach = computed(() => {
   return { holders, gaps }
 })
 
+const beyondReach = computed(() => {
+  const leader = store.leaderboard[0]?.total ?? 0
+  const entries = store.leaderboard.filter(e => leader - e.total > IN_REACH_THRESHOLD)
+  return Object.fromEntries(entries.map(e => [e.name, leader - e.total]))
+})
+
 const tournamentComplete = computed(() =>
   store.enrichedMatches.some(m => m.stage === 'Final' && m.played)
 )
@@ -1715,6 +1722,17 @@ const topDaysChart = computed(() => {
   border: 1px solid rgba(0,229,255,0.2);
   white-space: nowrap;
   animation: shield-sparkle 2.2s linear infinite;
+}
+
+.lb-beyond-reach {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(189,95,255,0.12), rgba(255,45,120,0.14), rgba(189,95,255,0.12));
+  background-size: 200% auto;
+  color: var(--purple);
+  border: 1px solid rgba(189,95,255,0.3);
+  white-space: nowrap;
+  animation: shield-sparkle 3s linear infinite;
 }
 
 .lb-sus {
