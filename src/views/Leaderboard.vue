@@ -114,6 +114,7 @@
                 <span v-if="halfDead.has(entry.name)" class="lb-half-dead lb-tooltip-wrap" tabindex="0">🐟 1/2 Sunk<span class="lb-tooltip">Half your teams have been eliminated</span></span>
                 <span v-if="treadingWater.has(entry.name)" class="lb-treading-water lb-tooltip-wrap" tabindex="0">🏊 Undertow<span class="lb-tooltip">Only 2 teams still alive</span></span>
                 <span v-if="lastLeg.has(entry.name)" class="lb-last-leg lb-tooltip-wrap" tabindex="0">🦵 Last Leg<span class="lb-tooltip">Only 1 team still alive</span></span>
+                <span v-if="poolBully.holders.has(entry.name)" class="lb-pool-bully lb-tooltip-wrap" tabindex="0">😤 Pool Bully<span class="lb-tooltip">Most knockout wins against other pool players ({{ poolBully.wins }})</span></span>
                 <span v-if="washedUp.holders.has(entry.name)" class="lb-washed-up lb-tooltip-wrap" tabindex="0">🧼 Washed Up<span class="lb-tooltip">First pool player with all teams eliminated</span></span>
                 <span v-if="outOfPool.has(entry.name)" class="lb-out-of-pool lb-tooltip-wrap" tabindex="0">🚿 Out of the Pool<span class="lb-tooltip">All teams eliminated</span></span>
                 <span v-if="groundskeeper.holders.has(entry.name)" class="lb-groundskeeper lb-tooltip-wrap" tabindex="0">🛟 LG Duty<span class="lb-tooltip">Lifeguard Duty — most clubs eliminated from the Pool ({{ groundskeeper.count }})</span></span>
@@ -171,7 +172,10 @@
                 <div v-if="lastGroupDate" class="lb-day-divider lb-day-divider--start">
                   <span class="lb-day-divider-label">Group Stage</span>
                 </div>
-                <template v-for="d in playerPointsByDate[entry.name]" :key="d.date">
+                <template v-for="(d, di) in playerPointsByDate[entry.name]" :key="d.date">
+                  <div v-if="lastGroupDate && d.date > lastGroupDate && (di === 0 || playerPointsByDate[entry.name][di - 1].date <= lastGroupDate)" class="lb-day-divider">
+                    <span class="lb-day-divider-label">Knockout Rounds</span>
+                  </div>
                   <div
                     class="lb-day-chip"
                     :class="{ 'lb-day-chip--zero': d.pts === 0, 'lb-day-chip--high': d.pts >= 10 && d.pts < 20, 'lb-day-chip--ultra': d.pts >= 20 }"
@@ -179,9 +183,6 @@
                   >
                     <span class="lb-day-date">{{ fmtDate(d.date) }}</span>
                     <span class="lb-day-pts">+{{ fmt(d.pts) }}</span>
-                  </div>
-                  <div v-if="lastGroupDate && d.date === lastGroupDate" class="lb-day-divider">
-                    <span class="lb-day-divider-label">Knockout Rounds</span>
                   </div>
                 </template>
               </div>
@@ -395,6 +396,32 @@
       </button>
     </div>
     <p class="strength-sub">Matches across all stages where players have skin in the game on both sides</p>
+    <div class="card elim-feed">
+      <div v-for="e in poolEliminations" :key="e.loserTeam + e.date" class="elim-row">
+        <div class="elim-meta">
+          <span class="elim-stage">{{ e.stage }}</span>
+          <span class="elim-date">{{ fmtDate(e.date) }}</span>
+        </div>
+        <div class="elim-matchup">
+          <div class="elim-winner">
+            <span class="elim-flag">{{ FLAG_MAP[e.winnerTeam] ?? '🏳' }}</span>
+            <div>
+              <span class="elim-team">{{ e.winnerTeam }}</span>
+              <span class="elim-players elim-players--killer">{{ e.killers.join(', ') }}</span>
+            </div>
+          </div>
+          <span class="elim-score">{{ e.score }}{{ e.penWinner ? ' (P)' : '' }}</span>
+          <div class="elim-loser">
+            <div class="elim-info--right">
+              <span class="elim-team">{{ e.loserTeam }}</span>
+              <span class="elim-players elim-players--victim">{{ e.victims.join(', ') }}</span>
+            </div>
+            <span class="elim-flag">{{ FLAG_MAP[e.loserTeam] ?? '🏳' }}</span>
+          </div>
+        </div>
+      </div>
+      <p v-if="!poolEliminations.length" class="elim-empty">No pool player eliminations yet</p>
+    </div>
     <div class="mu-summary">
       <div v-for="type in matchupStats.sortedTypes" :key="type" class="mu-chip" :class="`mu-intensity-${matchupStats.intensity[type]}`">
         <span class="mu-chip-type">{{ type.replace('v', ' v ') }}</span>
@@ -684,6 +711,69 @@ const avgFifaRank = computed(() => {
   return ranked.map(p => ({ ...p, pct: 0.15 + 0.85 * (1 - (p.avg - min) / spread) }))
 })
 
+
+const poolEliminations = computed(() => {
+  return store.enrichedMatches
+    .filter(m =>
+      m.home_score !== '' && !m.snapshot_minute &&
+      KNOCKOUT_STAGES.has(m.stage) &&
+      m.homePlayers.length > 0 && m.awayPlayers.length > 0
+    )
+    .map(m => {
+      const homeScore = Number(m.home_score)
+      const awayScore = Number(m.away_score)
+      const homeWon = homeScore > awayScore || m.penalties_winner === 'home'
+      const winnerTeam   = homeWon ? m.home : m.away
+      const loserTeam    = homeWon ? m.away : m.home
+      const winnerPlayers = homeWon ? m.homePlayers : m.awayPlayers
+      const loserPlayers  = homeWon ? m.awayPlayers : m.homePlayers
+      const bothSides     = loserPlayers.filter(p => winnerPlayers.includes(p))
+      const killers       = winnerPlayers.filter(p => !loserPlayers.includes(p))
+      const victims       = loserPlayers.filter(p => !winnerPlayers.includes(p))
+      return { date: m.date, stage: m.stage, winnerTeam, loserTeam, killers, victims, bothSides,
+               score: `${m.home_score}–${m.away_score}`, penWinner: m.penalties_winner }
+    })
+    .filter(e => e.killers.length > 0 && e.victims.length > 0)
+})
+
+const poolWL = computed(() => {
+  const records = {}
+  store.players.forEach(p => { records[p.name] = { w: 0, l: 0 } })
+
+  store.enrichedMatches.forEach(m => {
+    if (m.home_score === '' || m.snapshot_minute) return
+    if (!m.homePlayers.length || !m.awayPlayers.length) return
+
+    const homeScore = Number(m.home_score)
+    const awayScore = Number(m.away_score)
+    let winners, losers
+
+    if (homeScore > awayScore || m.penalties_winner === 'home') {
+      winners = m.homePlayers; losers = m.awayPlayers
+    } else if (awayScore > homeScore || m.penalties_winner === 'away') {
+      winners = m.awayPlayers; losers = m.homePlayers
+    } else {
+      return
+    }
+
+    winners.forEach(w => losers.forEach(l => {
+      if (w === l) return
+      if (records[w]) records[w].w++
+      if (records[l]) records[l].l++
+    }))
+  })
+
+  return Object.entries(records)
+    .map(([name, { w, l }]) => ({ name, w, l }))
+    .sort((a, b) => b.w - a.w || a.l - b.l)
+})
+
+const poolBully = computed(() => {
+  const max = Math.max(...poolWL.value.map(r => r.w))
+  if (max === 0) return { holders: new Set(), wins: 0 }
+  const holders = new Set(poolWL.value.filter(r => r.w === max).map(r => r.name))
+  return { holders, wins: max }
+})
 
 const matchupStats = computed(() => {
   const tally = {}
@@ -2112,6 +2202,16 @@ const topDaysChart = computed(() => {
   white-space: nowrap;
   animation: shield-sparkle 3s linear infinite;
 }
+.lb-pool-bully {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(255,45,120,0.14), rgba(189,95,255,0.18), rgba(255,45,120,0.14));
+  background-size: 200% auto;
+  color: var(--accent);
+  border: 1px solid rgba(255,45,120,0.35);
+  white-space: nowrap;
+  animation: shield-sparkle 2.5s linear infinite;
+}
 .lb-out-of-pool {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
   padding: 2px 7px; border-radius: 20px;
@@ -2639,6 +2739,41 @@ const topDaysChart = computed(() => {
 .section-link-btn:hover { color: var(--cyan); border-color: rgba(0,229,255,0.4); }
 
 /* ── Pool Matchups ────────────────────────────────────────────── */
+.elim-feed { padding: 4px 0; margin-bottom: 20px; }
+.elim-row {
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.elim-row:last-child { border-bottom: none; }
+.elim-meta {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px;
+}
+.elim-stage {
+  font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--purple); background: rgba(189,95,255,0.12);
+  border: 1px solid rgba(189,95,255,0.25); border-radius: 20px; padding: 1px 7px;
+}
+.elim-date { font-size: 11px; color: var(--text-dim); }
+.elim-matchup {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.elim-winner, .elim-loser {
+  display: flex; align-items: center; gap: 8px; flex: 1;
+}
+.elim-loser { justify-content: flex-end; }
+.elim-info--right { text-align: right; }
+.elim-flag { font-size: 20px; line-height: 1; }
+.elim-team { display: block; font-size: 13px; font-weight: 700; color: var(--text); }
+.elim-players { display: block; font-size: 11px; font-weight: 600; }
+.elim-players--killer { color: var(--cyan); }
+.elim-players--victim { color: #ff6b6b; }
+.elim-score {
+  font-size: 13px; font-weight: 800; color: var(--text-dim);
+  white-space: nowrap; padding: 0 8px;
+}
+.elim-empty { font-size: 13px; color: var(--text-dim); padding: 12px 16px; }
+
 .mu-summary { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
 
 .mu-chip {
