@@ -495,6 +495,8 @@ body {
 }
 .tab-icon { width: 20px; height: 20px; stroke-width: 1.75; }
 .tab-label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.tab--wrapped { color: #bd5fff; }
+.tab--wrapped.tab--active { color: #bd5fff; text-shadow: 0 0 8px rgba(189,95,255,0.6), 0 0 24px rgba(189,95,255,0.25); }
 
 /* ── View shell ──────────────────────────────────────────────────── */
 .view { padding: 16px; }
