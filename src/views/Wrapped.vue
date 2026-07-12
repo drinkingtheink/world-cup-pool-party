@@ -38,7 +38,9 @@
       <div class="vw-scene">
         <div class="vw-sky">
           <div class="vw-stars"></div>
+          <div class="vw-shoot"></div>
         </div>
+        <div class="vw-mountains"></div>
         <div class="vw-sun-wrap">
           <svg class="vw-sun" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -66,8 +68,10 @@
         <div class="vw-float vw-f3"></div>
         <div class="vw-float vw-f4"></div>
         <div class="vw-float vw-f5"></div>
+        <div class="vw-float vw-f6"></div>
         <div class="vw-sweep"></div>
         <div class="vw-scanlines"></div>
+        <div class="vw-crt"></div>
       </div>
 
       <!-- Progress pips -->
@@ -1143,77 +1147,205 @@ function rankClass(r) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   VAPORWAVE SCENE
+   VAPORWAVE SCENE  (POLISHED)
    ═══════════════════════════════════════════════════════════════════ */
 .vw-scene {
   position: absolute; inset: 0; z-index: 0;
   pointer-events: none; overflow: hidden;
+  animation: vw-glitch-flash 28s 9s linear infinite;
 }
+@keyframes vw-glitch-flash {
+  0%, 95%, 100% { filter: none; }
+  95.5% { filter: brightness(1.6) saturate(2.2) hue-rotate(20deg); }
+  96%   { filter: hue-rotate(-40deg) brightness(0.5) contrast(2); }
+  96.4% { filter: brightness(1.3) saturate(1.6); }
+  96.8% { filter: none; }
+}
+
+/* ── Sky ──────────────────────────────────────────────────────────── */
 .vw-sky {
-  position: absolute; inset: 0 0 44% 0;
-  background: linear-gradient(to bottom, #04020e 0%, #130528 50%, #28084e 100%);
+  position: absolute; inset: 0 0 44% 0; overflow: hidden;
+  background: linear-gradient(to bottom, #020109 0%, #0d0220 38%, #1e0645 72%, #38098a 100%);
 }
+/* Colored nebula cloud blobs */
+.vw-sky::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 5px; height: 5px; border-radius: 50%; background: transparent;
+  box-shadow:
+    48px 18px 6px 3px rgba(189,95,255,.25),  195px 12px 8px 4px rgba(255,45,120,.22),
+    368px 28px 5px 3px rgba(0,229,255,.28),   530px 16px 7px 3px rgba(189,95,255,.22),
+    688px 22px 6px 2px rgba(255,45,120,.30),  128px 52px 4px 2px rgba(255,45,120,.18),
+    290px 46px 5px 3px rgba(189,95,255,.24),  460px 58px 4px 2px rgba(0,229,255,.20),
+    620px 42px 5px 3px rgba(255,45,120,.22),  750px 55px 4px 2px rgba(189,95,255,.20),
+    740px 10px 8px 4px rgba(0,229,255,.22);
+  animation: vw-nebula-breathe 7s ease-in-out infinite;
+}
+@keyframes vw-nebula-breathe { 0%,100% { opacity:.6; } 50% { opacity:1; } }
+
+/* ── Stars layer 1 — medium bright ───────────────────────────────── */
 .vw-stars { position: absolute; inset: 0; }
-.vw-stars::before, .vw-stars::after {
+.vw-stars::before {
   content: ''; position: absolute; top: 0; left: 0;
   width: 2px; height: 2px; border-radius: 50%; background: transparent;
-}
-.vw-stars::before {
   box-shadow:
-    14px 12px 0 rgba(255,255,255,.8),  38px 6px 0 rgba(255,255,255,.5),
-    62px 28px 0 rgba(255,255,255,.7),   88px 18px 0 rgba(189,95,255,.7),
-    112px 8px 0 rgba(255,255,255,.9),  135px 40px 0 rgba(0,229,255,.6),
-    158px 22px 0 rgba(255,255,255,.5), 182px 55px 0 rgba(255,255,255,.7),
-    207px 11px 0 rgba(255,45,120,.6),  228px 35px 0 rgba(255,255,255,.8),
-    252px 7px 0 rgba(255,255,255,.5),  276px 48px 0 rgba(255,255,255,.9),
-    300px 20px 0 rgba(189,95,255,.5),  322px 60px 0 rgba(255,255,255,.6),
-    346px 14px 0 rgba(0,229,255,.7),   368px 38px 0 rgba(255,255,255,.7),
-    390px 5px 0 rgba(255,255,255,.8),   20px 72px 0 rgba(255,255,255,.4),
-     55px 80px 0 rgba(255,255,255,.5),  92px 88px 0 rgba(189,95,255,.4),
-    132px 76px 0 rgba(255,255,255,.6), 168px 92px 0 rgba(255,45,120,.4),
-    205px 84px 0 rgba(255,255,255,.5), 244px 78px 0 rgba(0,229,255,.4),
-    280px 95px 0 rgba(255,255,255,.6), 316px 82px 0 rgba(255,255,255,.5),
-    352px 90px 0 rgba(255,255,255,.4), 384px 74px 0 rgba(189,95,255,.5);
+    14px 12px 0 rgba(255,255,255,.85),  38px 6px 0 rgba(255,255,255,.55),
+    62px 28px 0 rgba(255,255,255,.75),   88px 18px 0 rgba(189,95,255,.80),
+    112px 8px 0 rgba(255,255,255,.95),  135px 40px 0 rgba(0,229,255,.70),
+    158px 22px 0 rgba(255,255,255,.55), 182px 55px 0 rgba(255,255,255,.75),
+    207px 11px 0 rgba(255,45,120,.70),  228px 35px 0 rgba(255,255,255,.85),
+    252px 7px 0 rgba(255,255,255,.55),  276px 48px 0 rgba(255,255,255,.95),
+    300px 20px 0 rgba(189,95,255,.60),  322px 60px 0 rgba(255,255,255,.65),
+    346px 14px 0 rgba(0,229,255,.80),   368px 38px 0 rgba(255,255,255,.75),
+    390px 5px 0 rgba(255,255,255,.85),  412px 30px 0 rgba(189,95,255,.70),
+    434px 16px 0 rgba(255,255,255,.75), 458px 44px 0 rgba(255,45,120,.60),
+    480px 10px 0 rgba(255,255,255,.95), 502px 55px 0 rgba(0,229,255,.65),
+    524px 28px 0 rgba(255,255,255,.55), 546px 8px 0 rgba(255,255,255,.85),
+    568px 42px 0 rgba(189,95,255,.70),  590px 20px 0 rgba(255,255,255,.75),
+    614px 50px 0 rgba(255,45,120,.60),  636px 14px 0 rgba(255,255,255,.65),
+    660px 35px 0 rgba(0,229,255,.80),   682px 6px 0 rgba(255,255,255,.95),
+    706px 48px 0 rgba(255,255,255,.55), 728px 24px 0 rgba(189,95,255,.60),
+    752px 38px 0 rgba(255,255,255,.85), 776px 12px 0 rgba(255,45,120,.50),
+     20px 72px 0 rgba(255,255,255,.45),  55px 80px 0 rgba(255,255,255,.55),
+     92px 88px 0 rgba(189,95,255,.45),  132px 76px 0 rgba(255,255,255,.65),
+    168px 92px 0 rgba(255,45,120,.45),  205px 84px 0 rgba(255,255,255,.55),
+    244px 78px 0 rgba(0,229,255,.45),   280px 95px 0 rgba(255,255,255,.65),
+    316px 82px 0 rgba(255,255,255,.55), 352px 90px 0 rgba(255,255,255,.45),
+    384px 74px 0 rgba(189,95,255,.55),  420px 86px 0 rgba(255,255,255,.65),
+    455px 70px 0 rgba(255,45,120,.45),  490px 92px 0 rgba(255,255,255,.55),
+    525px 78px 0 rgba(0,229,255,.45),   560px 88px 0 rgba(255,255,255,.75),
+    595px 72px 0 rgba(189,95,255,.45),  630px 95px 0 rgba(255,255,255,.55),
+    665px 80px 0 rgba(255,45,120,.35),  700px 68px 0 rgba(255,255,255,.65),
+    735px 85px 0 rgba(0,229,255,.45),   770px 76px 0 rgba(255,255,255,.55);
   animation: vw-twinkle-a 4.2s ease-in-out infinite;
 }
+/* ── Stars layer 2 — tiny dots ───────────────────────────────────── */
 .vw-stars::after {
-  width: 1px; height: 1px;
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 1px; height: 1px; border-radius: 50%; background: transparent;
   box-shadow:
-    26px 24px 0 rgba(255,255,255,.6),  50px 44px 0 rgba(255,255,255,.8),
-    76px 16px 0 rgba(255,255,255,.4),   98px 62px 0 rgba(255,255,255,.7),
-    122px 33px 0 rgba(255,255,255,.5), 145px 70px 0 rgba(255,255,255,.9),
-    168px 45px 0 rgba(255,255,255,.4), 194px 8px 0 rgba(255,255,255,.6),
-    218px 56px 0 rgba(255,255,255,.7), 240px 28px 0 rgba(255,255,255,.5),
-    265px 68px 0 rgba(255,255,255,.6), 288px 40px 0 rgba(255,255,255,.8),
-    312px 22px 0 rgba(255,255,255,.4), 334px 58px 0 rgba(255,255,255,.6),
-    358px 35px 0 rgba(255,255,255,.7), 378px 50px 0 rgba(255,255,255,.5);
-  animation: vw-twinkle-b 6s ease-in-out infinite;
+    26px 24px 0 rgba(255,255,255,.65),  50px 44px 0 rgba(255,255,255,.85),
+    76px 16px 0 rgba(255,255,255,.45),   98px 62px 0 rgba(255,255,255,.75),
+    122px 33px 0 rgba(255,255,255,.55), 145px 70px 0 rgba(255,255,255,.95),
+    168px 45px 0 rgba(255,255,255,.45), 194px 8px 0 rgba(255,255,255,.65),
+    218px 56px 0 rgba(255,255,255,.75), 240px 28px 0 rgba(255,255,255,.55),
+    265px 68px 0 rgba(255,255,255,.65), 288px 40px 0 rgba(255,255,255,.85),
+    312px 22px 0 rgba(255,255,255,.45), 334px 58px 0 rgba(255,255,255,.65),
+    358px 35px 0 rgba(255,255,255,.75), 378px 50px 0 rgba(255,255,255,.55),
+    400px 18px 0 rgba(255,255,255,.75), 422px 66px 0 rgba(255,255,255,.45),
+    445px 38px 0 rgba(255,255,255,.85), 468px 10px 0 rgba(255,255,255,.55),
+    490px 52px 0 rgba(255,255,255,.75), 512px 74px 0 rgba(255,255,255,.45),
+    535px 30px 0 rgba(255,255,255,.65), 558px 60px 0 rgba(255,255,255,.55),
+    580px 14px 0 rgba(255,255,255,.85), 602px 48px 0 rgba(255,255,255,.45),
+    626px 76px 0 rgba(255,255,255,.65), 648px 25px 0 rgba(255,255,255,.75),
+    670px 54px 0 rgba(255,255,255,.55), 694px 36px 0 rgba(255,255,255,.45),
+    718px 65px 0 rgba(255,255,255,.75), 742px 20px 0 rgba(255,255,255,.65),
+    766px 44px 0 rgba(255,255,255,.55), 790px 72px 0 rgba(255,255,255,.35);
+  animation: vw-twinkle-b 6.5s 0.8s ease-in-out infinite;
 }
-@keyframes vw-twinkle-a { 0%,100% { opacity:.85; } 50% { opacity:.2; } }
-@keyframes vw-twinkle-b { 0%,100% { opacity:.6;  } 50% { opacity:1;  } }
+@keyframes vw-twinkle-a { 0%,100% { opacity:.9;  } 50% { opacity:.15; } }
+@keyframes vw-twinkle-b { 0%,100% { opacity:.55; } 50% { opacity:1;   } }
 
+/* ── Shooting stars ───────────────────────────────────────────────── */
+.vw-shoot { position: absolute; inset: 0; overflow: hidden; }
+.vw-shoot::before {
+  content: '';
+  position: absolute; top: 15%; left: -150px;
+  width: 130px; height: 1.5px; border-radius: 999px;
+  background: linear-gradient(to right, transparent 0%, rgba(255,255,255,.95) 55%, rgba(189,95,255,.45) 100%);
+  box-shadow: 0 0 5px rgba(255,255,255,.35), 0 0 12px rgba(189,95,255,.2);
+  animation: vw-shoot-a 15s 2.2s linear infinite;
+}
+.vw-shoot::after {
+  content: '';
+  position: absolute; top: 31%; left: -100px;
+  width: 88px; height: 1px; border-radius: 999px;
+  background: linear-gradient(to right, transparent 0%, rgba(0,229,255,.9) 60%, rgba(0,229,255,.15) 100%);
+  box-shadow: 0 0 4px rgba(0,229,255,.3);
+  animation: vw-shoot-b 23s 11s linear infinite;
+}
+@keyframes vw-shoot-a {
+  0%, 84%  { top: 15%; left: -150px; opacity: 0; }
+  85%      { opacity: 1; }
+  98%      { top: 30%; left: calc(100% + 50px); opacity: 1; }
+  99%, 100%{ opacity: 0; top: 30%; left: calc(100% + 50px); }
+}
+@keyframes vw-shoot-b {
+  0%, 80%  { top: 31%; left: -100px; opacity: 0; }
+  81%      { opacity: 0.85; }
+  98%      { top: 42%; left: calc(100% + 40px); opacity: 0.85; }
+  99%, 100%{ opacity: 0; top: 42%; left: calc(100% + 40px); }
+}
+
+/* ── Mountain silhouette ──────────────────────────────────────────── */
+.vw-mountains {
+  position: absolute; left: 0; right: 0;
+  top: calc(6% + 52px); height: 80px;
+  background: linear-gradient(180deg, rgba(32,6,60,.0) 0%, #190340 35%, #0d0128 100%);
+  clip-path: polygon(
+    0% 100%, 0% 75%,
+    2% 62%,  4% 50%,  6% 62%,  8% 45%,  10% 30%,
+    12% 45%, 14% 38%, 16% 52%, 18% 28%, 20% 48%,
+    22% 60%, 24% 40%, 26% 52%, 28% 20%, 30% 42%,
+    32% 55%, 34% 38%, 36% 52%, 38% 15%, 40% 40%,
+    42% 55%, 44% 35%, 46% 50%, 48% 25%, 50% 45%,
+    52% 60%, 54% 38%, 56% 52%, 58% 18%, 60% 42%,
+    62% 58%, 64% 36%, 66% 50%, 68% 28%, 70% 48%,
+    72% 62%, 74% 40%, 76% 54%, 78% 22%, 80% 44%,
+    82% 58%, 84% 42%, 86% 55%, 88% 16%, 90% 40%,
+    92% 60%, 94% 46%, 96% 58%, 98% 70%, 100% 62%,
+    100% 100%
+  );
+}
+.vw-mountains::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(189,95,255,.12) 0%, rgba(255,45,120,.06) 40%, transparent 70%);
+}
+
+/* ── Sun ──────────────────────────────────────────────────────────── */
 .vw-sun-wrap {
-  position: absolute; left: 50%; top: 6%;
+  position: absolute; left: 50%; top: 5%;
   transform: translateX(-50%);
-  width: 170px; height: 85px;
-  filter: drop-shadow(0 0 18px rgba(255,45,120,.85)) drop-shadow(0 0 50px rgba(255,45,120,.35));
+  width: 178px; height: 89px;
+  filter:
+    drop-shadow(0 0 20px rgba(255,45,120,.90))
+    drop-shadow(0 0 55px rgba(255,45,120,.40))
+    drop-shadow(0 0 90px var(--c, rgba(189,95,255,.35)));
   animation: vw-sun-breathe 3.5s ease-in-out infinite;
 }
 .vw-sun { width: 100%; height: 100%; display: block; }
 @keyframes vw-sun-breathe {
-  0%,100% { filter: drop-shadow(0 0 18px rgba(255,45,120,.85)) drop-shadow(0 0 50px rgba(255,45,120,.35)); }
-  50%      { filter: drop-shadow(0 0 28px rgba(255,45,120,1))   drop-shadow(0 0 80px rgba(255,45,120,.55)); }
+  0%,100% {
+    filter:
+      drop-shadow(0 0 20px rgba(255,45,120,.90))
+      drop-shadow(0 0 55px rgba(255,45,120,.40))
+      drop-shadow(0 0 90px var(--c, rgba(189,95,255,.35)));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 32px rgba(255,45,120,1))
+      drop-shadow(0 0 90px rgba(255,45,120,.60))
+      drop-shadow(0 0 130px var(--c, rgba(189,95,255,.55)));
+  }
 }
 
+/* ── Horizon lines ────────────────────────────────────────────────── */
 .vw-horizon-line {
   position: absolute; left: 0; right: 0;
-  top: calc(6% + 86px); height: 2px;
-  background: linear-gradient(90deg, transparent 0%, var(--c) 20%, #ff2d78 50%, var(--c) 80%, transparent 100%);
-  box-shadow: 0 0 8px var(--c), 0 0 24px rgba(255,45,120,.5), 0 -1px 8px var(--c);
-  animation: vw-horizon-pulse 2.8s ease-in-out infinite;
+  top: calc(5% + 90px); height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--c) 15%, #ff6fb0 40%, #ffffff 50%, #ff6fb0 60%, var(--c) 85%, transparent 100%);
+  box-shadow: 0 0 10px var(--c), 0 0 30px rgba(255,45,120,.55), 0 -1px 10px var(--c);
+  animation: vw-horizon-pulse 2.6s ease-in-out infinite;
 }
-@keyframes vw-horizon-pulse { 0%,100% { opacity:.65; } 50% { opacity:1; } }
+.vw-horizon-line::after {
+  content: '';
+  position: absolute; left: 5%; right: 5%; top: 5px; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--c) 20%, rgba(255,45,120,.6) 50%, var(--c) 80%, transparent 100%);
+  opacity: .35;
+}
+@keyframes vw-horizon-pulse { 0%,100% { opacity:.7; } 50% { opacity:1; } }
 
+/* ── Perspective grid ─────────────────────────────────────────────── */
 .vw-grid-wrap {
   position: absolute; left: 0; right: 0; bottom: 0;
   height: 44%; overflow: hidden;
@@ -1225,76 +1357,139 @@ function rankClass(r) {
     linear-gradient(to bottom, var(--c) 1px, transparent 1px);
   background-size: 85px 52px;
   transform: perspective(320px) rotateX(54deg);
-  transform-origin: top center; opacity: .5;
-  mask-image:         linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,.04) 100%);
-  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,.9) 0%, rgba(0,0,0,.04) 100%);
-  animation: vw-grid-march 2.2s linear infinite;
+  transform-origin: top center;
+  mask-image:         linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.05) 100%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.05) 100%);
+  animation: vw-grid-march 2.2s linear infinite, vw-grid-glow 5s ease-in-out infinite;
 }
 @keyframes vw-grid-march { from { background-position: 42px 0; } to { background-position: 42px 52px; } }
+@keyframes vw-grid-glow  { 0%,100% { opacity:.48; } 50% { opacity:.72; } }
 
+/* ── Floating shapes ──────────────────────────────────────────────── */
 .vw-float { position: absolute; }
+
 .vw-f1 {
-  width: 66px; height: 66px; left: 4%; top: 22%;
+  width: 68px; height: 68px; left: 4%; top: 22%;
   border: 2px solid #ff2d78; background: rgba(255,45,120,.04);
-  box-shadow: 0 0 10px rgba(255,45,120,.65), 0 0 28px rgba(255,45,120,.2), inset 0 0 14px rgba(255,45,120,.07);
+  box-shadow:
+    0 0 12px rgba(255,45,120,.75), 0 0 32px rgba(255,45,120,.25),
+    inset 0 0 16px rgba(255,45,120,.10);
   animation: vw-spin-float-a 9s ease-in-out infinite;
 }
 @keyframes vw-spin-float-a {
   0%   { transform: rotate(45deg)  translateY(0px);   }
-  25%  { transform: rotate(135deg) translateY(-12px); }
+  25%  { transform: rotate(135deg) translateY(-14px); }
   50%  { transform: rotate(225deg) translateY(0px);   }
-  75%  { transform: rotate(315deg) translateY(12px);  }
+  75%  { transform: rotate(315deg) translateY(14px);  }
   100% { transform: rotate(405deg) translateY(0px);   }
 }
+
 .vw-f2 {
-  width: 44px; height: 44px; right: 7%; top: 26%;
+  width: 46px; height: 46px; right: 7%; top: 26%;
   border: 2px solid #00e5ff; background: rgba(0,229,255,.04);
-  box-shadow: 0 0 10px rgba(0,229,255,.65), 0 0 24px rgba(0,229,255,.2), inset 0 0 10px rgba(0,229,255,.06);
-  animation: vw-spin-float-b 7s ease-in-out infinite;
+  box-shadow:
+    0 0 12px rgba(0,229,255,.75), 0 0 28px rgba(0,229,255,.25),
+    inset 0 0 12px rgba(0,229,255,.08);
+  animation: vw-spin-float-b 7s 1.4s ease-in-out infinite;
 }
 @keyframes vw-spin-float-b {
   0%   { transform: rotate(45deg)   translateY(0px);  }
-  25%  { transform: rotate(-45deg)  translateY(9px);  }
+  25%  { transform: rotate(-45deg)  translateY(10px); }
   50%  { transform: rotate(-135deg) translateY(0px);  }
-  75%  { transform: rotate(-225deg) translateY(-9px); }
+  75%  { transform: rotate(-225deg) translateY(-10px);}
   100% { transform: rotate(-315deg) translateY(0px);  }
 }
+
 .vw-f3 {
-  width: 78px; height: 78px; right: 3%; top: 4%;
+  width: 82px; height: 82px; right: 3%; top: 4%;
   border: 2px dashed var(--c); border-radius: 50%;
-  box-shadow: 0 0 14px var(--c), 0 0 30px var(--c); opacity: .75;
-  animation: vw-spin-circle 14s linear infinite;
+  box-shadow: 0 0 16px var(--c), 0 0 38px var(--c); opacity: .8;
+  animation: vw-spin-circle 14s 0.9s linear infinite;
 }
 @keyframes vw-spin-circle { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
 .vw-f4 {
-  width: 30px; height: 30px; left: 16%; top: 50%;
+  width: 32px; height: 32px; left: 16%; top: 50%;
   border: 1.5px solid #bd5fff; background: rgba(189,95,255,.05);
-  box-shadow: 0 0 8px rgba(189,95,255,.75), inset 0 0 6px rgba(189,95,255,.1);
-  animation: vw-spin-float-c 11s ease-in-out infinite;
+  box-shadow:
+    0 0 10px rgba(189,95,255,.80), 0 0 26px rgba(189,95,255,.30),
+    inset 0 0 8px rgba(189,95,255,.12);
+  animation: vw-spin-float-c 11s 2.8s ease-in-out infinite;
 }
 @keyframes vw-spin-float-c {
   0%   { transform: rotate(45deg)  translateY(0px);  }
-  50%  { transform: rotate(225deg) translateY(16px); }
+  50%  { transform: rotate(225deg) translateY(18px); }
   100% { transform: rotate(405deg) translateY(0px);  }
 }
-.vw-f5 {
-  width: 94px; height: 94px; left: -30px; top: 36%;
-  border: 1.5px solid var(--c); border-radius: 50%;
-  box-shadow: 0 0 20px var(--c); opacity: .45;
-  animation: vw-ghost-float 13s ease-in-out infinite;
-}
-@keyframes vw-ghost-float { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-24px) scale(1.07); } }
 
+.vw-f5 {
+  width: 96px; height: 96px; left: -32px; top: 36%;
+  border: 1.5px solid var(--c); border-radius: 50%;
+  box-shadow: 0 0 22px var(--c), 0 0 50px var(--c); opacity: .42;
+  animation: vw-ghost-float 13s 4.5s ease-in-out infinite;
+}
+@keyframes vw-ghost-float {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-26px) scale(1.08); }
+}
+
+/* Diamond shape */
+.vw-f6 {
+  width: 32px; height: 32px; right: 14%; top: 55%;
+  border: 2px solid #ffd200; background: rgba(255,210,0,.04);
+  box-shadow:
+    0 0 10px rgba(255,210,0,.80), 0 0 26px rgba(255,210,0,.30),
+    inset 0 0 8px rgba(255,210,0,.10);
+  transform: rotate(45deg);
+  animation: vw-diamond-float 8s 0.6s ease-in-out infinite;
+}
+@keyframes vw-diamond-float {
+  0%,100% { transform: rotate(45deg) translateY(0) scale(1);    opacity: .75; }
+  40%      { transform: rotate(60deg) translateY(-14px) scale(1.1); opacity: 1; }
+  70%      { transform: rotate(38deg) translateY(6px) scale(.95); opacity: .8; }
+}
+
+/* ── Sweep lines ──────────────────────────────────────────────────── */
 .vw-sweep {
   position: absolute; left: 0; right: 0; height: 1px;
   background: linear-gradient(90deg, transparent, var(--c), #00e5ff, var(--c), transparent);
-  box-shadow: 0 0 6px var(--c); opacity: .22;
-  animation: vw-sweep-down 9s linear infinite;
+  box-shadow: 0 0 7px var(--c); opacity: .28;
+  animation: vw-sweep-down 10s linear infinite;
+}
+.vw-sweep::after {
+  content: '';
+  position: absolute; left: 0; right: 0; top: 4px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,45,120,.6), transparent);
+  opacity: .5;
 }
 @keyframes vw-sweep-down { from { top: -2px; } to { top: 100%; } }
 
+/* ── Scanlines + shimmer pass ─────────────────────────────────────── */
 .vw-scanlines {
   position: absolute; inset: 0; z-index: 4;
-  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,.07) 3px, rgba(0,0,0,.07) 4px);
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,.10) 3px, rgba(0,0,0,.10) 4px
+  );
+}
+.vw-scanlines::before {
+  content: '';
+  position: absolute; left: 0; right: 0; height: 30%;
+  background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,.03) 50%, transparent 100%);
+  animation: vw-scan-shimmer 8s 1s linear infinite;
+}
+@keyframes vw-scan-shimmer { from { top: -30%; } to { top: 130%; } }
+
+/* ── CRT corner vignette ──────────────────────────────────────────── */
+.vw-crt {
+  position: absolute; inset: 0; z-index: 5;
+  background: radial-gradient(
+    ellipse 110% 110% at 50% 50%,
+    transparent 55%,
+    rgba(0,0,0,.30) 78%,
+    rgba(0,0,0,.65) 100%
+  );
+  pointer-events: none;
 }
 </style>
