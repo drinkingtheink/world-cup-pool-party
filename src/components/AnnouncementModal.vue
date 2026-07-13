@@ -11,6 +11,16 @@
               <span class="modal-callout-stat">{{ announcement.callout.stat }}</span>
               <span class="modal-callout-label">{{ announcement.callout.label }}</span>
             </div>
+            <div v-if="announcement.winPaths" class="modal-paths">
+              <p class="modal-paths-title">Path to Win</p>
+              <div v-for="entry in announcement.winPaths" :key="entry.name" class="modal-path-row" :class="entry.can ? 'modal-path-row--alive' : 'modal-path-row--out'">
+                <div class="modal-path-header">
+                  <span class="modal-path-name">{{ entry.name }}</span>
+                  <span class="modal-path-badge" :class="entry.can ? 'modal-path-badge--alive' : 'modal-path-badge--out'">{{ entry.can ? 'In It' : 'No Path' }}</span>
+                </div>
+                <p class="modal-path-text">{{ entry.path }}</p>
+              </div>
+            </div>
             <button class="modal-bracket-btn" @click="dismiss(); router.push('/bracket')">
               <GitBranch :size="14" class="modal-bracket-icon" />
               <span class="modal-bracket-label">Check out the BRACKET</span>
@@ -155,6 +165,27 @@ function dismiss() {
   font-size: 11px; font-weight: 600; letter-spacing: .08em;
   text-transform: uppercase; color: var(--text-dim);
 }
+
+.modal-paths { margin: 4px 0 14px; }
+.modal-paths-title {
+  font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-dim); margin: 0 0 8px;
+}
+.modal-path-row {
+  padding: 8px 10px; border-radius: 8px; margin-bottom: 5px;
+  border-left: 3px solid var(--border);
+}
+.modal-path-row--alive { border-left-color: var(--accent); }
+.modal-path-row--out   { opacity: 0.55; }
+.modal-path-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+.modal-path-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.modal-path-badge {
+  font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 20px;
+}
+.modal-path-badge--alive { background: rgba(255,45,120,0.15); color: var(--accent); }
+.modal-path-badge--out   { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+.modal-path-text { font-size: 11px; line-height: 1.4; color: var(--text-dim); margin: 0; }
 
 .modal-table {
   width: 100%; border-collapse: collapse;
