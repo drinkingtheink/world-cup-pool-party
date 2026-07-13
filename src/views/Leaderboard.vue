@@ -121,6 +121,7 @@
                 <span v-if="backToBack.holders.has(entry.name)" class="lb-back-to-back lb-tooltip-wrap" tabindex="0">🥇 2 20+<span class="lb-tooltip">Back to Back 20+ point match days</span></span>
                 <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap" tabindex="0">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
                 <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap" tabindex="0">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
+                <span v-if="mathElim[entry.name]" class="lb-math-elim lb-tooltip-wrap" tabindex="0">🚫 {{ fmtDate(mathElim[entry.name].date) }}<span class="lb-tooltip">Mathematically eliminated from pool contention on {{ fmtDate(mathElim[entry.name].date) }} · {{ mathElim[entry.name].days }} day{{ mathElim[entry.name].days !== 1 ? 's' : '' }} ago</span></span>
                 <span v-if="!entry.teams.includes('USA')" class="lb-sus lb-tooltip-wrap" tabindex="0">👀 sus<span class="lb-tooltip">Did not select the US in their pool. The US Government has been notified.</span></span>
               </div>
               <span class="lb-today-tomorrow">
@@ -194,7 +195,7 @@
       <p v-if="!store.leaderboard.length" class="empty-msg">No data yet</p>
     </div>
 
-    <p class="view-title" style="margin-top:28px">Path to Win</p>
+    <p class="view-title" style="margin-top:28px">Path To The Prize 💰</p>
     <p class="strength-sub">What needs to happen for each player to win the pool</p>
     <div class="win-path-list">
       <div
@@ -545,11 +546,29 @@ onMounted(() => nextTick(() => {
 
 const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
 
+const MATH_ELIM_DATA = {
+  Charley: { date: '2026-07-11', detail: "Norway lost to England in the QF — his last independent team gone. Jay went 4.5pts clear with the same England upside remaining." },
+  Gabe:    { date: '2026-07-10', detail: "Spain beat Belgium in the QF, giving Jay 12pts Gabe couldn't share. Jay went 10pts clear." },
+  Dan:     { date: '2026-07-05', detail: "Mexico and Brazil were eliminated in the R16, leaving only Spain. Jared already held a 26.5pt lead with the same Spain upside." },
+  James:   { date: '2026-07-07', detail: "Colombia lost on penalties in the R16 — his last independent team gone. Jared was 51pts ahead with the same Spain remaining." },
+}
+
+const mathElim = computed(() => {
+  const result = {}
+  Object.entries(MATH_ELIM_DATA).forEach(([name, data]) => {
+    const elimMs = new Date(data.date).getTime()
+    const todayMs = new Date(today).getTime()
+    const days = Math.round((todayMs - elimMs) / 86400000)
+    result[name] = { ...data, days }
+  })
+  return result
+})
+
 const WIN_PATHS = [
   { name: 'Tommy',   can: true,  path: 'Argentina wins the Final — either opponent works.' },
-  { name: 'Jared',   can: true,  path: 'Spain beats Argentina in the Final. A Spain vs England Final is too close — Jay edges him out.' },
+  { name: 'Jared',   can: true,  path: 'Spain beats Argentina in the Final. A Spain vs England Final is a genuine toss-up with Jay — too close to call.' },
   { name: 'Jason',   can: true,  path: 'France wins the Final — either opponent works.' },
-  { name: 'Jay',     can: true,  path: 'Spain and England both reach the Final (wins either way), or England beats France in the Final.' },
+  { name: 'Jay',     can: true,  path: 'England beats France or Argentina in the Final. A Spain vs England Final is a toss-up with Jared.' },
   { name: 'Charley', can: false, path: "No path. Jay always beats him when England wins — they earn the same England points from here, but Jay starts 4.5pts ahead." },
   { name: 'Gabe',    can: false, path: 'No path. 10pts behind Jay with the same England upside remaining.' },
   { name: 'Dan',     can: false, path: 'No path. Jared always beats him when Spain wins — 34.5pt gap, same schedule.' },
@@ -2230,6 +2249,15 @@ const topDaysChart = computed(() => {
   white-space: nowrap;
   animation: shield-sparkle 3s linear infinite;
 }
+.lb-math-elim {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  background: rgba(255, 45, 120, 0.1);
+  color: rgba(255, 45, 120, 0.7);
+  border: 1px solid rgba(255, 45, 120, 0.25);
+  white-space: nowrap;
+}
+
 .lb-last-leg {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
   padding: 2px 7px; border-radius: 20px;

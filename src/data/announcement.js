@@ -12,9 +12,9 @@ export const announcement = {
   callout: { stat: '2 – 6', label: 'players eliminated before the Final' },
   winPaths: [
     { name: 'Tommy',   can: true,  path: 'Argentina wins the Final — either opponent.' },
-    { name: 'Jared',   can: true,  path: 'Spain beats Argentina in the Final. Spain vs England is too tight — Jay edges him out.' },
+    { name: 'Jared',   can: true,  path: 'Spain beats Argentina in the Final. A Spain vs England Final is a genuine toss-up with Jay.' },
     { name: 'Jason',   can: true,  path: 'France wins the Final — either opponent.' },
-    { name: 'Jay',     can: true,  path: 'Spain & England both reach the Final (wins either way), or England beats France.' },
+    { name: 'Jay',     can: true,  path: 'England beats France or Argentina in the Final. A Spain vs England Final is a toss-up with Jared.' },
     { name: 'Charley', can: false, path: 'Jay always beats him when England wins — same points from here, 4.5pt deficit.' },
     { name: 'Gabe',    can: false, path: '10pts behind Jay with the same England upside.' },
     { name: 'Dan',     can: false, path: 'Jared always beats him when Spain wins.' },
