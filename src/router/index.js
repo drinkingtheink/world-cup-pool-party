@@ -6,6 +6,7 @@ import MyTeams from '../views/MyTeams.vue'
 import Rules from '../views/Rules.vue'
 import Teams from '../views/Teams.vue'
 import Bracket from '../views/Bracket.vue'
+import Wrapped from '../views/Wrapped.vue'
 
 const routes = [
   { path: '/',        component: Leaderboard, meta: { tab: 'leaderboard' } },
@@ -14,6 +15,7 @@ const routes = [
   { path: '/bracket', component: Bracket,     meta: { tab: 'bracket' } },
   { path: '/teams',   component: Teams,       meta: { tab: 'teams' } },
   { path: '/rules',   component: Rules,       meta: { tab: 'rules' } },
+  { path: '/wrapped', component: Wrapped,     meta: { tab: 'wrapped' } },
 ]
 
 export default createRouter({
