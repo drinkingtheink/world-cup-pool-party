@@ -274,12 +274,15 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import { FLAG_MAP, ELIMINATED_TEAMS } from '../data/index.js'
 import { matchPointsForTeam } from '../services/points.js'
 
 const store      = usePoolStore()
+const route      = useRoute()
+const router     = useRouter()
 const SLIDE_COUNT = 9
 
 const KNOCKOUT_STAGES = new Set(['Round of 32','Round of 16','Quarterfinal','Semifinal','Third Place','Final'])
@@ -305,8 +308,21 @@ const currentSlide = ref(0)
 const slideDir     = ref(1)
 let   touchStartX  = 0
 
-function selectPlayer(name) { activePlayer.value = name; currentSlide.value = 0 }
-function exitPlayer()       { activePlayer.value = null; currentSlide.value = 0 }
+function selectPlayer(name) {
+  activePlayer.value = name
+  currentSlide.value = 0
+  router.replace({ query: { player: name } })
+}
+function exitPlayer() {
+  activePlayer.value = null
+  currentSlide.value = 0
+  router.replace({ query: {} })
+}
+
+onMounted(() => {
+  const qp = route.query.player
+  if (qp && store.players.some(p => p.name === qp)) selectPlayer(qp)
+})
 
 function prev() {
   if (currentSlide.value === 0) return
