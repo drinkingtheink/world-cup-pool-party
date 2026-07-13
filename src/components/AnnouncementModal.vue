@@ -16,7 +16,7 @@
               <div v-for="entry in announcement.winPaths" :key="entry.name" class="modal-path-row" :class="entry.can ? 'modal-path-row--alive' : 'modal-path-row--out'">
                 <div class="modal-path-header">
                   <span class="modal-path-name">{{ entry.name }}</span>
-                  <span class="modal-path-badge" :class="entry.can ? 'modal-path-badge--alive' : 'modal-path-badge--out'">{{ entry.can ? '⚡ In It' : '🚫 No Path' }}</span>
+                  <span class="modal-path-badge" :class="entry.can ? 'modal-path-badge--alive' : entry.bestFinish <= 3 ? 'modal-path-badge--podium' : 'modal-path-badge--out'">{{ entry.can ? '⚡ In It' : entry.bestFinish === 2 ? '🥈 2nd Max' : entry.bestFinish === 3 ? '🥉 3rd Max' : '🚫 No Path' }}</span>
                 </div>
                 <p class="modal-path-text">{{ entry.path }}</p>
               </div>
@@ -183,8 +183,9 @@ function dismiss() {
   font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
   padding: 2px 6px; border-radius: 20px;
 }
-.modal-path-badge--alive { background: rgba(255,45,120,0.15); color: var(--accent); }
-.modal-path-badge--out   { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+.modal-path-badge--alive  { background: rgba(255,45,120,0.15); color: var(--accent); }
+.modal-path-badge--podium { background: rgba(255,210,100,0.12); color: #ffd264; }
+.modal-path-badge--out    { background: rgba(255,255,255,0.06); color: var(--text-dim); }
 .modal-path-text { font-size: 11px; line-height: 1.4; color: var(--text-dim); margin: 0; }
 
 .modal-table {

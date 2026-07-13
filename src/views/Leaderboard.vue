@@ -206,8 +206,8 @@
       >
         <div class="win-path-header">
           <span class="win-path-name">{{ entry.name }}</span>
-          <span class="win-path-badge" :class="entry.can ? 'win-path-badge--alive' : 'win-path-badge--out'">
-            {{ entry.can ? '⚡ In It' : '🚫 No Path' }}
+          <span class="win-path-badge" :class="entry.can ? 'win-path-badge--alive' : entry.bestFinish <= 3 ? 'win-path-badge--podium' : 'win-path-badge--out'">
+            {{ entry.can ? '⚡ In It' : entry.bestFinish === 2 ? '🥈 2nd Max' : entry.bestFinish === 3 ? '🥉 3rd Max' : '🚫 No Path' }}
           </span>
         </div>
         <p class="win-path-text">{{ entry.path }}</p>
@@ -565,14 +565,14 @@ const mathElim = computed(() => {
 })
 
 const WIN_PATHS = [
-  { name: 'Tommy',   can: true,  path: 'Argentina wins the Final — either opponent works.' },
-  { name: 'Jared',   can: true,  path: 'Spain beats Argentina in the Final. A Spain vs England Final is a genuine toss-up with Jay — too close to call.' },
-  { name: 'Jason',   can: true,  path: 'France wins the Final — either opponent works.' },
-  { name: 'Jay',     can: true,  path: 'England beats France or Argentina in the Final. A Spain vs England Final is a toss-up with Jared.' },
-  { name: 'Charley', can: false, path: "No path. Jay always beats him when England wins — they earn the same England points from here, but Jay starts 4.5pts ahead." },
-  { name: 'Gabe',    can: false, path: 'No path. 10pts behind Jay with the same England upside remaining.' },
-  { name: 'Dan',     can: false, path: 'No path. Jared always beats him when Spain wins — 34.5pt gap, same schedule.' },
-  { name: 'James',   can: false, path: 'No path. A Spain title gets him to ~176pts. Tommy is already sitting at 193.' },
+  { name: 'Tommy',   can: true,  bestFinish: 1, path: 'Argentina wins the Final — either opponent works.' },
+  { name: 'Jared',   can: true,  bestFinish: 1, path: 'Spain beats Argentina in the Final. A Spain vs England Final is a genuine toss-up with Jay — too close to call.' },
+  { name: 'Jason',   can: true,  bestFinish: 1, path: 'France wins the Final — either opponent works.' },
+  { name: 'Jay',     can: true,  bestFinish: 1, path: 'England beats France or Argentina in the Final. A Spain vs England Final is a toss-up with Jared.' },
+  { name: 'Charley', can: false, bestFinish: 2, path: "Can't win 1st — Jay always beats him when England wins. But he can finish 2nd if England wins the Final against either opponent." },
+  { name: 'Gabe',    can: false, bestFinish: 3, path: "Can't win 1st — 10pts behind Jay with the same England upside. Can still finish 3rd if England wins the Final." },
+  { name: 'Dan',     can: false, bestFinish: 3, path: "Can't win 1st — Jared always beats him when Spain wins. Can still finish 3rd if Spain wins the Final against either opponent." },
+  { name: 'James',   can: false, bestFinish: 5, path: 'No prize path. Even a Spain title gets him to ~176pts — Tommy is already sitting at 193.' },
 ]
 
 const winPathEntries = computed(() =>
@@ -1669,8 +1669,9 @@ const topDaysChart = computed(() => {
   font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
   padding: 2px 8px; border-radius: 20px;
 }
-.win-path-badge--alive { background: rgba(255,45,120,0.15); color: var(--accent); }
-.win-path-badge--out   { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+.win-path-badge--alive  { background: rgba(255,45,120,0.15); color: var(--accent); }
+.win-path-badge--podium { background: rgba(255,210,100,0.12); color: #ffd264; border: 1px solid rgba(255,210,100,0.25); }
+.win-path-badge--out    { background: rgba(255,255,255,0.06); color: var(--text-dim); }
 .win-path-text { font-size: 13px; line-height: 1.5; color: var(--text-dim); margin: 0; }
 
 .tourney-stats {
