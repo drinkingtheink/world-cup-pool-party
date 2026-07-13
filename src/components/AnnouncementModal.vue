@@ -7,6 +7,10 @@
           <div class="modal-body">
             <p class="modal-title">{{ announcement.title }}</p>
             <p v-if="announcement.body" class="modal-text" style="white-space: pre-line">{{ announcement.body }}</p>
+            <div v-if="announcement.callout" class="modal-callout">
+              <span class="modal-callout-stat">{{ announcement.callout.stat }}</span>
+              <span class="modal-callout-label">{{ announcement.callout.label }}</span>
+            </div>
             <button class="modal-bracket-btn" @click="dismiss(); router.push('/bracket')">
               <GitBranch :size="14" class="modal-bracket-icon" />
               <span class="modal-bracket-label">Check out the BRACKET</span>
@@ -24,9 +28,9 @@
               </tbody>
             </table>
           </div>
-          <div v-if="todayMatches.length" class="modal-matches card">
+          <div v-if="featuredMatches.length" class="modal-matches card">
             <MatchCard
-              v-for="(m, i) in todayMatches"
+              v-for="(m, i) in featuredMatches"
               :key="m.home + m.away"
               :match="m"
               :show-divider="i > 0"
@@ -60,6 +64,12 @@ function todayStr() {
 
 const todayMatches = computed(() =>
   store.enrichedMatches.filter(m => m.date === todayStr())
+)
+
+const featuredMatches = computed(() =>
+  announcement.matchStage
+    ? store.enrichedMatches.filter(m => m.stage === announcement.matchStage)
+    : todayMatches.value
 )
 
 function maybeShow() {
@@ -125,6 +135,26 @@ function dismiss() {
 }
 
 .modal-text { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0 0 12px; }
+
+.modal-callout {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 14px 12px; margin: 4px 0 14px;
+  border-radius: 10px;
+  background: rgba(255, 45, 120, 0.07);
+  border: 1px solid rgba(255, 45, 120, 0.25);
+}
+.modal-callout-stat {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 28px; font-weight: 900;
+  letter-spacing: .04em;
+  background: linear-gradient(90deg, #ff2d78, #bd5fff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.modal-callout-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text-dim);
+}
 
 .modal-table {
   width: 100%; border-collapse: collapse;
