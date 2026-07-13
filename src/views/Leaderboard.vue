@@ -211,6 +211,7 @@
           </span>
         </div>
         <p class="win-path-text">{{ entry.path }}</p>
+        <p v-if="entry.path2" class="win-path-text win-path-text--2">{{ entry.path2 }}</p>
       </div>
     </div>
 
@@ -565,14 +566,29 @@ const mathElim = computed(() => {
 })
 
 const WIN_PATHS = [
-  { name: 'Tommy',   can: true,  bestFinish: 1, path: 'Argentina wins the Final — either opponent works.' },
-  { name: 'Jared',   can: true,  bestFinish: 1, path: 'Spain beats Argentina in the Final. A Spain vs England Final is a genuine toss-up with Jay — too close to call.' },
-  { name: 'Jason',   can: true,  bestFinish: 1, path: 'France wins the Final — either opponent works.' },
-  { name: 'Jay',     can: true,  bestFinish: 1, path: 'England beats France or Argentina in the Final. A Spain vs England Final is a toss-up with Jared.' },
-  { name: 'Charley', can: false, bestFinish: 2, path: "Can't win 1st — Jay always beats him when England wins. But he can finish 2nd if England wins the Final against either opponent." },
-  { name: 'Gabe',    can: false, bestFinish: 3, path: "Can't win 1st — 10pts behind Jay with the same England upside. Can still finish 3rd if England wins the Final." },
-  { name: 'Dan',     can: false, bestFinish: 3, path: "Can't win 1st — Jared always beats him when Spain wins. Can still finish 3rd if Spain wins the Final against either opponent." },
-  { name: 'James',   can: false, bestFinish: 5, path: 'No prize path. Even a Spain title gets him to ~176pts — Tommy is already sitting at 193.' },
+  { name: 'Tommy',   can: true,  bestFinish: 1,
+    path:  'Argentina wins the Final — either opponent works.',
+    path2: 'Both routes are bulletproof. Even 1-0 wins all the way add 28pts and you win every scenario by 20+ points. No scoreline dependency.' },
+  { name: 'Jared',   can: true,  bestFinish: 1,
+    path:  'Spain beats Argentina in the Final. A Spain vs England Final is a genuine toss-up with Jay — too close to call.',
+    path2: 'Spain vs Argentina is solid — Spain earns SF and Final points while Tommy only picks up Argentina\'s SF. At estimated scoring you lead Tommy by ~15pts. The only danger: Argentina has a great SF AND Spain is flat at the same time.' },
+  { name: 'Jason',   can: true,  bestFinish: 1,
+    path:  'France wins the Final — either opponent works.',
+    path2: 'France vs England is bulletproof — Tommy and Jared earn nothing more so you win regardless of scorelines. France vs Argentina is score-dependent: you lead Tommy by ~4.5pts at estimated scoring, but a flat France run (1-0 both games) flips it to Tommy.' },
+  { name: 'Jay',     can: true,  bestFinish: 1,
+    path:  'England beats France or Argentina in the Final. A Spain vs England Final is a toss-up with Jared.',
+    path2: 'England vs France is solid and score-independent — your 4.5pt head start over Charley is permanent since you share all remaining England points. The Spain-England scenario is the coin-flip: one England goal in the SF could be the difference between you and Jared for 1st.' },
+  { name: 'Charley', can: false, bestFinish: 2,
+    path:  "Can't win 1st — Jay always beats him when England wins. But he can finish 2nd if England wins the Final against either opponent.",
+    path2: '2nd place is locked in regardless of scorelines — you and Jay always earn identical England points from here, so your 4.5pt gap to him is permanent. You also stay 5.5pts clear of Gabe for the same reason. Solid podium.' },
+  { name: 'Gabe',    can: false, bestFinish: 3,
+    path:  "Can't win 1st — 10pts behind Jay with the same England upside. Can still finish 3rd if England wins the Final.",
+    path2: 'England beats France: 3rd is secure and score-independent. England beats Spain: precarious — you edge Jared for 3rd by an estimated 0.5pts. One extra Spain goal in the SF and Jared jumps you.' },
+  { name: 'Dan',     can: false, bestFinish: 3,
+    path:  "Can't win 1st — Jared always beats him when Spain wins. Can still finish 3rd if Spain wins the Final against either opponent.",
+    path2: 'Spain vs Argentina: 3rd is comfortable — you lead Jay by ~10pts since you earn Final points and he doesn\'t. Spain vs England: tight — you lead Tommy by just ~2pts at estimated scoring. Flat Spain performances close that margin fast.' },
+  { name: 'James',   can: false, bestFinish: 5,
+    path:  'No prize path. Even a Spain title gets him to ~176pts — Tommy is already sitting at 193.' },
 ]
 
 const winPathEntries = computed(() =>
@@ -1673,6 +1689,7 @@ const topDaysChart = computed(() => {
 .win-path-badge--podium { background: rgba(255,210,100,0.12); color: #ffd264; border: 1px solid rgba(255,210,100,0.25); }
 .win-path-badge--out    { background: rgba(255,255,255,0.06); color: var(--text-dim); }
 .win-path-text { font-size: 13px; line-height: 1.5; color: var(--text-dim); margin: 0; }
+.win-path-text--2 { margin-top: 6px; font-size: 12px; opacity: 0.75; }
 
 .tourney-stats {
   display: flex; flex-direction: column; gap: 12px;

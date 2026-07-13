@@ -19,6 +19,7 @@
                   <span class="modal-path-badge" :class="entry.can ? 'modal-path-badge--alive' : entry.bestFinish <= 3 ? 'modal-path-badge--podium' : 'modal-path-badge--out'">{{ entry.can ? '⚡ In It' : entry.bestFinish === 2 ? '🥈 2nd Max' : entry.bestFinish === 3 ? '🥉 3rd Max' : '🚫 No Path' }}</span>
                 </div>
                 <p class="modal-path-text">{{ entry.path }}</p>
+                <p v-if="entry.path2" class="modal-path-text modal-path-text--2">{{ entry.path2 }}</p>
               </div>
             </div>
             <button class="modal-bracket-btn" @click="dismiss(); router.push('/bracket')">
@@ -187,6 +188,7 @@ function dismiss() {
 .modal-path-badge--podium { background: rgba(255,210,100,0.12); color: #ffd264; }
 .modal-path-badge--out    { background: rgba(255,255,255,0.06); color: var(--text-dim); }
 .modal-path-text { font-size: 11px; line-height: 1.4; color: var(--text-dim); margin: 0; }
+.modal-path-text--2 { margin-top: 5px; font-size: 10.5px; opacity: 0.75; }
 
 .modal-table {
   width: 100%; border-collapse: collapse;
