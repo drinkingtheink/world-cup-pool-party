@@ -121,6 +121,7 @@
                 <span v-if="backToBack.holders.has(entry.name)" class="lb-back-to-back lb-tooltip-wrap" tabindex="0">🥇 2 20+<span class="lb-tooltip">Back to Back 20+ point match days</span></span>
                 <span v-if="bestSingleDay.holders.has(entry.name)" class="lb-best-day lb-tooltip-wrap" tabindex="0">🥇 +{{ bestSingleDay.pts }}<span class="lb-tooltip">Best single-day points total</span></span>
                 <span v-if="secondBestSingleDay.holders.has(entry.name)" class="lb-second-day lb-tooltip-wrap" tabindex="0">🥈 +{{ secondBestSingleDay.pts }}<span class="lb-tooltip">2nd best single-day points total</span></span>
+                <span v-if="winPathMap[entry.name]" class="lb-prize-path lb-tooltip-wrap" :class="winPathMap[entry.name].can ? 'lb-prize-path--alive' : winPathMap[entry.name].bestFinish <= 3 ? 'lb-prize-path--podium' : 'lb-prize-path--out'" tabindex="0">{{ winPathMap[entry.name].can ? '⚡ In It' : winPathMap[entry.name].bestFinish === 2 ? '🥈 2nd Max' : winPathMap[entry.name].bestFinish === 3 ? '🥉 3rd Max' : '🚫 No Path' }}<span class="lb-tooltip">Prize Path — {{ winPathMap[entry.name].path }}</span></span>
                 <span v-if="mathElim[entry.name]" class="lb-math-elim lb-tooltip-wrap" tabindex="0">🚫 {{ fmtDate(mathElim[entry.name].date) }}<span class="lb-tooltip">Mathematically eliminated from pool contention on {{ fmtDate(mathElim[entry.name].date) }} · {{ mathElim[entry.name].days }} day{{ mathElim[entry.name].days !== 1 ? 's' : '' }} ago</span></span>
                 <span v-if="!entry.teams.includes('USA')" class="lb-sus lb-tooltip-wrap" tabindex="0">👀 sus<span class="lb-tooltip">Did not select the US in their pool. The US Government has been notified.</span></span>
               </div>
@@ -597,6 +598,8 @@ const WIN_PATHS = [
 const winPathEntries = computed(() =>
   store.leaderboard.map(e => WIN_PATHS.find(p => p.name === e.name)).filter(Boolean)
 )
+
+const winPathMap = Object.fromEntries(WIN_PATHS.map(p => [p.name, p]))
 
 function todayStr() {
   const t = new Date()
@@ -2274,6 +2277,15 @@ const topDaysChart = computed(() => {
   white-space: nowrap;
   animation: shield-sparkle 3s linear infinite;
 }
+.lb-prize-path {
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 20px;
+  white-space: nowrap;
+}
+.lb-prize-path--alive  { background: rgba(255,45,120,0.12); color: var(--accent); border: 1px solid rgba(255,45,120,0.3); }
+.lb-prize-path--podium { background: rgba(255,210,100,0.1); color: #ffd264; border: 1px solid rgba(255,210,100,0.28); }
+.lb-prize-path--out    { background: rgba(255,255,255,0.05); color: var(--text-dim); border: 1px solid rgba(255,255,255,0.1); }
+
 .lb-math-elim {
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
   padding: 2px 7px; border-radius: 20px;
