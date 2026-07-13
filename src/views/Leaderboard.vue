@@ -211,7 +211,10 @@
           </span>
         </div>
         <p class="win-path-text">{{ entry.path }}</p>
-        <p v-if="entry.path2" class="win-path-text win-path-text--2">{{ entry.path2 }}</p>
+        <template v-if="entry.path2">
+          <p class="win-path-sensitivity-label">Score Sensitivity</p>
+          <p class="win-path-text win-path-text--2">{{ entry.path2 }}</p>
+        </template>
       </div>
     </div>
 
@@ -1689,7 +1692,11 @@ const topDaysChart = computed(() => {
 .win-path-badge--podium { background: rgba(255,210,100,0.12); color: #ffd264; border: 1px solid rgba(255,210,100,0.25); }
 .win-path-badge--out    { background: rgba(255,255,255,0.06); color: var(--text-dim); }
 .win-path-text { font-size: 13px; line-height: 1.5; color: var(--text-dim); margin: 0; }
-.win-path-text--2 { margin-top: 6px; font-size: 12px; opacity: 0.75; }
+.win-path-sensitivity-label {
+  font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  color: #00e5ff; margin: 8px 0 2px; opacity: 0.8;
+}
+.win-path-text--2 { font-size: 12px; line-height: 1.5; color: #00e5ff; margin: 0; opacity: 0.7; }
 
 .tourney-stats {
   display: flex; flex-direction: column; gap: 12px;

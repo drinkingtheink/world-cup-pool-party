@@ -19,7 +19,10 @@
                   <span class="modal-path-badge" :class="entry.can ? 'modal-path-badge--alive' : entry.bestFinish <= 3 ? 'modal-path-badge--podium' : 'modal-path-badge--out'">{{ entry.can ? '⚡ In It' : entry.bestFinish === 2 ? '🥈 2nd Max' : entry.bestFinish === 3 ? '🥉 3rd Max' : '🚫 No Path' }}</span>
                 </div>
                 <p class="modal-path-text">{{ entry.path }}</p>
-                <p v-if="entry.path2" class="modal-path-text modal-path-text--2">{{ entry.path2 }}</p>
+                <template v-if="entry.path2">
+                  <p class="modal-path-sensitivity-label">Score Sensitivity</p>
+                  <p class="modal-path-text modal-path-text--2">{{ entry.path2 }}</p>
+                </template>
               </div>
             </div>
             <button class="modal-bracket-btn" @click="dismiss(); router.push('/bracket')">
@@ -188,7 +191,11 @@ function dismiss() {
 .modal-path-badge--podium { background: rgba(255,210,100,0.12); color: #ffd264; }
 .modal-path-badge--out    { background: rgba(255,255,255,0.06); color: var(--text-dim); }
 .modal-path-text { font-size: 11px; line-height: 1.4; color: var(--text-dim); margin: 0; }
-.modal-path-text--2 { margin-top: 5px; font-size: 10.5px; opacity: 0.75; }
+.modal-path-sensitivity-label {
+  font-size: 8px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  color: #00e5ff; margin: 6px 0 2px; opacity: 0.8;
+}
+.modal-path-text--2 { font-size: 10.5px; line-height: 1.4; color: #00e5ff; margin: 0; opacity: 0.7; }
 
 .modal-table {
   width: 100%; border-collapse: collapse;
