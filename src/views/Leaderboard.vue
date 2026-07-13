@@ -207,7 +207,7 @@
         <div class="win-path-header">
           <span class="win-path-name">{{ entry.name }}</span>
           <span class="win-path-badge" :class="entry.can ? 'win-path-badge--alive' : 'win-path-badge--out'">
-            {{ entry.can ? 'In It' : 'No Path' }}
+            {{ entry.can ? '⚡ In It' : '🚫 No Path' }}
           </span>
         </div>
         <p class="win-path-text">{{ entry.path }}</p>

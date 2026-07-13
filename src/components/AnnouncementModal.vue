@@ -16,7 +16,7 @@
               <div v-for="entry in announcement.winPaths" :key="entry.name" class="modal-path-row" :class="entry.can ? 'modal-path-row--alive' : 'modal-path-row--out'">
                 <div class="modal-path-header">
                   <span class="modal-path-name">{{ entry.name }}</span>
-                  <span class="modal-path-badge" :class="entry.can ? 'modal-path-badge--alive' : 'modal-path-badge--out'">{{ entry.can ? 'In It' : 'No Path' }}</span>
+                  <span class="modal-path-badge" :class="entry.can ? 'modal-path-badge--alive' : 'modal-path-badge--out'">{{ entry.can ? '⚡ In It' : '🚫 No Path' }}</span>
                 </div>
                 <p class="modal-path-text">{{ entry.path }}</p>
               </div>
