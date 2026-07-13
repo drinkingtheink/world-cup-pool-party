@@ -194,6 +194,25 @@
       <p v-if="!store.leaderboard.length" class="empty-msg">No data yet</p>
     </div>
 
+    <p class="view-title" style="margin-top:28px">Path to Win</p>
+    <p class="strength-sub">What needs to happen for each player to win the pool</p>
+    <div class="win-path-list">
+      <div
+        v-for="entry in winPathEntries"
+        :key="entry.name"
+        class="win-path-row card"
+        :class="entry.can ? 'win-path-row--alive' : 'win-path-row--out'"
+      >
+        <div class="win-path-header">
+          <span class="win-path-name">{{ entry.name }}</span>
+          <span class="win-path-badge" :class="entry.can ? 'win-path-badge--alive' : 'win-path-badge--out'">
+            {{ entry.can ? 'In It' : 'No Path' }}
+          </span>
+        </div>
+        <p class="win-path-text">{{ entry.path }}</p>
+      </div>
+    </div>
+
     <template v-if="chartGeom">
       <p class="view-title" style="margin-top:20px">Points Over Time</p>
       <div class="card pot-card">
@@ -525,6 +544,21 @@ onMounted(() => nextTick(() => {
 }))
 
 const randomQuote = quotes[Math.floor(Math.random() * quotes.length)]
+
+const WIN_PATHS = [
+  { name: 'Tommy',   can: true,  path: 'Argentina wins the Final — either opponent works.' },
+  { name: 'Jared',   can: true,  path: 'Spain beats Argentina in the Final. A Spain vs England Final is too close — Jay edges him out.' },
+  { name: 'Jason',   can: true,  path: 'France wins the Final — either opponent works.' },
+  { name: 'Jay',     can: true,  path: 'Spain and England both reach the Final (wins either way), or England beats France in the Final.' },
+  { name: 'Charley', can: false, path: "No path. Jay always beats him when England wins — they earn the same England points from here, but Jay starts 4.5pts ahead." },
+  { name: 'Gabe',    can: false, path: 'No path. 10pts behind Jay with the same England upside remaining.' },
+  { name: 'Dan',     can: false, path: 'No path. Jared always beats him when Spain wins — 34.5pt gap, same schedule.' },
+  { name: 'James',   can: false, path: 'No path. A Spain title gets him to ~176pts. Tommy is already sitting at 193.' },
+]
+
+const winPathEntries = computed(() =>
+  store.leaderboard.map(e => WIN_PATHS.find(p => p.name === e.name)).filter(Boolean)
+)
 
 function todayStr() {
   const t = new Date()
@@ -1606,6 +1640,20 @@ const topDaysChart = computed(() => {
 </script>
 
 <style scoped>
+.win-path-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+.win-path-row { padding: 12px 14px; border-radius: 10px; }
+.win-path-row--alive { border-left: 3px solid var(--accent); }
+.win-path-row--out   { border-left: 3px solid var(--border); opacity: 0.65; }
+.win-path-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.win-path-name { font-weight: 700; font-size: 14px; color: var(--text); }
+.win-path-badge {
+  font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 20px;
+}
+.win-path-badge--alive { background: rgba(255,45,120,0.15); color: var(--accent); }
+.win-path-badge--out   { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+.win-path-text { font-size: 13px; line-height: 1.5; color: var(--text-dim); margin: 0; }
+
 .tourney-stats {
   display: flex; flex-direction: column; gap: 12px;
   padding: 16px; margin-bottom: 16px;
