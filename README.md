@@ -71,3 +71,14 @@ Open http://localhost:5173
 | Win on penalties | +2 |
 
 **Stage multipliers:** R32/R16 ×1.5 · QF ×2 · SF ×3 · Final ×4
+
+---
+
+## Pool Math & Methodology
+
+See [`docs/methodology.md`](docs/methodology.md) for a full explanation of:
+- Scoring engine details and bonus calculation
+- Semifinal / Final point projection (QF-proxy method)
+- Path To The Prize scenario analysis
+- Mathematical elimination logic
+- Score sensitivity assessment
