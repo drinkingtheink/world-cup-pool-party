@@ -1915,12 +1915,14 @@ const topDaysChart = computed(() => {
   border-radius: 14px;
 }
 .purse-path-link {
-  display: block; position: relative; z-index: 6;
+  display: block; width: 100%; position: relative; z-index: 6;
   text-align: center;
   margin-top: 14px;
+  padding: 0;
+  background: none; border: none; outline: none;
   font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
   color: #ffd264; opacity: 0.7;
-  text-decoration: none;
+  cursor: pointer;
   transition: opacity .15s;
 }
 .purse-path-link:hover { opacity: 1; }
