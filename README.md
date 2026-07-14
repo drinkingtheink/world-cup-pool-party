@@ -378,25 +378,101 @@ Once a player's best-case scenario is known, we assess whether their target fini
 
 The leaderboard is the core view, built around a reactive computed `leaderboard` from the Pinia store. Each player card displays a dense badge system derived from computed analytics.
 
-### Badge System (selected)
+### Badge System (complete)
+
+**Prize Path**
 
 | Badge | Trigger |
 |---|---|
-| 👑 Crown | Current points leader |
 | ⚡ In It | Can still win the pool outright |
-| 🥈 2nd Max / 🥉 3rd Max | Prize path capped below 1st |
+| 🥈 2nd Max | Best possible finish is 2nd place |
+| 🥉 3rd Max | Best possible finish is 3rd place |
 | 🚫 No Path | Mathematically eliminated from all prize positions |
-| 🚫 Jul XX | Date of mathematical elimination (with tooltip) |
-| 🔥 Trending | Most points over the last 3 matchdays |
+| 🚫 Jul XX | Date of mathematical elimination from prize contention |
+
+**Standing & Momentum**
+
+| Badge | Trigger |
+|---|---|
+| 👑 Crown (on name) | Current points leader |
+| 🏊 Pacer | Current points leader (badge form) |
+| 🔥 Trending | Most points earned over the last 3 matchdays |
 | 🚀 On the Rise | Biggest standings jump since yesterday |
 | 🪨 Sinker | Biggest standings drop since yesterday |
-| ⚡ GB | Gold Boot — most goals scored overall |
-| 🧤 GG | Gold Glove — fewest goals conceded in Group Stage |
-| 🏊 Pacer | Current points leader |
-| 💪 Ballsy | Below-average European picks (higher risk) |
-| 🛟 LG Duty | Most teams eliminated from the pool |
-| 🎯 -N | Within striking distance of the leader |
-| 🦵 Last Leg | Only 1 team still alive in the tournament |
+| 🌊 1st Wave | First time this player has reached 1st place |
+| 👑🌊 Nd (on name) | Led the pool for the most match days overall |
+| 🌊 Nd | Led the pool for N match days |
+| 🎯 -N | Chasing — within close range of the leader |
+| 📡 -N | In Reach — within a defined threshold of the leader |
+| −N pts | Beyond reach — points behind the leader |
+
+**Goals & Scoring**
+
+| Badge | Trigger |
+|---|---|
+| ⚡ GB N | Overall Gold Boot — most total goals scored across all teams |
+| ⚡ GB - GS N | Gold Boot (Group Stage only) |
+| ⚡ GB - KO N | Gold Boot (Knockout Rounds only) |
+| 🧤 GG N | Gold Glove — fewest goals conceded in the Group Stage |
+| 🎯 Clinical | Most goals per game across all teams |
+| 📈 N g/g | Peak GPG — all-time highest goals-per-game average in pool history |
+| 🧊 Shrinkage | Fewest goals scored in the Group Stage |
+| 🪃 N | Comeback Kid — most comeback wins (teams that trailed and won) |
+| 💦 Early Finisher | Majority of goals scored in the first half |
+| 🌙 N | Goals scored after the 80th minute |
+| 👑🌙 N | Late Show leader — most goals scored after the 80th minute |
+
+**Single-Day Performance**
+
+| Badge | Trigger |
+|---|---|
+| 🥇 +N | Best single-day points total in the pool |
+| 🥈 +N | 2nd best single-day points total in the pool |
+| 🥇 2 20+ | Back-to-Back — two consecutive 20+ point matchdays |
+| 🏆 N | Community Shield — most points through the Group Stage |
+| 🥈 GS N | 2nd most Group Stage points |
+| 🥉 GS N | 3rd most Group Stage points |
+| 🌊 GS N | Group Stage points (4th or below) |
+
+**Draft Strategy**
+
+| Badge | Trigger |
+|---|---|
+| 💪 Ballsy | Picked below-average European teams by FIFA ranking |
+| 🍍 Pro-Poly | Most teams shared with other pool players |
+| 🥁 Diff Beat | Most teams no one else picked |
+| 🛁 'Cuzzi Bros | Picked the single most-shared team in the pool |
+| 🙄 Puhleez | Highest-ranked pool by average FIFA ranking (the snob pick) |
+| 🫃 Swim Test | Lowest-ranked pool by average FIFA ranking |
+| 💡 Mad Genius? | Least likely pool to win based on pre-tournament odds |
+| 🦅🇺🇸 | Picked the USA |
+| 👌🏴󠁧󠁢󠁥󠁮󠁧󠁿 | Picked England (Ok with Imperialism) |
+| 👀 sus | Did not pick the USA. The US Government has been notified. |
+
+**Discipline**
+
+| Badge | Trigger |
+|---|---|
+| 🧽 Spotless | Fewest total cards with zero red cards |
+| 🟨 N | Yellow card count across all teams |
+| 👑🟨 N | Dirty Pool — most yellow cards in the pool |
+| 🟥 N | Red card count across all teams |
+| 👑🟥 N | Dirty Pool+ — most red cards in the pool |
+
+**Team Health / Survival**
+
+| Badge | Trigger |
+|---|---|
+| 🤽 Floaties | 4 or more teams still alive in the tournament |
+| 🐟 1/2 Sunk | Exactly half of picked teams have been eliminated |
+| 🏊 Undertow | Only 2 teams still alive |
+| 🦵 Last Leg | Only 1 team still alive |
+| 🍹 Poolside | No matches scheduled today for this player |
+| 😤 Pool Bully | Most knockout wins against teams picked by other pool players |
+| 🛟 LG Duty (on name + badge) | Most teams eliminated from the pool overall |
+| 🧼 Washed Up | First pool player to have all teams eliminated |
+| 🚿 Out of the Pool | All teams eliminated |
+| 📋 FOIA | Jason is leading — data is public, available upon request |
 
 ### Path To The Prize Section
 
