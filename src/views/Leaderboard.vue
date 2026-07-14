@@ -259,7 +259,7 @@
         :class="entry.can ? 'win-path-row--alive' : entry.bestFinish <= 3 ? 'win-path-row--out' : 'win-path-row--dead'"
       >
         <div class="win-path-header">
-          <span class="win-path-name">{{ entry.name }}</span>
+          <span class="win-path-name player-name-link" @click="router.push({ path: '/my-teams', query: { player: entry.name } })">{{ entry.name }}</span>
           <span class="win-path-badge" :class="entry.can ? 'win-path-badge--alive' : entry.bestFinish <= 3 ? 'win-path-badge--podium' : 'win-path-badge--out'">
             {{ entry.can ? '⚡ In It' : entry.bestFinish === 2 ? '🥈 2nd Max' : entry.bestFinish === 3 ? '🥉 3rd Max' : '🚫 No Path' }}
           </span>
@@ -359,7 +359,7 @@
         <span class="strength-rank">{{ i + 1 }}</span>
         <div class="strength-body">
           <div class="strength-meta">
-            <span class="strength-name">{{ entry.name }}</span>
+            <span class="strength-name player-name-link" @click="router.push({ path: '/my-teams', query: { player: entry.name } })">{{ entry.name }}</span>
             <span class="strength-score">{{ (entry.score * 100).toFixed(1) }}%</span>
           </div>
           <div class="strength-track">
@@ -377,7 +377,7 @@
     <p class="strength-sub">Squad composition by tier — risk vs. pedigree</p>
     <div class="tiermix-list">
       <div v-for="p in tierMix" :key="p.name" class="tiermix-row">
-        <span class="tiermix-name">{{ p.name }}</span>
+        <span class="tiermix-name player-name-link" @click="router.push({ path: '/my-teams', query: { player: p.name } })">{{ p.name }}</span>
         <div class="tiermix-bar">
           <div class="tiermix-seg seg-t1" :style="{ width: (p.t1/6*100)+'%' }" :title="`${p.t1} Tier 1`"></div>
           <div class="tiermix-seg seg-t2" :style="{ width: (p.t2/6*100)+'%' }" :title="`${p.t2} Tier 2`"></div>
@@ -423,7 +423,7 @@
     <p class="strength-sub">Players with two or more teams competing in the same group</p>
     <div v-if="groupClashes.length" class="clash-list">
       <div v-for="entry in groupClashes" :key="entry.name" class="clash-row">
-        <span class="clash-player">{{ entry.name }}</span>
+        <span class="clash-player player-name-link" @click="router.push({ path: '/my-teams', query: { player: entry.name } })">{{ entry.name }}</span>
         <div class="clash-groups">
           <div v-for="clash in entry.clashes" :key="clash.group" class="clash-group">
             <span class="clash-group-label">Group {{ clash.group }}</span>
@@ -1753,6 +1753,8 @@ const topDaysChart = computed(() => {
 .win-path-row--dead  { border-left: 3px solid var(--border); opacity: 0.4; }
 .win-path-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
 .win-path-name { font-weight: 700; font-size: 14px; color: var(--text); }
+.player-name-link { cursor: pointer; }
+.player-name-link:hover { color: var(--accent); text-decoration: underline; }
 .win-path-badge {
   font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
   padding: 2px 8px; border-radius: 20px;
