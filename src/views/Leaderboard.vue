@@ -34,6 +34,34 @@
     </div>
 
     <div class="purse-section">
+      <!-- vaporwave scene -->
+      <div class="purse-scene">
+        <div class="purse-sky"><div class="purse-stars"></div></div>
+        <div class="purse-mountains"></div>
+        <div class="purse-sun-wrap">
+          <svg class="purse-sun" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="psg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stop-color="#ff9de2"/>
+                <stop offset="42%"  stop-color="#ff2d78"/>
+                <stop offset="100%" stop-color="#ffb800"/>
+              </linearGradient>
+              <clipPath id="psc"><rect x="0" y="0" width="200" height="100"/></clipPath>
+            </defs>
+            <circle cx="100" cy="100" r="96" fill="url(#psg)" clip-path="url(#psc)"/>
+            <rect x="0" y="46" width="200" height="3.5" fill="#080612"/>
+            <rect x="0" y="55" width="200" height="4.5" fill="#080612"/>
+            <rect x="0" y="65" width="200" height="6"   fill="#080612"/>
+            <rect x="0" y="76" width="200" height="7.5" fill="#080612"/>
+            <rect x="0" y="88" width="200" height="9.5" fill="#080612"/>
+          </svg>
+        </div>
+        <div class="purse-horizon"></div>
+        <div class="purse-grid-wrap"><div class="purse-grid"></div></div>
+        <div class="purse-sweep"></div>
+        <div class="purse-scanlines"></div>
+        <div class="purse-crt"></div>
+      </div>
       <p class="purse-title">💰 Winning Purse</p>
       <div class="purse-podium">
         <div class="purse-place purse-place--2">
@@ -1747,24 +1775,136 @@ const topDaysChart = computed(() => {
   margin: 4px 0 20px;
   padding: 18px 16px 20px;
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(189,95,255,0.08) 0%, rgba(13,10,30,0.6) 50%, rgba(255,45,120,0.08) 100%);
-  border: 1px solid rgba(189,95,255,0.25);
-  box-shadow: 0 0 0 1px rgba(255,45,120,0.08), 0 0 30px rgba(189,95,255,0.06);
+  border: 1px solid rgba(189,95,255,0.35);
+  box-shadow: 0 0 0 1px rgba(255,45,120,0.12), 0 0 40px rgba(189,95,255,0.10);
   position: relative;
   overflow: hidden;
 }
-.purse-section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 28px,
-    rgba(189,95,255,0.04) 28px,
-    rgba(189,95,255,0.04) 29px
+
+/* ── Vaporwave scene ─────────────────────────────────────── */
+.purse-scene {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+}
+.purse-sky {
+  position: absolute; inset: 0 0 42% 0;
+  background: linear-gradient(to bottom, #020109 0%, #0d0220 38%, #1e0645 72%, #38098a 100%);
+  overflow: hidden;
+}
+.purse-stars {
+  position: absolute; inset: 0;
+}
+.purse-stars::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 2px; height: 2px; border-radius: 50%; background: transparent;
+  box-shadow:
+    14px 10px 0 rgba(255,255,255,.85),  40px 5px 0 rgba(255,255,255,.55),
+    70px 18px 0 rgba(189,95,255,.80),   100px 8px 0 rgba(255,255,255,.95),
+    130px 22px 0 rgba(0,229,255,.70),   160px 12px 0 rgba(255,255,255,.75),
+    190px 30px 0 rgba(255,45,120,.65),  220px 6px 0 rgba(255,255,255,.85),
+    250px 20px 0 rgba(189,95,255,.60),  280px 14px 0 rgba(255,255,255,.95),
+    310px 28px 0 rgba(0,229,255,.75),   340px 8px 0 rgba(255,255,255,.65),
+    370px 18px 0 rgba(255,45,120,.70),  400px 5px 0 rgba(255,255,255,.80),
+    430px 24px 0 rgba(189,95,255,.65),  460px 10px 0 rgba(255,255,255,.55),
+    490px 20px 0 rgba(0,229,255,.60),   520px 15px 0 rgba(255,255,255,.85),
+    550px 30px 0 rgba(255,45,120,.55),  580px 6px 0 rgba(255,255,255,.75);
+  animation: purse-twinkle 4.5s ease-in-out infinite;
+}
+.purse-stars::after {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 1px; height: 1px; border-radius: 50%; background: transparent;
+  box-shadow:
+    25px 20px 0 rgba(255,255,255,.65),  55px 35px 0 rgba(255,255,255,.45),
+    85px 12px 0 rgba(255,255,255,.75),  115px 28px 0 rgba(255,255,255,.55),
+    145px 40px 0 rgba(255,255,255,.85), 175px 16px 0 rgba(255,255,255,.45),
+    205px 32px 0 rgba(255,255,255,.65), 235px 22px 0 rgba(255,255,255,.75),
+    265px 38px 0 rgba(255,255,255,.55), 295px 10px 0 rgba(255,255,255,.85),
+    325px 26px 0 rgba(255,255,255,.45), 355px 42px 0 rgba(255,255,255,.65),
+    385px 14px 0 rgba(255,255,255,.75), 415px 30px 0 rgba(255,255,255,.55),
+    445px 44px 0 rgba(255,255,255,.45), 475px 18px 0 rgba(255,255,255,.65),
+    505px 34px 0 rgba(255,255,255,.75), 535px 8px 0 rgba(255,255,255,.55),
+    565px 28px 0 rgba(255,255,255,.65), 595px 40px 0 rgba(255,255,255,.45);
+  animation: purse-twinkle 6.8s 1.2s ease-in-out infinite;
+}
+@keyframes purse-twinkle { 0%,100% { opacity:.9; } 50% { opacity:.15; } }
+
+.purse-mountains {
+  position: absolute; left: 0; right: 0;
+  bottom: 42%; height: 54px;
+  background: linear-gradient(180deg, rgba(32,6,60,0) 0%, #190340 40%, #0d0128 100%);
+  clip-path: polygon(
+    0% 100%, 0% 80%,
+    4% 55%,  8% 35%,  12% 55%, 16% 25%, 20% 48%,
+    24% 65%, 28% 40%, 32% 55%, 36% 18%, 40% 42%,
+    44% 60%, 48% 38%, 52% 22%, 56% 45%, 60% 62%,
+    64% 38%, 68% 52%, 72% 28%, 76% 48%, 80% 65%,
+    84% 42%, 88% 55%, 92% 32%, 96% 58%, 100% 70%,
+    100% 100%
   );
-  pointer-events: none;
+}
+
+.purse-sun-wrap {
+  position: absolute; left: 50%; bottom: 42%;
+  transform: translateX(-50%) translateY(50%);
+  width: 110px; height: 55px;
+  filter:
+    drop-shadow(0 0 14px rgba(255,45,120,.90))
+    drop-shadow(0 0 36px rgba(255,45,120,.40))
+    drop-shadow(0 0 60px rgba(189,95,255,.35));
+  animation: purse-sun-breathe 3.5s ease-in-out infinite;
+}
+.purse-sun { width: 100%; height: 100%; display: block; }
+@keyframes purse-sun-breathe {
+  0%,100% { filter: drop-shadow(0 0 14px rgba(255,45,120,.90)) drop-shadow(0 0 36px rgba(255,45,120,.40)) drop-shadow(0 0 60px rgba(189,95,255,.35)); }
+  50%      { filter: drop-shadow(0 0 22px rgba(255,45,120,1))   drop-shadow(0 0 55px rgba(255,45,120,.60)) drop-shadow(0 0 90px rgba(189,95,255,.55)); }
+}
+
+.purse-horizon {
+  position: absolute; left: 0; right: 0; bottom: 42%; height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(189,95,255,.8) 15%, #ff6fb0 40%, #ffffff 50%, #ff6fb0 60%, rgba(189,95,255,.8) 85%, transparent 100%);
+  box-shadow: 0 0 8px rgba(189,95,255,.8), 0 0 22px rgba(255,45,120,.55);
+  animation: purse-horizon-pulse 2.6s ease-in-out infinite;
+}
+@keyframes purse-horizon-pulse { 0%,100% { opacity:.7; } 50% { opacity:1; } }
+
+.purse-grid-wrap {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 42%; overflow: hidden;
+}
+.purse-grid {
+  position: absolute; left: -80%; right: -80%; top: 0; bottom: -12%;
+  background-image:
+    linear-gradient(to right,  rgba(189,95,255,.55) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(189,95,255,.55) 1px, transparent 1px);
+  background-size: 52px 32px;
+  transform: perspective(200px) rotateX(54deg);
+  transform-origin: top center;
+  mask-image:         linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.05) 100%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.05) 100%);
+  animation: purse-grid-march 2.2s linear infinite, purse-grid-glow 5s ease-in-out infinite;
+}
+@keyframes purse-grid-march { from { background-position: 26px 0; } to { background-position: 26px 32px; } }
+@keyframes purse-grid-glow  { 0%,100% { opacity:.5; } 50% { opacity:.8; } }
+
+.purse-sweep {
+  position: absolute; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(189,95,255,.8), #00e5ff, rgba(189,95,255,.8), transparent);
+  box-shadow: 0 0 6px rgba(189,95,255,.8); opacity: .3;
+  animation: purse-sweep 10s linear infinite;
+}
+@keyframes purse-sweep { from { top: -2px; } to { top: 100%; } }
+
+.purse-scanlines {
+  position: absolute; inset: 0; z-index: 4;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,.12) 3px, rgba(0,0,0,.12) 4px
+  );
+}
+
+.purse-crt {
+  position: absolute; inset: 0; z-index: 5;
+  background: radial-gradient(ellipse 110% 110% at 50% 50%, transparent 55%, rgba(0,0,0,.45) 100%);
+  border-radius: 14px;
 }
 .purse-title {
   font-family: 'Orbitron', system-ui, sans-serif;
@@ -1773,12 +1913,14 @@ const topDaysChart = computed(() => {
   color: var(--text-dim);
   text-align: center;
   margin: 0 0 16px;
+  position: relative; z-index: 6;
 }
 .purse-podium {
   display: flex;
   align-items: flex-end;
   justify-content: center;
   gap: 10px;
+  position: relative; z-index: 6;
 }
 .purse-place {
   display: flex; flex-direction: column; align-items: center;
