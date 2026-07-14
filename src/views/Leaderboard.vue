@@ -1732,7 +1732,7 @@ const topDaysChart = computed(() => {
 .win-path-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
 .win-path-row { padding: 12px 14px; border-radius: 10px; }
 .win-path-row--alive { border-left: 3px solid var(--accent); }
-.win-path-row--out   { border-left: 3px solid var(--border); opacity: 0.65; }
+.win-path-row--out   { border-left: 3px solid #00e5ff; }
 .win-path-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
 .win-path-name { font-weight: 700; font-size: 14px; color: var(--text); }
 .win-path-badge {

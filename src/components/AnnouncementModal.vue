@@ -181,7 +181,7 @@ function dismiss() {
   border-left: 3px solid var(--border);
 }
 .modal-path-row--alive { border-left-color: var(--accent); }
-.modal-path-row--out   { opacity: 0.55; }
+.modal-path-row--out   { border-left-color: #00e5ff; }
 .modal-path-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
 .modal-path-name { font-size: 13px; font-weight: 700; color: var(--text); }
 .modal-path-badge {
