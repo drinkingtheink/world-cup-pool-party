@@ -204,6 +204,10 @@
           <span class="lb-pts">{{ entry.total }} <span class="lb-pts-label">pts</span></span>
         </div>
 
+        <button class="lb-player-link" @click.stop="router.push({ path: '/my-teams', query: { player: entry.name } })">
+          View {{ entry.name }}'s Teams &amp; Stats
+        </button>
+
         <!-- Expanded team breakdown + match day pts -->
         <transition name="expand">
           <div v-if="expanded === entry.name" class="lb-expanded">
@@ -2724,6 +2728,19 @@ const topDaysChart = computed(() => {
   .lb-tt-label { font-size: 12px; }
 }
 .lb-tt-sep { margin: 0 4px; opacity: 0.4; }
+
+.lb-player-link {
+  display: block; width: 100%;
+  padding: 7px 14px;
+  border: none; border-top: 1px solid var(--border);
+  background: transparent;
+  color: var(--accent);
+  font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  text-align: center; cursor: pointer;
+  opacity: 0.6;
+  transition: opacity .15s, background .15s;
+}
+.lb-player-link:hover { opacity: 1; background: rgba(255,45,120,0.05); }
 
 .lb-breakdown {
   border-top: 1px solid var(--border);
