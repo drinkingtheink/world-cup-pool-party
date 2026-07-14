@@ -249,7 +249,7 @@
 
     <p class="view-title" style="margin-top:28px">Path To The Prize 💰</p>
     <p class="strength-sub">What needs to happen for each player to win the pool</p>
-    <p class="win-path-disclaimer">⚠️ Calculated before the Semifinals</p>
+    <p class="win-path-disclaimer">Calculated before the Semifinals</p>
     <div class="win-path-list">
       <div
         v-for="entry in winPathEntries"

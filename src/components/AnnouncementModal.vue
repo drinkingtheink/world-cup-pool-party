@@ -13,7 +13,7 @@
             </div>
             <div v-if="announcement.winPaths" class="modal-paths">
               <p class="modal-paths-title">Path to Win</p>
-              <p class="modal-paths-disclaimer">⚠️ Calculated before the Semifinals</p>
+              <p class="modal-paths-disclaimer">Calculated before the Semifinals</p>
               <div v-for="entry in announcement.winPaths" :key="entry.name" class="modal-path-row" :class="entry.can ? 'modal-path-row--alive' : entry.bestFinish <= 3 ? 'modal-path-row--out' : 'modal-path-row--dead'">
                 <div class="modal-path-header">
                   <span class="modal-path-name">{{ entry.name }}</span>
