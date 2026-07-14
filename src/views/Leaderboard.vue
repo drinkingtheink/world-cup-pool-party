@@ -1929,28 +1929,32 @@ const topDaysChart = computed(() => {
   border-radius: 10px;
   flex: 1; max-width: 110px;
   position: relative;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 .purse-place--1 {
-  background: linear-gradient(180deg, rgba(255,210,100,0.12) 0%, rgba(255,210,100,0.04) 100%);
-  border: 1px solid rgba(255,210,100,0.35);
+  background: linear-gradient(180deg, rgba(12,6,28,0.88) 0%, rgba(20,10,40,0.92) 100%);
+  border: 1px solid rgba(255,210,100,0.55);
   padding-top: 20px;
   padding-bottom: 20px;
-  box-shadow: 0 0 20px rgba(255,210,100,0.08);
+  box-shadow: 0 0 24px rgba(255,210,100,0.18), inset 0 1px 0 rgba(255,210,100,0.12);
 }
 .purse-place--2 {
-  background: linear-gradient(180deg, rgba(189,95,255,0.1) 0%, rgba(189,95,255,0.03) 100%);
-  border: 1px solid rgba(189,95,255,0.25);
+  background: linear-gradient(180deg, rgba(12,6,28,0.82) 0%, rgba(18,8,36,0.88) 100%);
+  border: 1px solid rgba(189,95,255,0.45);
+  box-shadow: inset 0 1px 0 rgba(189,95,255,0.10);
 }
 .purse-place--3 {
-  background: linear-gradient(180deg, rgba(255,45,120,0.08) 0%, rgba(255,45,120,0.02) 100%);
-  border: 1px solid rgba(255,45,120,0.2);
+  background: linear-gradient(180deg, rgba(12,6,28,0.82) 0%, rgba(18,8,36,0.88) 100%);
+  border: 1px solid rgba(255,45,120,0.4);
+  box-shadow: inset 0 1px 0 rgba(255,45,120,0.08);
 }
 .purse-medal { font-size: 22px; line-height: 1; }
 .purse-place--1 .purse-medal { font-size: 28px; }
 .purse-label {
   font-family: 'Orbitron', system-ui, sans-serif;
   font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--text-dim);
+  color: rgba(255,255,255,0.55);
 }
 .purse-amount {
   font-family: 'Orbitron', system-ui, sans-serif;
@@ -1959,12 +1963,17 @@ const topDaysChart = computed(() => {
 }
 .purse-place--1 .purse-amount {
   font-size: 30px;
-  background: linear-gradient(135deg, #ffd264, #ffb800);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffd264;
+  text-shadow: 0 0 12px rgba(255,210,100,0.8), 0 0 28px rgba(255,180,0,0.5);
 }
-.purse-place--2 .purse-amount { color: #bd5fff; }
-.purse-place--3 .purse-amount { color: var(--accent); }
+.purse-place--2 .purse-amount {
+  color: #d89fff;
+  text-shadow: 0 0 10px rgba(189,95,255,0.7), 0 0 22px rgba(189,95,255,0.35);
+}
+.purse-place--3 .purse-amount {
+  color: #ff6fa8;
+  text-shadow: 0 0 10px rgba(255,45,120,0.7), 0 0 22px rgba(255,45,120,0.35);
+}
 
 .leaderboard { display: flex; flex-direction: column; gap: 8px; }
 
