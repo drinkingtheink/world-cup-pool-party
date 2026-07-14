@@ -249,6 +249,7 @@
 
     <p class="view-title" style="margin-top:28px">Path To The Prize 💰</p>
     <p class="strength-sub">What needs to happen for each player to win the pool</p>
+    <p class="win-path-disclaimer">⚠️ Calculated before the Semifinals</p>
     <div class="win-path-list">
       <div
         v-for="entry in winPathEntries"
@@ -2768,6 +2769,11 @@ const topDaysChart = computed(() => {
 /* ── Paper Strength ───────────────────────────────────────────── */
 .strength-sub {
   font-size: 13px; color: var(--text-dim); margin-bottom: 14px; margin-top: -8px;
+}
+.win-path-disclaimer {
+  font-size: 11px; font-weight: 600; letter-spacing: .04em;
+  color: #ffd264; opacity: 0.7;
+  margin: -8px 0 12px;
 }
 
 .strength-list { display: flex; flex-direction: column; gap: 12px; }

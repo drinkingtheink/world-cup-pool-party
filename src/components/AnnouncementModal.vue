@@ -13,6 +13,7 @@
             </div>
             <div v-if="announcement.winPaths" class="modal-paths">
               <p class="modal-paths-title">Path to Win</p>
+              <p class="modal-paths-disclaimer">⚠️ Calculated before the Semifinals</p>
               <div v-for="entry in announcement.winPaths" :key="entry.name" class="modal-path-row" :class="entry.can ? 'modal-path-row--alive' : entry.bestFinish <= 3 ? 'modal-path-row--out' : 'modal-path-row--dead'">
                 <div class="modal-path-header">
                   <span class="modal-path-name">{{ entry.name }}</span>
@@ -174,7 +175,11 @@ function dismiss() {
 .modal-paths { margin: 4px 0 14px; }
 .modal-paths-title {
   font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--text-dim); margin: 0 0 8px;
+  color: var(--text-dim); margin: 0 0 4px;
+}
+.modal-paths-disclaimer {
+  font-size: 10px; font-weight: 600; letter-spacing: .03em;
+  color: #ffd264; opacity: 0.7; margin: 0 0 8px;
 }
 .modal-path-row {
   padding: 8px 10px; border-radius: 8px; margin-bottom: 5px;
