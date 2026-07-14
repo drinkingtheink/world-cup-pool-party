@@ -639,7 +639,8 @@ const WIN_PATHS = [
     path:  "Can't win 1st — Jared always beats him when Spain wins. Can still finish 3rd if Spain wins the Final against either opponent.",
     path2: 'Spain vs Argentina: 3rd is comfortable — you lead Jay by ~10pts since you earn Final points and he doesn\'t. Spain vs England: tight — you lead Tommy by just ~2pts at estimated scoring. Flat Spain performances close that margin fast.' },
   { name: 'James',   can: false, bestFinish: 5,
-    path:  'No prize path. Even a Spain title gets him to ~176pts — Tommy is already sitting at 193.' },
+    path:  'No prize path. Even a Spain title gets him to ~176pts — Tommy is already sitting at 193.',
+    path2: "Didn't work out for you this Cup, but you'll always have a saved seat next to your favorite 'cuzzi jet." },
 ]
 
 const winPathEntries = computed(() =>
