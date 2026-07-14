@@ -7,7 +7,7 @@ export const announcement = {
   enabled: true,
   alwaysShow: false,
   id: '2026-07-13-semis-last-supper',
-  title: 'Day 33/39 — The Raging Semis Erupt Tomorrow!',
+  title: 'Day 33/39 — The Raging Semis Are Here!',
   body: `Every player enters the Final Four with a live team. All 8 of you — in a pool this size, that wasn't very likely.\n\nSavor it. Because the two semifinals will eliminate between 2 and 6 of you before the Final is even played. Someone is getting up from this table no matter what.\n\nAnd for half of you, the math already has an answer — you have teams still in the competition, but you cannot win the Top Pool Prize.`,
   callout: { stat: '2 – 6', label: 'players eliminated before the Final' },
   winPaths: [
