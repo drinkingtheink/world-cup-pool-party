@@ -80,7 +80,7 @@
           <span class="purse-amount">$50</span>
         </div>
       </div>
-      <button class="purse-path-link" @click.stop="document.getElementById('path-to-prize')?.scrollIntoView({ behavior: 'smooth' })">Path To The Prize >></button>
+      <button class="purse-path-link" @click.stop="scrollToPrize">Path To The Prize >></button>
     </div>
 
     <div class="leaderboard">
@@ -654,6 +654,10 @@ const winPathEntries = computed(() =>
 )
 
 const winPathMap = Object.fromEntries(WIN_PATHS.map(p => [p.name, p]))
+
+function scrollToPrize() {
+  document.getElementById('path-to-prize')?.scrollIntoView({ behavior: 'smooth' })
+}
 
 function todayStr() {
   const t = new Date()
