@@ -80,6 +80,7 @@
           <span class="purse-amount">$50</span>
         </div>
       </div>
+      <a href="#path-to-prize" class="purse-path-link">Path To The Prize 💰</a>
     </div>
 
     <div class="leaderboard">
@@ -247,7 +248,7 @@
       <p v-if="!store.leaderboard.length" class="empty-msg">No data yet</p>
     </div>
 
-    <p class="view-title" style="margin-top:28px">Path To The Prize 💰</p>
+    <p id="path-to-prize" class="view-title" style="margin-top:28px">Path To The Prize 💰</p>
     <p class="strength-sub">What needs to happen for each player to win the pool</p>
     <p class="win-path-disclaimer">Calculated before the Semifinals</p>
     <div class="win-path-list">
@@ -1913,6 +1914,16 @@ const topDaysChart = computed(() => {
   background: radial-gradient(ellipse 110% 110% at 50% 50%, transparent 55%, rgba(0,0,0,.45) 100%);
   border-radius: 14px;
 }
+.purse-path-link {
+  display: block; position: relative; z-index: 6;
+  text-align: center;
+  margin-top: 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: #ffd264; opacity: 0.7;
+  text-decoration: none;
+  transition: opacity .15s;
+}
+.purse-path-link:hover { opacity: 1; }
 .purse-title {
   font-family: 'Orbitron', system-ui, sans-serif;
   font-size: 11px; font-weight: 800;
