@@ -48,6 +48,7 @@
               :key="m.home + m.away"
               :match="m"
               :show-divider="i > 0"
+              show-date
             />
           </div>
         </div>

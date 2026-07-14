@@ -1,6 +1,7 @@
 <template>
   <div class="match-row" :class="{ 'match-row--divider': showDivider, 'match-row--orphan': isOrphan, 'match-row--live': match.snapshot_minute || match.autoLive, 'match-row--soon': match.startingSoon, 'match-row--played': match.played && !match.snapshot_minute }">
     <div class="match-stage-pill">
+      <span v-if="showDate && match.date" class="match-date">{{ fmtDate(match.date) }}</span>
       <span v-if="match.snapshot_minute || match.autoLive" class="match-time match-time--live">● LIVE</span>
       <span v-else-if="match.startingSoon" class="match-time match-time--soon">◈ STARTING SOON · {{ match.time }}</span>
       <span v-else-if="match.time" class="match-time">{{ match.time }}</span>
@@ -82,7 +83,14 @@ function goToPlayer(name) { router.push({ path: '/my-teams', query: { player: na
 const props = defineProps({
   match:       { type: Object,  required: true },
   showDivider: { type: Boolean, default: false },
+  showDate:    { type: Boolean, default: false },
 })
+
+function fmtDate(d) {
+  if (!d) return ''
+  const [, m, day] = d.split('-')
+  return new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
 
 const m = computed(() => props.match)
 
@@ -169,7 +177,8 @@ function fmt(n) { return Number.isInteger(n) ? n : n.toFixed(1) }
 .match-row--played .team-name,
 .match-row--played .match-time { opacity: 0.6; }
 
-.match-stage-pill { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.match-stage-pill { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.match-date { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: .04em; }
 .match-time { font-size: 13px; color: var(--text-dim); }
 .match-time--live {
   color: var(--green); font-weight: 700;
