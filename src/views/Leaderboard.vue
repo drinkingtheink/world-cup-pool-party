@@ -27,8 +27,8 @@
           <span class="stat-label">Teams Left</span>
         </div>
         <div class="stat-item">
-          <span class="stat-value">{{ daysPlayed }}</span>
-          <span class="stat-label">Days Played</span>
+          <span class="stat-value">{{ gamesRemaining }}</span>
+          <span class="stat-label">Games Remaining</span>
         </div>
       </div>
     </div>
@@ -658,9 +658,9 @@ const totalGoals    = computed(() => store.matches.reduce((sum, m) => sum + (m.g
 
 const teamsRemaining = computed(() => tiers.filter(t => !ELIMINATED_TEAMS.has(t.team)).length)
 
-const daysPlayed = computed(() => new Set(
-  store.matches.filter(m => m.home_score !== '' && !m.snapshot_minute).map(m => m.date)
-).size)
+const gamesRemaining = computed(() =>
+  store.matches.filter(m => m.home_score === '' && !m.snapshot_minute).length
+)
 
 const daysToGo = computed(() => {
   const finalMatch = store.matches.find(m => m.stage === 'Final')
