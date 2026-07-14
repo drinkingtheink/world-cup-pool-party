@@ -80,7 +80,7 @@
           <span class="purse-amount">$50</span>
         </div>
       </div>
-      <a href="#path-to-prize" class="purse-path-link">Path To The Prize 💰</a>
+      <a href="#path-to-prize" class="purse-path-link">Path To The Prize >></a>
     </div>
 
     <div class="leaderboard">
