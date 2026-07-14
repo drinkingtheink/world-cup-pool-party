@@ -80,7 +80,7 @@
           <span class="purse-amount">$50</span>
         </div>
       </div>
-      <a href="#path-to-prize" class="purse-path-link">Path To The Prize >></a>
+      <button class="purse-path-link" @click.stop="document.getElementById('path-to-prize')?.scrollIntoView({ behavior: 'smooth' })">Path To The Prize >></button>
     </div>
 
     <div class="leaderboard">
