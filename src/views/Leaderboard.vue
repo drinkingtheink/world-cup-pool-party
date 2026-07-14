@@ -72,7 +72,7 @@
         <div class="purse-place purse-place--1">
           <span class="purse-medal">🥇</span>
           <span class="purse-label">1st</span>
-          <span class="purse-amount">$200</span>
+          <span class="purse-amount">$225</span>
         </div>
         <div class="purse-place purse-place--3">
           <span class="purse-medal">🥉</span>
