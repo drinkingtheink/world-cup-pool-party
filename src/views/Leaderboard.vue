@@ -272,6 +272,8 @@
       </div>
     </div>
 
+    <button class="back-to-top" @click="scrollToTop">↑ Top</button>
+
     <template v-if="chartGeom">
       <p class="view-title" style="margin-top:20px">Points Over Time</p>
       <div class="card pot-card">
@@ -552,6 +554,7 @@
         </div>
       </div>
     </div>
+    <button class="back-to-top" @click="scrollToTop">↑ Top</button>
   </div>
 </template>
 
@@ -654,6 +657,10 @@ const winPathEntries = computed(() =>
 )
 
 const winPathMap = Object.fromEntries(WIN_PATHS.map(p => [p.name, p]))
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
 function scrollToPrize() {
   document.getElementById('path-to-prize')?.scrollIntoView({ behavior: 'smooth' })
@@ -1753,6 +1760,16 @@ const topDaysChart = computed(() => {
 .win-path-badge--alive  { background: rgba(255,45,120,0.15); color: var(--accent); }
 .win-path-badge--podium { background: rgba(255,210,100,0.12); color: #ffd264; border: 1px solid rgba(255,210,100,0.25); }
 .win-path-badge--out    { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+.back-to-top {
+  display: block; margin: 20px auto 4px;
+  padding: 6px 18px;
+  background: none; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+  color: var(--text-dim); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  cursor: pointer; opacity: 0.5;
+  transition: opacity .15s, border-color .15s, color .15s;
+}
+.back-to-top:hover { opacity: 1; border-color: var(--accent); color: var(--accent); }
+
 .win-path-text { font-size: 13px; line-height: 1.5; color: var(--text-dim); margin: 0; }
 .win-path-sensitivity-label {
   font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
