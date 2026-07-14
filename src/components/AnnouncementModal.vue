@@ -13,7 +13,7 @@
             </div>
             <div v-if="announcement.winPaths" class="modal-paths">
               <p class="modal-paths-title">Path to Win</p>
-              <div v-for="entry in announcement.winPaths" :key="entry.name" class="modal-path-row" :class="entry.can ? 'modal-path-row--alive' : 'modal-path-row--out'">
+              <div v-for="entry in announcement.winPaths" :key="entry.name" class="modal-path-row" :class="entry.can ? 'modal-path-row--alive' : entry.bestFinish <= 3 ? 'modal-path-row--out' : 'modal-path-row--dead'">
                 <div class="modal-path-header">
                   <span class="modal-path-name">{{ entry.name }}</span>
                   <span class="modal-path-badge" :class="entry.can ? 'modal-path-badge--alive' : entry.bestFinish <= 3 ? 'modal-path-badge--podium' : 'modal-path-badge--out'">{{ entry.can ? '⚡ In It' : entry.bestFinish === 2 ? '🥈 2nd Max' : entry.bestFinish === 3 ? '🥉 3rd Max' : '🚫 No Path' }}</span>
@@ -182,6 +182,7 @@ function dismiss() {
 }
 .modal-path-row--alive { border-left-color: var(--accent); }
 .modal-path-row--out   { border-left-color: #00e5ff; }
+.modal-path-row--dead  { border-left-color: #00e5ff; opacity: 0.45; }
 .modal-path-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
 .modal-path-name { font-size: 13px; font-weight: 700; color: var(--text); }
 .modal-path-badge {
