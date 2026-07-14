@@ -33,7 +33,26 @@
       </div>
     </div>
 
-    <p class="view-title"></p>
+    <div class="purse-section">
+      <p class="purse-title">💰 Winning Purse</p>
+      <div class="purse-podium">
+        <div class="purse-place purse-place--2">
+          <span class="purse-medal">🥈</span>
+          <span class="purse-label">2nd</span>
+          <span class="purse-amount">$100</span>
+        </div>
+        <div class="purse-place purse-place--1">
+          <span class="purse-medal">🥇</span>
+          <span class="purse-label">1st</span>
+          <span class="purse-amount">$200</span>
+        </div>
+        <div class="purse-place purse-place--3">
+          <span class="purse-medal">🥉</span>
+          <span class="purse-label">3rd</span>
+          <span class="purse-amount">$50</span>
+        </div>
+      </div>
+    </div>
 
     <div class="leaderboard">
       <div class="lb-header">
@@ -1723,6 +1742,87 @@ const topDaysChart = computed(() => {
 }
 .stat-of { font-size: 16px; font-weight: 600; -webkit-text-fill-color: var(--text-dim); color: var(--text-dim); }
 .stat-label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
+
+.purse-section {
+  margin: 4px 0 20px;
+  padding: 18px 16px 20px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(189,95,255,0.08) 0%, rgba(13,10,30,0.6) 50%, rgba(255,45,120,0.08) 100%);
+  border: 1px solid rgba(189,95,255,0.25);
+  box-shadow: 0 0 0 1px rgba(255,45,120,0.08), 0 0 30px rgba(189,95,255,0.06);
+  position: relative;
+  overflow: hidden;
+}
+.purse-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 28px,
+    rgba(189,95,255,0.04) 28px,
+    rgba(189,95,255,0.04) 29px
+  );
+  pointer-events: none;
+}
+.purse-title {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  margin: 0 0 16px;
+}
+.purse-podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+}
+.purse-place {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px;
+  padding: 14px 10px 16px;
+  border-radius: 10px;
+  flex: 1; max-width: 110px;
+  position: relative;
+}
+.purse-place--1 {
+  background: linear-gradient(180deg, rgba(255,210,100,0.12) 0%, rgba(255,210,100,0.04) 100%);
+  border: 1px solid rgba(255,210,100,0.35);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  box-shadow: 0 0 20px rgba(255,210,100,0.08);
+}
+.purse-place--2 {
+  background: linear-gradient(180deg, rgba(189,95,255,0.1) 0%, rgba(189,95,255,0.03) 100%);
+  border: 1px solid rgba(189,95,255,0.25);
+}
+.purse-place--3 {
+  background: linear-gradient(180deg, rgba(255,45,120,0.08) 0%, rgba(255,45,120,0.02) 100%);
+  border: 1px solid rgba(255,45,120,0.2);
+}
+.purse-medal { font-size: 22px; line-height: 1; }
+.purse-place--1 .purse-medal { font-size: 28px; }
+.purse-label {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.purse-amount {
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 22px; font-weight: 900; letter-spacing: .02em;
+  color: var(--text);
+}
+.purse-place--1 .purse-amount {
+  font-size: 30px;
+  background: linear-gradient(135deg, #ffd264, #ffb800);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.purse-place--2 .purse-amount { color: #bd5fff; }
+.purse-place--3 .purse-amount { color: var(--accent); }
 
 .leaderboard { display: flex; flex-direction: column; gap: 8px; }
 
