@@ -62,7 +62,7 @@
         <div class="purse-scanlines"></div>
         <div class="purse-crt"></div>
       </div>
-      <p class="purse-title">💰 Winning Purse</p>
+      <p class="purse-title">💰 Prize Pool</p>
       <div class="purse-podium">
         <div class="purse-place purse-place--2">
           <span class="purse-medal">🥈</span>
