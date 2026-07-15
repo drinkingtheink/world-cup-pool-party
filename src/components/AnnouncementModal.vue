@@ -26,6 +26,10 @@
                 </template>
               </div>
             </div>
+            <button v-if="announcement.showPathLink" class="modal-bracket-btn modal-path-link-btn" @click="goToPathToPrize">
+              <span class="modal-bracket-label">Path to the Prize</span>
+              <ChevronRight :size="13" class="modal-bracket-arrow" />
+            </button>
             <button class="modal-bracket-btn" @click="dismiss(); router.push('/bracket')">
               <GitBranch :size="14" class="modal-bracket-icon" />
               <span class="modal-bracket-label">Check out the BRACKET</span>
@@ -60,7 +64,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { GitBranch, ChevronRight } from 'lucide-vue-next'
 import { announcement } from '../data/announcement.js'
@@ -97,6 +101,13 @@ watch(() => route.path, maybeShow)
 
 function closeTemporarily() {
   visible.value = false
+}
+
+async function goToPathToPrize() {
+  dismiss()
+  await router.push('/')
+  await nextTick()
+  setTimeout(() => document.getElementById('path-to-prize')?.scrollIntoView({ behavior: 'smooth' }), 80)
 }
 
 function dismiss() {
@@ -292,4 +303,9 @@ function dismiss() {
 }
 .modal-bracket-icon { color: #bd5fff; flex-shrink: 0; }
 .modal-bracket-arrow { color: var(--accent); flex-shrink: 0; opacity: 0.7; }
+.modal-path-link-btn {
+  background: linear-gradient(135deg, rgba(255,45,120,0.15) 0%, rgba(13,10,30,0.9) 50%, rgba(189,95,255,0.15) 100%);
+  box-shadow: 0 0 0 1px rgba(255,45,120,0.5), 0 0 14px rgba(255,45,120,0.1), inset 0 1px 0 rgba(255,255,255,0.06);
+  margin-bottom: 8px;
+}
 </style>

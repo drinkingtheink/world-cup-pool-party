@@ -10,6 +10,7 @@ export const announcement = {
   title: 'Day 34/39 — The Grudge Match',
   body: `The Hand of God. The Beckham red card. The most loaded fixture in World Cup history — and tomorrow it lands in your pool.\n\nJay, Charley, and Gabe are all riding England. Tommy stands alone with Argentina. One goes to the Final. The other joins France in the Third Place match.\n\nAbout France: Les Bleus fell 0–2 to Spain. Jason — your Group Stage champion — has been relegated to the consolation bracket.`,
   callout: { stat: '3 vs 1', label: 'England holders vs Tommy' },
+  showPathLink: true,
   matchStage: 'Semifinal',
   multipliers: [
     { stage: 'Semifinal',   multiplier: '3×', pillClass: 'pill-t2' },
