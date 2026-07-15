@@ -269,6 +269,7 @@
           <p class="win-path-sensitivity-label">Score Sensitivity</p>
           <p class="win-path-text win-path-text--2">{{ entry.path2 }}</p>
         </template>
+        <p v-if="entry.note" class="win-path-note">{{ entry.note }}</p>
       </div>
     </div>
 
@@ -634,7 +635,8 @@ const WIN_PATHS = [
     path2: 'Spain vs Argentina is solid — Spain earns SF and Final points while Tommy only picks up Argentina\'s SF. At estimated scoring you lead Tommy by ~15pts. The only danger: Argentina has a great SF AND Spain is flat at the same time.' },
   { name: 'Jason',   can: false, bestFinish: 3,
     path:  'Can still reach 3rd — France plays in the 3rd place match (3× multiplier). Key scenario: Argentina beats England in the SF, France wins the 3rd place game convincingly, and Argentina wins the Final with Spain scoring 0 goals.',
-    path2: 'Les Bleus went quietly, 0–2 to Spain. But France earns 3× points in the 3rd place match. A strong France win (3-0) brings Jason to ~160pts. The main obstacle is Jay — he holds Spain, so every Spain goal in the Final earns Jay more points too. If Spain stays scoreless and Argentina runs away with the title, the podium opens up.' },
+    path2: 'Les Bleus went quietly, 0–2 to Spain. But France earns 3× points in the 3rd place match. A strong France win (3-0) brings Jason to ~160pts. The main obstacle is Jay — he holds Spain, so every Spain goal in the Final earns Jay more points too. If Spain stays scoreless and Argentina runs away with the title, the podium opens up.',
+    note: 'Updated after Semifinal #1 — France 0–2 Spain' },
   { name: 'Jay',     can: true,  bestFinish: 1,
     path:  'England beats France or Argentina in the Final. A Spain vs England Final is a toss-up with Jared.',
     path2: 'England vs France is solid and score-independent — your 4.5pt head start over Charley is permanent since you share all remaining England points. The Spain-England scenario is the coin-flip: one England goal in the SF could be the difference between you and Jared for 1st.' },
@@ -1773,6 +1775,11 @@ const topDaysChart = computed(() => {
 .back-to-top:hover { opacity: 1; border-color: var(--accent); color: var(--accent); }
 
 .win-path-text { font-size: 13px; line-height: 1.5; color: var(--text-dim); margin: 0; }
+.win-path-note {
+  font-size: 9px; font-weight: 600; letter-spacing: .04em;
+  color: var(--text-dim); opacity: 0.5; margin: 6px 0 0;
+  font-style: italic;
+}
 .win-path-sensitivity-label {
   font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
   color: #00e5ff; margin: 8px 0 2px; opacity: 0.8;
