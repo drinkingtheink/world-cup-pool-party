@@ -12,6 +12,7 @@ export const announcement = {
   callout: { stat: '3 vs 1', label: 'England holders vs Tommy' },
   matchStage: 'Semifinal',
   multipliers: [
+    { stage: 'Semifinal',   multiplier: '3×', pillClass: 'pill-t2' },
     { stage: 'Third Place', multiplier: '3×', pillClass: 'pill-t2' },
     { stage: 'Final',       multiplier: '4×', pillClass: 'pill-t1' },
   ],
