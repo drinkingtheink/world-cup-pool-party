@@ -8,7 +8,7 @@ export const announcement = {
   alwaysShow: false,
   id: '2026-07-14-england-argentina',
   title: 'Day 34/39 — The Grudge Match',
-  body: `England and Argentina. The Hand of God. The Beckham red card. Forty years of World Cup folklore traded back and forth in the most loaded fixture in the game.\n\nTomorrow it lands in your pool — and the sides couldn't be more uneven. Jay, Charley, and Gabe are all riding England. Tommy stands alone with Argentina. One team goes to the Final against Spain. The other joins France in the Third Place match.\n\nSpeaking of which: the first semi is in the books. Les Bleus fell quietly, 0–2 to Spain. Jason — your Group Stage champion — has officially been relegated to the consolation bracket.`,
+  body: `The Hand of God. The Beckham red card. The most loaded fixture in World Cup history — and tomorrow it lands in your pool.\n\nJay, Charley, and Gabe are all riding England. Tommy stands alone with Argentina. One goes to the Final. The other joins France in the Third Place match.\n\nAbout France: Les Bleus fell 0–2 to Spain. Jason — your Group Stage champion — has been relegated to the consolation bracket.`,
   callout: { stat: '3 vs 1', label: 'England holders vs Tommy' },
   matchStage: 'Semifinal',
   multipliers: [
