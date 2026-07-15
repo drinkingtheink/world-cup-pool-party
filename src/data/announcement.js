@@ -16,5 +16,5 @@ export const announcement = {
     { stage: 'Final',       multiplier: '4×', pillClass: 'pill-t1' },
   ],
   cta: 'I Remember when Jason won the group stage',
-  image: null,
+  image: '/lfg-dog.png',
 }
