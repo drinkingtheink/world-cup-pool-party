@@ -12,8 +12,8 @@
               <span class="modal-callout-label">{{ announcement.callout.label }}</span>
             </div>
             <div v-if="announcement.winPaths" class="modal-paths">
-              <p class="modal-paths-title">Path to Win</p>
-              <p class="modal-paths-disclaimer">Calculated before the Semifinals</p>
+              <p class="modal-paths-title">Path To The Prize 💰</p>
+              <p class="modal-paths-disclaimer">{{ announcement.pathsDisclaimer ?? 'Calculated before the Semifinals' }}</p>
               <div v-for="entry in announcement.winPaths" :key="entry.name" class="modal-path-row" :class="entry.can ? 'modal-path-row--alive' : entry.bestFinish <= 3 ? 'modal-path-row--out' : 'modal-path-row--dead'">
                 <div class="modal-path-header">
                   <span class="modal-path-name">{{ entry.name }}</span>
@@ -26,7 +26,7 @@
                 </template>
               </div>
             </div>
-            <button v-if="announcement.showPathLink" class="modal-bracket-btn modal-path-link-btn" @click="goToPathToPrize">
+            <button v-if="announcement.showPathLink && !announcement.winPaths" class="modal-bracket-btn modal-path-link-btn" @click="goToPathToPrize">
               <span class="modal-bracket-label">Path to the Prize</span>
               <ChevronRight :size="13" class="modal-bracket-arrow" />
             </button>
