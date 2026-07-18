@@ -8,7 +8,7 @@ export const announcement = {
   alwaysShow: false,
   id: '2026-07-18-sour-grapes-derby',
   title: 'Day 38/39 — The Sour Grapes Derby',
-  body: `Nobody wants to be here. France wanted the Final. England wanted the Final. The 3rd place game is football's most polite participation trophy — and both squads know it.\n\nExpect rotations. Expect rust. Expect players mentally already on vacation.\n\nUnless Mbappé needs goals. Unless Bellingham has a point to prove. If those two show up hungry, this game forgets it's supposed to be meaningless.`,
+  body: `The players don't want to be here. The managers are rotating. Everyone's mentally on a beach somewhere.\n\nBut 3× points don't care about vibes — and if Mbappé or Bellingham shows up with something to prove, this "meaningless" match moves the leaderboard.`,
   callout: { stat: '3×', label: 'Third Place still counts' },
   showPathLink: true,
   matchStage: 'Third Place',
