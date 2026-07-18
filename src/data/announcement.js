@@ -8,7 +8,7 @@ export const announcement = {
   alwaysShow: false,
   id: '2026-07-18-sour-grapes-derby',
   title: 'Day 38/39 — The Sour Grapes Derby',
-  body: `Nobody wanted 3rd place. France wanted the Final. England wanted the Final. And yet — here we are.\n\nTeams usually rest their stars in the consolation match. But Mbappé is chasing the Golden Boot, and 3× multiplier goals hit different. Whether Deschamps deploys him could decide whether Jason has a pulse in this pool.\n\nFor 7 of you, this is background noise. For Jason — your Group Stage champion, now in the consolation bracket — it's the whole season.`,
+  body: `Nobody wants to be here. France wanted the Final. England wanted the Final. The 3rd place game is football's most polite participation trophy — and both squads know it.\n\nExpect rotations. Expect rust. Expect players mentally already on vacation.\n\nUnless Mbappé needs goals. Unless Bellingham has a point to prove. If those two show up hungry, this game forgets it's supposed to be meaningless.`,
   callout: { stat: '3×', label: 'Third Place still counts' },
   showPathLink: true,
   matchStage: 'Third Place',
