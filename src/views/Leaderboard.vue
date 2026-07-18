@@ -1629,7 +1629,7 @@ const outOfPool = computed(() => new Set(
   store.players
     .filter(p => {
       const teams = playerTeams(p)
-      return teams.length > 0 && teams.every(t => ELIMINATED_TEAMS.has(t)) && !washedUp.holders.has(p.name)
+      return teams.length > 0 && teams.every(t => ELIMINATED_TEAMS.has(t)) && !washedUp.value.holders.has(p.name)
     })
     .map(p => p.name)
 ))
