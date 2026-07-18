@@ -250,7 +250,7 @@
 
     <p id="path-to-prize" class="view-title" style="margin-top:28px">Path To The Prize 💰</p>
     <p class="strength-sub">What needs to happen for each player to win the pool</p>
-    <p class="win-path-disclaimer">Calculated before the Semifinals</p>
+    <p class="win-path-disclaimer">Calculated before 3rd Place & Final</p>
     <div class="win-path-list">
       <div
         v-for="entry in winPathEntries"
@@ -628,29 +628,28 @@ const mathElim = computed(() => {
 
 const WIN_PATHS = [
   { name: 'Tommy',   can: true,  bestFinish: 1,
-    path:  'Argentina wins the Final — either opponent works.',
-    path2: 'Both routes are bulletproof. Even 1-0 wins all the way add 28pts and you win every scenario by 20+ points. No scoreline dependency.' },
+    path:  'Argentina wins the Final. Tommy leads at 175pts — any Argentina win at any scoreline is enough.',
+    path2: 'Bulletproof. Argentina winning 1-0 earns Tommy +20pts while Jared earns 0 from Spain\'s loss. The 3.5pt gap becomes a 23.5pt win. No scoreline dependency.' },
   { name: 'Jared',   can: true,  bestFinish: 1,
-    path:  'Spain beats Argentina in the Final. A Spain vs England Final is a genuine toss-up with Jay — too close to call.',
-    path2: 'Spain vs Argentina is solid — Spain earns SF and Final points while Tommy only picks up Argentina\'s SF. At estimated scoring you lead Tommy by ~15pts. The only danger: Argentina has a great SF AND Spain is flat at the same time.' },
+    path:  'Spain wins the Final. Jared trails Tommy by just 3.5pts — Spain winning even 1-0 clears the gap immediately.',
+    path2: 'Spain wins 1-0: Jared +20=191.5pts, Tommy earns 0=175pts. Jared wins by 16.5pts. Any Spain win works — one goal and a clean sheet is all it takes.' },
   { name: 'Jason',   can: false, bestFinish: 3,
-    path:  'Can still reach 3rd — France plays in the 3rd place match (3× multiplier). Key scenario: Argentina beats England in the SF, France wins the 3rd place game convincingly, and Argentina wins the Final with Spain scoring 0 goals.',
-    path2: 'Les Bleus went quietly, 0–2 to Spain. But France earns 3× points in the 3rd place match. A strong France win (3-0) brings Jason to ~160pts. The main obstacle is Jay — he holds Spain, so every Spain goal in the Final earns Jay more points too. If Spain stays scoreless and Argentina runs away with the title, the podium opens up.',
-    note: 'Updated after Semifinal #1 — France 0–2 Spain' },
+    path:  'Can still reach 3rd — France plays England in the 3rd place match (3× multiplier). Needs France to win convincingly and Argentina to win the Final with Spain scoring 0 goals.',
+    path2: 'France winning 3-0 in 3rd brings Jason to ~160pts. The obstacle is Jay — he holds Spain, so every Spain goal in the Final earns Jay points too. Spain stays scoreless and Argentina runs away: podium opens up.' },
   { name: 'Jay',     can: true,  bestFinish: 1,
-    path:  'England beats France or Argentina in the Final. A Spain vs England Final is a toss-up with Jared.',
-    path2: 'England vs France is solid and score-independent — your 4.5pt head start over Charley is permanent since you share all remaining England points. The Spain-England scenario is the coin-flip: one England goal in the SF could be the difference between you and Jared for 1st.' },
-  { name: 'Charley', can: false, bestFinish: 2,
-    path:  "Can't win 1st — Jay always beats him when England wins. But he can finish 2nd if England wins the Final against either opponent.",
-    path2: '2nd place is locked in regardless of scorelines — you and Jay always earn identical England points from here, so your 4.5pt gap to him is permanent. You also stay 5.5pts clear of Gabe for the same reason. Solid podium.' },
-  { name: 'Gabe',    can: false, bestFinish: 3,
-    path:  "Can't win 1st — 10pts behind Jay with the same England upside. Can still finish 3rd if England wins the Final.",
-    path2: 'England beats France: 3rd is secure and score-independent. England beats Spain: precarious — you edge Jared for 3rd by an estimated 0.5pts. One extra Spain goal in the SF and Jared jumps you.' },
+    path:  'Spain wins the Final AND England wins the 3rd place game. Jay is the only player with two live teams — 4× from the Final, 3× from 3rd place.',
+    path2: 'England wins 3rd 2-0: +18→175pts. Spain wins Final 2-0: +24→199pts. Tommy (175pts) can\'t keep pace. Risk: if Argentina wins the Final, Tommy pockets the big Final payout and Jay\'s Spain haul shrinks to just their goals in a loss.' },
+  { name: 'Charley', can: false, bestFinish: 4,
+    path:  "No prize path. England is in the 3rd place game (3×, not the Final). Even England winning 5-0 only brings Charley to 161.5pts — Jared is already at 171.5pts and still earns Final points on top.",
+    path2: 'The gap to Jay is permanent — identical England picks mean he\'s always 22.5pts ahead. Best finish is 4th if Argentina wins the Final and England earns well in 3rd.' },
+  { name: 'Gabe',    can: false, bestFinish: 4,
+    path:  "No prize path. Same situation as Charley — England is in the 3rd place game and the Final's 4× multiplier belongs to Spain and Argentina only.",
+    path2: 'Tied with Charley throughout. The prize window closed when England lost to Argentina in the semifinal.' },
   { name: 'Dan',     can: false, bestFinish: 3,
-    path:  "Can't win 1st — Jared always beats him when Spain wins. Can still finish 3rd if Spain wins the Final against either opponent.",
-    path2: 'Spain vs Argentina: 3rd is comfortable — you lead Jay by ~10pts since you earn Final points and he doesn\'t. Spain vs England: tight — you lead Tommy by just ~2pts at estimated scoring. Flat Spain performances close that margin fast.' },
+    path:  "Can't win 1st — Jay and Jared both hold Spain and start ahead. Can reach 3rd if Spain wins the Final with 3+ goals while Argentina stays scoreless.",
+    path2: 'Spain wins 3-0: Dan +28=176pts, Tommy stays 175pts (Argentina scored 0) — Dan takes 3rd by 1pt. Any Argentina goal in the Final and Tommy stays above Dan. Razor thin.' },
   { name: 'James',   can: false, bestFinish: 5,
-    path:  'No prize path. Even a Spain title gets him to ~176pts — Tommy is already sitting at 193.',
+    path:  'No prize path. James holds Spain but Dan (148pts) always earns the same Final payout with a 17.5pt head start — that gap never closes.',
     path2: "Didn't work out for you this Cup, but you'll always have a saved seat next to your favorite 'cuzzi jet." },
 ]
 
