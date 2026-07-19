@@ -2,7 +2,7 @@
   <div class="app">
     <header v-if="route.meta.tab !== 'bracket'" class="app-header">
       <div class="header-inner">
-        <h1 class="header-title">World Cup Pool Party <span class="header-year">2026</span></h1>
+        <h1 class="header-title">World Cup Pool Party <span class="header-year">2026</span><router-link to="/rules" class="header-rules-link">Rules</router-link></h1>
       </div>
     </header>
 
@@ -448,6 +448,20 @@ body {
   text-shadow: 0 0 6px #00e5ff, 0 0 18px #00e5ff, 0 0 40px rgba(0,229,255,0.5);
   animation: neon-flicker 6s ease-in-out infinite;
   margin-left: 4px;
+}
+
+.header-rules-link {
+  -webkit-text-fill-color: var(--text-dim);
+  color: var(--text-dim);
+  font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  text-decoration: none;
+  margin-left: 8px; vertical-align: middle;
+  opacity: 0.5;
+  transition: opacity .15s, -webkit-text-fill-color .15s;
+}
+.header-rules-link:hover {
+  opacity: 1;
+  -webkit-text-fill-color: var(--cyan);
 }
 
 /* ── Main scroll area ────────────────────────────────────────────── */
