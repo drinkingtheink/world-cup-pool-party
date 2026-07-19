@@ -89,7 +89,7 @@
 
       <!-- Slides -->
       <transition :name="slideDir > 0 ? 'wr-fwd' : 'wr-back'" mode="out-in">
-        <div :key="currentSlide" class="wr-slide" :style="{ '--c': playerColor[activePlayer] }">
+        <div :key="currentSlide" class="wr-slide" :class="{ 'wr-slide--scroll': currentSlide === 1 }" :style="{ '--c': playerColor[activePlayer] }">
 
           <!-- 0 · Cover -->
           <div v-if="currentSlide === 0" class="slide slide-cover">
@@ -102,23 +102,30 @@
             </div>
           </div>
 
-          <!-- 1 · Squad -->
+          <!-- 1 · Teams -->
           <div v-else-if="currentSlide === 1" class="slide slide-squad">
-            <p class="sl-label">Your Squad</p>
-            <p class="sl-big">{{ pd.teamsAlive.length }} <span class="sl-big-sub">still standing</span></p>
+            <p class="sl-label">Your Teams</p>
             <div class="squad-list">
-              <div
-                v-for="t in pd.teamsRanked"
-                :key="t"
-                class="squad-row"
-                :class="{ 'squad-row--out': ELIMINATED_TEAMS.has(t) }"
-              >
-                <span class="squad-flag">{{ FLAG_MAP[t] ?? '🏳' }}</span>
-                <span class="squad-name">{{ t }}</span>
-                <span class="squad-pts">{{ fmt(pd.breakdown[t] ?? 0) }} pts</span>
-                <span class="squad-status" :class="ELIMINATED_TEAMS.has(t) ? 'ss-out' : 'ss-alive'">
-                  {{ ELIMINATED_TEAMS.has(t) ? '✕' : '✓' }}
-                </span>
+              <div v-for="t in pd.teamsByPoints" :key="t" class="squad-team">
+                <div class="squad-team-header">
+                  <span class="squad-flag">{{ FLAG_MAP[t] ?? '🏳' }}</span>
+                  <span class="squad-name">{{ t }}</span>
+                  <span class="squad-total">{{ fmt(pd.breakdown[t] ?? 0) }} pts</span>
+                </div>
+                <div class="squad-matches">
+                  <div v-for="bd in pd.teamBreakdowns[t]" :key="bd.date+bd.opponent" class="squad-match-row">
+                    <span class="squad-wld" :class="`squad-wld--${wld(bd.items)}`">{{ wld(bd.items) }}</span>
+                    <span class="squad-bd-date">{{ fmtDate(bd.date) }}</span>
+                    <span class="squad-opp">vs {{ bd.opponent }}</span>
+                    <span class="squad-score">{{ bd.scoreStr }}</span>
+                    <span class="squad-chips">
+                      <span v-for="chip in bd.items" :key="chip.key" class="squad-chip" :class="`squad-chip--${chip.key.replace(/\d/g,'n')}`">{{ chip.key }} +{{ chip.pts }}</span>
+                      <span v-if="bd.mul > 1" class="squad-mul">×{{ bd.mul }}</span>
+                    </span>
+                    <span class="squad-match-pts">+{{ fmt(bd.total) }}</span>
+                  </div>
+                  <div v-if="!pd.teamBreakdowns[t]?.length" class="squad-no-matches">No matches played</div>
+                </div>
               </div>
             </div>
           </div>
@@ -250,8 +257,46 @@
             </div>
           </div>
 
-          <!-- 8 · Final -->
-          <div v-else-if="currentSlide === 8" class="slide slide-final">
+          <!-- 8 · Leaderboard Journey -->
+          <div v-else-if="currentSlide === 8" class="slide slide-journey">
+            <p class="sl-label">Your Journey</p>
+            <p class="sl-context">Leaderboard rank through the tournament</p>
+            <div v-if="rankChartGeom" class="journey-chart-wrap">
+              <svg :viewBox="`0 0 ${rankChartGeom.W} ${rankChartGeom.H}`" class="journey-svg" preserveAspectRatio="none">
+                <line v-for="g in rankChartGeom.gridLines" :key="g.rank"
+                  :x1="rankChartGeom.LEFT" :x2="rankChartGeom.W" :y1="g.y" :y2="g.y"
+                  :stroke="g.rank === 1 ? 'rgba(255,210,0,0.25)' : 'rgba(255,255,255,0.06)'" stroke-width="1"/>
+                <text v-for="g in rankChartGeom.gridLines" :key="`l${g.rank}`"
+                  x="2" :y="g.y" font-size="8" font-family="monospace" dominant-baseline="middle"
+                  :fill="g.rank === 1 ? '#ffd200' : 'rgba(255,255,255,0.3)'">#{{ g.rank }}</text>
+                <polyline :points="rankChartGeom.pts" fill="none" :stroke="playerColor[activePlayer]"
+                  stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"
+                  style="filter: drop-shadow(0 0 4px var(--c))"/>
+                <circle :cx="rankChartGeom.startPt.x" :cy="rankChartGeom.startPt.y"
+                  r="3.5" fill="#080612" :stroke="playerColor[activePlayer]" stroke-width="1.5"/>
+                <circle :cx="rankChartGeom.endPt.x" :cy="rankChartGeom.endPt.y"
+                  r="5" :fill="playerColor[activePlayer]" style="filter: drop-shadow(0 0 6px var(--c))"/>
+              </svg>
+            </div>
+            <div v-if="rankTimeline" class="journey-stats">
+              <div class="js-item">
+                <span class="js-num">{{ ordinal(Math.min(...rankTimeline.map(p => p.rank))) }}</span>
+                <span class="js-lbl">Peak Rank</span>
+              </div>
+              <div class="js-item">
+                <span class="js-num">{{ rankTimeline.filter(p => p.rank === 1).length || '—' }}</span>
+                <span class="js-lbl">Days Led</span>
+              </div>
+              <div class="js-item" :class="rankTimeline[0].rank > rankTimeline.at(-1).rank ? 'js-up' : rankTimeline[0].rank < rankTimeline.at(-1).rank ? 'js-down' : ''">
+                <span class="js-num">{{ rankTimeline[0].rank === rankTimeline.at(-1).rank ? '—' : (rankTimeline[0].rank > rankTimeline.at(-1).rank ? '↑' : '↓') + Math.abs(rankTimeline[0].rank - rankTimeline.at(-1).rank) }}</span>
+                <span class="js-lbl">Net Positions</span>
+              </div>
+            </div>
+            <p v-if="rankTimeline" class="slide-pool-rank">Started {{ ordinal(rankTimeline[0].rank) }} · Finished {{ ordinal(rankTimeline.at(-1).rank) }}</p>
+          </div>
+
+          <!-- 9 · Final -->
+          <div v-else-if="currentSlide === 9" class="slide slide-final">
             <p class="sl-label">Final Standing</p>
             <div class="final-circle" :class="rankClass(pd.rank)">{{ pd.rank }}</div>
             <p class="final-name">{{ activePlayer }}</p>
@@ -278,12 +323,12 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePoolStore } from '../stores/pool.js'
 import { FLAG_MAP, ELIMINATED_TEAMS } from '../data/index.js'
-import { matchPointsForTeam } from '../services/points.js'
+import { matchPointsForTeam, matchBreakdownForTeam } from '../services/points.js'
 
 const store      = usePoolStore()
 const route      = useRoute()
 const router     = useRouter()
-const SLIDE_COUNT = 9
+const SLIDE_COUNT = 10
 
 const KNOCKOUT_STAGES = new Set(['Round of 32','Round of 16','Quarterfinal','Semifinal','Third Place','Final'])
 const EURO_TEAMS = new Set(['England','Germany','Norway','Scotland','France','Netherlands','Croatia',
@@ -424,6 +469,36 @@ const wrChartGeom = computed(() => {
   return { W, H, lines, endPts }
 })
 
+// ── Rank over time ────────────────────────────────────────────────────
+const rankTimeline = computed(() => {
+  if (!activePlayer.value) return null
+  const name = activePlayer.value
+  const dates = [...new Set(
+    store.enrichedMatches.filter(m => m.played && !m.snapshot_minute).map(m => m.date)
+  )].sort()
+  if (dates.length < 2) return null
+  const cum = {}
+  store.players.forEach(p => { cum[p.name] = 0 })
+  return dates.map(date => {
+    store.players.forEach(p => {
+      cum[p.name] = Math.round((cum[p.name] + ((allPlayerDays.value[p.name] ?? []).find(d => d.date === date)?.pts ?? 0)) * 10) / 10
+    })
+    const sorted = [...store.players].sort((a, b) => cum[b.name] - cum[a.name])
+    return { date, rank: sorted.findIndex(p => p.name === name) + 1 }
+  })
+})
+
+const rankChartGeom = computed(() => {
+  const tl = rankTimeline.value
+  if (!tl || tl.length < 2) return null
+  const W = 300, H = 120, LEFT = 22, n = tl.length, P = store.players.length
+  const xFor = i => LEFT + (i / (n - 1)) * (W - LEFT - 4)
+  const yFor = r => 8 + ((r - 1) / (P - 1)) * (H - 16)
+  const pts = tl.map((p, i) => `${xFor(i).toFixed(1)},${yFor(p.rank).toFixed(1)}`).join(' ')
+  const gridLines = Array.from({ length: P }, (_, i) => ({ rank: i + 1, y: yFor(i + 1) }))
+  return { W, H, LEFT, pts, gridLines, startPt: { x: xFor(0), y: yFor(tl[0].rank) }, endPt: { x: xFor(n - 1), y: yFor(tl.at(-1).rank) } }
+})
+
 // ── Per-player data ───────────────────────────────────────────────────
 const pd = computed(() => {
   if (!activePlayer.value) return {}
@@ -437,6 +512,15 @@ const pd = computed(() => {
   const teamsAlive  = teams.filter(t => !ELIMINATED_TEAMS.has(t))
   const teamsRanked = [...teams].sort((a,b) => (store.fifaRankMap[a] ?? 999) - (store.fifaRankMap[b] ?? 999))
   const { breakdown } = entry
+
+  const teamsByPoints = [...teams].sort((a, b) => (breakdown[b] ?? 0) - (breakdown[a] ?? 0))
+  const teamBreakdowns = {}
+  teams.forEach(t => {
+    teamBreakdowns[t] = store.enrichedMatches
+      .filter(m => m.played && !m.snapshot_minute)
+      .map(m => matchBreakdownForTeam(t, m))
+      .filter(Boolean)
+  })
 
   // Best team + rank
   const teamPts  = teams.map(t => ({ team: t, pts: breakdown[t] ?? 0 })).sort((a,b) => b.pts - a.pts)
@@ -484,7 +568,7 @@ const pd = computed(() => {
 
   return {
     name, rank: entry.rank, total: entry.total,
-    teams, teamsAlive, teamsRanked, breakdown,
+    teams, teamsAlive, teamsRanked, teamsByPoints, teamBreakdowns, breakdown,
     bestTeam, bestTeamRank, totalPoolTeams,
     bestDay, topDays, bestDayRank,
     totalGoals, lateGoals, gamesPlayed, gpg, goalsRank,
@@ -831,6 +915,11 @@ function fmtDate(d) {
   const [, m, day] = d.split('-')
   return `${MONTHS[+m - 1]} ${+day}`
 }
+function wld(items) {
+  if (items.some(i => i.key === 'W')) return 'W'
+  if (items.some(i => i.key === 'D')) return 'D'
+  return 'L'
+}
 function fmt(n) { return Number.isInteger(n) ? n : Number(n).toFixed(1) }
 function rankClass(r) {
   if (r === 1) return 'rank-gold'
@@ -1006,22 +1095,58 @@ function rankClass(r) {
 .sc-tagline { font-size: 13px; color: var(--text-dim); text-shadow: 0 0 8px rgba(189,95,255,.6); }
 .sc-flags   { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 12px; }
 .sc-flag    { font-size: 28px; }
-
-/* Slide 1 — Squad */
-.slide-squad { gap: 6px; align-items: stretch; width: 100%; padding: 0 4px; }
-.squad-list  { display: flex; flex-direction: column; gap: 6px; width: 100%; margin-top: 4px; }
-.squad-row {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 9px 12px; transition: opacity .2s;
+@media (min-width: 768px) {
+  .sc-flag  { font-size: 48px; }
 }
-.squad-row--out { opacity: 0.5; }
+
+/* Slide 1 — Teams (wr-slide becomes the scroll container) */
+.wr-slide--scroll {
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  align-items: flex-start; padding-top: 16px;
+  scrollbar-width: thin; scrollbar-color: var(--c) transparent;
+}
+.wr-slide--scroll::-webkit-scrollbar { width: 3px; }
+.wr-slide--scroll::-webkit-scrollbar-thumb { background: var(--c); border-radius: 99px; }
+
+.slide-squad { gap: 6px; align-items: stretch; padding: 0 4px; }
+.squad-list  { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+
+.squad-team {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.squad-team-header {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
 .squad-flag  { font-size: 20px; flex-shrink: 0; }
-.squad-name  { flex: 1; font-size: 14px; font-weight: 600; text-align: left; color: var(--text); }
-.squad-pts   { font-size: 13px; font-weight: 700; color: var(--text-dim); white-space: nowrap; }
-.squad-status { font-size: 14px; font-weight: 800; flex-shrink: 0; }
-.ss-alive { color: var(--green); }
-.ss-out   { color: var(--accent); }
+.squad-name  { flex: 1; font-size: 14px; font-weight: 700; text-align: left; color: var(--text); }
+.squad-total { font-size: 14px; font-weight: 800; color: var(--c); white-space: nowrap; }
+
+.squad-matches { display: flex; flex-direction: column; }
+.squad-match-row {
+  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+  padding: 5px 10px; font-size: 11px;
+}
+.squad-match-row + .squad-match-row { border-top: 1px solid rgba(255,255,255,0.04); }
+.squad-wld { font-size: 10px; font-weight: 900; padding: 1px 5px; border-radius: 3px; flex-shrink: 0; letter-spacing: .04em; }
+.squad-wld--W { background: rgba(0,255,159,0.15); color: var(--green); }
+.squad-wld--D { background: rgba(0,229,255,0.12); color: var(--cyan); }
+.squad-wld--L { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+.squad-bd-date { color: var(--text-dim); font-weight: 600; flex-shrink: 0; white-space: nowrap; }
+.squad-opp   { color: var(--text-dim); flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; }
+.squad-score { font-weight: 700; color: #fff; flex-shrink: 0; white-space: nowrap; }
+.squad-chips { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+.squad-chip  { font-size: 10px; font-weight: 800; padding: 1px 5px; border-radius: 3px; white-space: nowrap; }
+.squad-chip--W   { background: rgba(0,255,159,0.15); color: var(--green); }
+.squad-chip--D   { background: rgba(0,229,255,0.12); color: var(--cyan); }
+.squad-chip--nG  { background: rgba(255,255,255,0.08); color: #fff; }
+.squad-chip--CS  { background: rgba(0,229,255,0.10); color: var(--cyan); }
+.squad-chip--FG  { background: rgba(255,210,0,0.12); color: #ffd200; }
+.squad-chip--CB  { background: rgba(255,140,0,0.14); color: #ff9d3a; }
+.squad-chip--PEN { background: rgba(189,95,255,0.14); color: var(--purple); }
+.squad-mul   { font-size: 10px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
+.squad-match-pts { font-size: 11px; font-weight: 800; color: var(--text); white-space: nowrap; flex-shrink: 0; margin-left: auto; }
+.squad-no-matches { padding: 8px 10px; font-size: 11px; color: var(--text-dim); text-align: left; }
 
 /* Slide 2 — Star */
 .slide-star { gap: 8px; }
@@ -1116,7 +1241,22 @@ function rankClass(r) {
 .pml-name { font-size: 11px; }
 .pml-pts  { font-size: 11px; color: var(--text-dim); }
 
-/* Slide 8 — Final */
+/* Slide 8 — Leaderboard Journey */
+.slide-journey { gap: 10px; }
+.journey-chart-wrap { width: 100%; margin: 4px 0; }
+.journey-svg { width: 100%; display: block; overflow: visible; }
+.journey-stats {
+  display: flex; gap: 20px; justify-content: center; margin-top: 4px;
+}
+.js-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.js-num  { font-size: 28px; font-weight: 900; color: var(--text); line-height: 1;
+           text-shadow: 0 0 12px var(--c); }
+.js-lbl  { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+           color: var(--text-dim); }
+.js-up   .js-num { color: var(--green); text-shadow: 0 0 12px var(--green); }
+.js-down .js-num { color: var(--accent); text-shadow: 0 0 12px var(--accent); }
+
+/* Slide 9 — Final */
 .slide-final { gap: 10px; }
 .final-circle {
   width: 80px; height: 80px; border-radius: 50%;
