@@ -84,6 +84,9 @@
         ></div>
       </div>
 
+      <!-- Persistent player name -->
+      <div class="wr-player-name">{{ activePlayer }}</div>
+
       <!-- Exit -->
       <button class="wr-exit-btn" @click="exitPlayer">✕</button>
 
@@ -95,7 +98,6 @@
           <div v-if="currentSlide === 0" class="slide slide-cover">
             <p class="sc-year">2026</p>
             <p class="sc-word">Wrapped</p>
-            <p class="sc-name">{{ activePlayer }}</p>
             <p class="sc-tagline">Your World Cup Pool Story</p>
             <div class="sc-flags">
               <span v-for="t in pd.teams" :key="t" class="sc-flag">{{ FLAG_MAP[t] ?? '🏳' }}</span>
@@ -1020,6 +1022,22 @@ function rankClass(r) {
   cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
 .wr-exit-btn:hover { background: rgba(255,255,255,0.2); }
+
+.wr-player-name {
+  position: absolute;
+  top: calc(5% + 96px);
+  left: 0; right: 0;
+  text-align: center;
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 18px; font-weight: 900;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: #fff;
+  text-shadow:
+    0 0 10px var(--c, var(--accent)),
+    0 0 28px var(--c, var(--accent)),
+    0 0 55px var(--c, var(--accent));
+  z-index: 12; pointer-events: none;
+}
 
 .wr-prev, .wr-next {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 20;

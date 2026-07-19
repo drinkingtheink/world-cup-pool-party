@@ -17,20 +17,6 @@
           <span class="stat-label">Goals / Game</span>
         </div>
       </div>
-      <div class="tourney-stats-row tourney-stats-row--days">
-        <div class="stat-item">
-          <span class="stat-value">{{ daysToGo }}</span>
-          <span class="stat-label">Days to Go</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value">{{ teamsRemaining }}</span>
-          <span class="stat-label">Teams Left</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value">{{ gamesRemaining }}</span>
-          <span class="stat-label">Games Remaining</span>
-        </div>
-      </div>
     </div>
 
     <div class="purse-section">
@@ -556,6 +542,7 @@
       </div>
     </div>
     <button class="back-to-top" @click="scrollToTop">↑ Top</button>
+    <router-link to="/rules" class="rules-footer-link">Pool Rules →</router-link>
   </div>
 </template>
 
@@ -1772,6 +1759,14 @@ const topDaysChart = computed(() => {
   transition: opacity .15s, border-color .15s, color .15s;
 }
 .back-to-top:hover { opacity: 1; border-color: var(--accent); color: var(--accent); }
+
+.rules-footer-link {
+  display: block; text-align: center; margin: 8px auto 20px;
+  font-size: 12px; font-weight: 700; letter-spacing: .05em;
+  color: var(--text-dim); text-decoration: none; opacity: 0.55;
+  transition: opacity .15s, color .15s;
+}
+.rules-footer-link:hover { opacity: 1; color: var(--cyan); }
 
 .win-path-text { font-size: 13px; line-height: 1.5; color: var(--text-dim); margin: 0; }
 .win-path-note {
