@@ -19,6 +19,18 @@
       </div>
     </div>
 
+    <!-- Champion banner -->
+    <div class="champ-banner">
+      <div class="champ-banner-grid"></div>
+      <div class="champ-banner-scan"></div>
+      <div class="champ-banner-glow"></div>
+      <span class="champ-banner-flag">🇪🇸</span>
+      <span class="champ-banner-text">España</span>
+      <span class="champ-banner-divider">·</span>
+      <span class="champ-banner-sub">2026 World Champions</span>
+      <span class="champ-banner-flag champ-banner-flag--r">🇪🇸</span>
+    </div>
+
     <div class="purse-section">
       <!-- vaporwave scene -->
       <div class="purse-scene">
@@ -1807,6 +1819,90 @@ const topDaysChart = computed(() => {
 }
 .stat-of { font-size: 16px; font-weight: 600; -webkit-text-fill-color: var(--text-dim); color: var(--text-dim); }
 .stat-label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
+
+/* ── Champion Banner ──────────────────────────────────────────────────────── */
+.champ-banner {
+  position: relative;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 4px 0 16px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 60, 0, 0.35);
+  background: linear-gradient(135deg,
+    rgba(255,40,0,0.08) 0%,
+    rgba(255,160,0,0.10) 35%,
+    rgba(255,60,120,0.08) 65%,
+    rgba(180,0,255,0.07) 100%
+  );
+  overflow: hidden;
+}
+/* perspective grid */
+.champ-banner-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,80,0,0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,80,0,0.18) 1px, transparent 1px);
+  background-size: 36px 36px;
+  transform: perspective(200px) rotateX(30deg) scaleY(1.4);
+  transform-origin: bottom center;
+  opacity: 0.5;
+}
+/* horizontal scanlines */
+.champ-banner-scan {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0,0,0,0.12) 3px,
+    rgba(0,0,0,0.12) 4px
+  );
+}
+/* warm glow blob */
+.champ-banner-glow {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px; height: 60px;
+  background: radial-gradient(ellipse at center, rgba(255,120,0,0.22) 0%, transparent 70%);
+  pointer-events: none;
+  animation: champ-glow-pulse 3s ease-in-out infinite;
+}
+@keyframes champ-glow-pulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
+}
+.champ-banner-flag {
+  font-size: 26px; line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(255,100,0,0.6));
+  position: relative; z-index: 1;
+}
+.champ-banner-flag--r { transform: scaleX(-1); }
+.champ-banner-text {
+  position: relative; z-index: 1;
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 22px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase;
+  background: linear-gradient(90deg, #ff6000 0%, #ffcc00 40%, #ff3c78 75%, #ff6000 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  animation: champ-shimmer 4s linear infinite;
+}
+@keyframes champ-shimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+.champ-banner-divider {
+  position: relative; z-index: 1;
+  font-size: 18px; color: rgba(255,160,0,0.5); font-weight: 300;
+}
+.champ-banner-sub {
+  position: relative; z-index: 1;
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,200,80,0.85);
+  text-shadow: 0 0 10px rgba(255,160,0,0.5), 0 0 24px rgba(255,80,0,0.3);
+}
 
 .purse-section {
   margin: 4px 0 20px;
