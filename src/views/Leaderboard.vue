@@ -2027,13 +2027,13 @@ const topDaysChart = computed(() => {
   background: none; border: none; cursor: pointer;
   font-family: 'Orbitron', system-ui, sans-serif;
   font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--green);
   padding: 2px 0;
   text-decoration: underline; text-underline-offset: 2px;
   opacity: 0.75;
-  transition: opacity .15s, color .15s;
+  transition: opacity .15s;
 }
-.purse-player-link:hover { opacity: 1; color: var(--cyan); }
+.purse-player-link:hover { opacity: 1; }
 .purse-player-link--1 { font-size: 13px; }
 
 .leaderboard { display: flex; flex-direction: column; gap: 8px; }
