@@ -1035,7 +1035,7 @@ function rankClass(r) {
 
 .wr-player-name {
   position: absolute;
-  top: calc(5% + 96px);
+  top: calc(5% + 62px);
   left: 0; right: 0;
   text-align: center;
   font-family: 'Orbitron', system-ui, sans-serif;
