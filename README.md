@@ -418,6 +418,7 @@ The leaderboard is the core view, built around a reactive computed `leaderboard`
 | 📈 N g/g | Peak GPG — all-time highest goals-per-game average in pool history |
 | 🧊 Shrinkage | Fewest goals scored in the Group Stage |
 | 🪃 N | Comeback Kid — most comeback wins (teams that trailed and won) |
+| 🪄 Wiz N | Wash Wizard — most draws across all teams |
 | 💦 Early Finisher | Majority of goals scored in the first half |
 | 🌙 N | Goals scored after the 80th minute |
 | 👑🌙 N | Late Show leader — most goals scored after the 80th minute |
@@ -438,6 +439,8 @@ The leaderboard is the core view, built around a reactive computed `leaderboard`
 
 | Badge | Trigger |
 |---|---|
+| 🏆 Picked the Winner | Picked the World Cup champion (post-tournament; glowing gold card) |
+| ☠️ | Did not pick the World Cup champion (post-tournament; next to player name) |
 | 💪 Ballsy | Picked below-average European teams by FIFA ranking |
 | 🍍 Pro-Poly | Most teams shared with other pool players |
 | 🥁 Diff Beat | Most teams no one else picked |
