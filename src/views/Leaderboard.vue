@@ -54,16 +54,19 @@
           <span class="purse-medal">🥈</span>
           <span class="purse-label">2nd</span>
           <span class="purse-amount">$100</span>
+          <button v-if="store.leaderboard[1]" class="purse-player-link" @click="scrollToHash(`#lb-${store.leaderboard[1].name.toLowerCase()}`)">{{ store.leaderboard[1].name }}</button>
         </div>
         <div class="purse-place purse-place--1">
           <span class="purse-medal">🥇</span>
           <span class="purse-label">1st</span>
           <span class="purse-amount">$225</span>
+          <button v-if="store.leaderboard[0]" class="purse-player-link purse-player-link--1" @click="scrollToHash(`#lb-${store.leaderboard[0].name.toLowerCase()}`)">{{ store.leaderboard[0].name }}</button>
         </div>
         <div class="purse-place purse-place--3">
           <span class="purse-medal">🥉</span>
           <span class="purse-label">3rd</span>
           <span class="purse-amount">$50</span>
+          <button v-if="store.leaderboard[2]" class="purse-player-link" @click="scrollToHash(`#lb-${store.leaderboard[2].name.toLowerCase()}`)">{{ store.leaderboard[2].name }}</button>
         </div>
       </div>
       <button class="purse-path-link" @click.stop="scrollToPrize">Path To The Prize >></button>
@@ -81,6 +84,7 @@
         v-for="(entry, i) in store.leaderboard"
         :key="entry.name"
         class="lb-row card"
+        :id="`lb-${entry.name.toLowerCase()}`"
         :class="{ 'lb-row--first': entry.rank === 1, 'lb-row--critical': lastLeg.has(entry.name), 'lb-row--low-health': treadingWater.has(entry.name), 'lb-row--champion': eskimoBros.holders.has(entry.name) }"
         :style="{ '--i': i }"
         @click="expanded = expanded === entry.name ? null : entry.name"
@@ -2019,6 +2023,18 @@ const topDaysChart = computed(() => {
   color: #ff6fa8;
   text-shadow: 0 0 10px rgba(255,45,120,0.7), 0 0 22px rgba(255,45,120,0.35);
 }
+.purse-player-link {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 2px 0;
+  text-decoration: underline; text-underline-offset: 2px;
+  opacity: 0.75;
+  transition: opacity .15s, color .15s;
+}
+.purse-player-link:hover { opacity: 1; color: var(--cyan); }
+.purse-player-link--1 { font-size: 13px; }
 
 .leaderboard { display: flex; flex-direction: column; gap: 8px; }
 
