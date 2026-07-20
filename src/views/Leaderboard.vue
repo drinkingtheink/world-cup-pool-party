@@ -81,7 +81,7 @@
         v-for="(entry, i) in store.leaderboard"
         :key="entry.name"
         class="lb-row card"
-        :class="{ 'lb-row--first': entry.rank === 1, 'lb-row--critical': lastLeg.has(entry.name), 'lb-row--low-health': treadingWater.has(entry.name) }"
+        :class="{ 'lb-row--first': entry.rank === 1, 'lb-row--critical': lastLeg.has(entry.name), 'lb-row--low-health': treadingWater.has(entry.name), 'lb-row--champion': eskimoBros.holders.has(entry.name) }"
         :style="{ '--i': i }"
         @click="expanded = expanded === entry.name ? null : entry.name"
       >
@@ -90,7 +90,7 @@
           <div class="lb-center">
             <div class="lb-name-row">
               <div class="lb-name-line">
-                <span class="lb-name" :class="{ 'lb-name--shimmer': entry.name === pointsLeader, 'lb-name--vaporfire': trending.holders.has(entry.name) && entry.name !== pointsLeader, 'lb-name--critical': lastLeg.has(entry.name), 'lb-name--low-health': treadingWater.has(entry.name) && !lastLeg.has(entry.name) }">{{ entry.name }}</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="LG Duty">🛟</span><span v-if="goldenGlove.holders.has(entry.name)" class="lb-name-glove" title="Gold Glove">🧤</span><span v-if="positionChange.risers.has(entry.name)" class="lb-name-rocket" aria-hidden="true">🚀</span><span v-if="goldenBoot.holders.has(entry.name) || goldenBootGroup.holders.has(entry.name) || goldenBootKnockout.holders.has(entry.name)" class="lb-name-boot" title="Gold Boot">⚡</span>
+                <span class="lb-name" :class="{ 'lb-name--shimmer': entry.name === pointsLeader, 'lb-name--vaporfire': trending.holders.has(entry.name) && entry.name !== pointsLeader, 'lb-name--critical': lastLeg.has(entry.name), 'lb-name--low-health': treadingWater.has(entry.name) && !lastLeg.has(entry.name) }">{{ entry.name }}</span><span v-if="!eskimoBros.holders.has(entry.name)" class="lb-crossbones" aria-hidden="true">☠️</span><span v-if="entry.name === pointsLeader" class="lb-name-crown" aria-hidden="true">👑</span><span v-if="groundskeeper.holders.has(entry.name)" class="lb-name-lifeguard" title="LG Duty">🛟</span><span v-if="goldenGlove.holders.has(entry.name)" class="lb-name-glove" title="Gold Glove">🧤</span><span v-if="positionChange.risers.has(entry.name)" class="lb-name-rocket" aria-hidden="true">🚀</span><span v-if="goldenBoot.holders.has(entry.name) || goldenBootGroup.holders.has(entry.name) || goldenBootKnockout.holders.has(entry.name)" class="lb-name-boot" title="Gold Boot">⚡</span>
                 <span v-if="lastLeg.has(entry.name)" class="lb-teams-left lb-teams-left--critical">1 Team Left</span>
                 <span v-else-if="treadingWater.has(entry.name)" class="lb-teams-left lb-teams-left--low">2 Teams Left</span>
                 <span v-if="trending.holders.has(entry.name)" class="lb-trending-fire" aria-hidden="true">🔥</span>
@@ -108,6 +108,7 @@
                 </button>
               </div>
               <div class="lb-badges">
+                <span v-if="eskimoBros.holders.has(entry.name)" class="lb-picked-winner lb-tooltip-wrap" tabindex="0">🏆 Picked the Winner<span class="lb-tooltip">Picked Spain — 2026 World Cup Champions 🇪🇸</span></span>
                 <span v-if="entry.name === 'Jason'" class="lb-shield lb-tooltip-wrap" tabindex="0">🏆 {{ communityShieldPts }}<span class="lb-tooltip">Community Shield — most points through Group Stage</span></span>
                 <span v-if="groupStagePts[entry.name] > 0 && gsPointsRank[entry.name] !== 1" class="lb-gs-pts lb-tooltip-wrap" :class="{ 'lb-gs-pts--silver': gsPointsRank[entry.name] === 2, 'lb-gs-pts--bronze': gsPointsRank[entry.name] === 3 }" tabindex="0">{{ gsPointsRank[entry.name] === 2 ? '🥈' : gsPointsRank[entry.name] === 3 ? '🥉' : '🌊' }} GS {{ groupStagePts[entry.name] }}<span class="lb-tooltip">{{ gsPointsRank[entry.name] === 2 ? '2nd most' : gsPointsRank[entry.name] === 3 ? '3rd most' : '' }} Points earned during the Group Stage</span></span>
                 <span v-if="goldenBootGroup.holders.has(entry.name)" class="lb-golden-boot lb-tooltip-wrap" tabindex="0">⚡ GB - GS {{ goldenBootGroup.goals }}<span class="lb-tooltip">Gold Boot — most goals scored in the Group Stage</span></span>
@@ -2025,8 +2026,16 @@ const topDaysChart = computed(() => {
 .lb-row:has(.lb-tooltip-wrap:hover),
 .lb-row:has(.lb-tooltip-wrap:focus) { z-index: 50; }
 .lb-row--first { border-color: var(--accent); }
-.lb-row--low-health { animation: lb-low-health 3s ease-in-out infinite; }
-.lb-row--critical   { animation: lb-critical 2s ease-in-out infinite; }
+.lb-row--low-health { animation: none; }
+.lb-row--critical   { animation: none; }
+.lb-row--champion {
+  border-color: rgba(255,210,0,0.45);
+  animation: lb-champion-glow 3s ease-in-out infinite;
+}
+@keyframes lb-champion-glow {
+  0%, 100% { box-shadow: 0 0 16px rgba(255,210,0,0.12), inset 0 0 20px rgba(255,210,0,0.05); border-color: rgba(255,210,0,0.35); }
+  50%       { box-shadow: 0 0 32px rgba(255,210,0,0.28), inset 0 0 40px rgba(255,210,0,0.12); border-color: rgba(255,210,0,0.65); }
+}
 @keyframes lb-low-health {
   0%, 100% { box-shadow: 0 0 0 0 rgba(255,140,0,0), inset 0 0 0 0 rgba(255,140,0,0); }
   50%       { box-shadow: 0 0 12px 2px rgba(255,140,0,0.35), inset 0 0 18px 2px rgba(255,140,0,0.12); }
@@ -2085,12 +2094,24 @@ const topDaysChart = computed(() => {
   0%   { background-position: 0% center; }
   100% { background-position: 300% center; }
 }
-.lb-name--low-health { animation: lb-name-low-health 3s ease-in-out infinite; }
+.lb-crossbones { font-size: 13px; line-height: 1; margin-left: 3px; }
+.lb-picked-winner {
+  background: rgba(255,210,0,0.15); color: #ffd200;
+  border: 1px solid rgba(255,210,0,0.45);
+  font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  padding: 2px 7px; border-radius: 99px;
+  animation: lb-winner-pulse 3s ease-in-out infinite;
+}
+@keyframes lb-winner-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(255,210,0,0.3); }
+  50%       { box-shadow: 0 0 14px rgba(255,210,0,0.65), 0 0 28px rgba(255,210,0,0.2); }
+}
+.lb-name--low-health { animation: none; }
 @keyframes lb-name-low-health {
   0%, 100% { text-shadow: none; }
   50%       { text-shadow: 0 0 10px rgba(255,140,0,0.9), 0 0 22px rgba(255,140,0,0.4); }
 }
-.lb-name--critical { animation: lb-name-critical 2s ease-in-out infinite; }
+.lb-name--critical { animation: none; }
 @keyframes lb-name-critical {
   0%, 100% { text-shadow: none; }
   50%       { text-shadow: 0 0 12px rgba(255,50,50,1), 0 0 28px rgba(255,50,50,0.6); }
