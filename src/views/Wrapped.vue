@@ -1015,9 +1015,9 @@ function rankClass(r) {
   left: 0; right: 0;
   text-align: center;
   font-family: 'Orbitron', system-ui, sans-serif;
-  font-size: 13px; font-weight: 700;
+  font-size: 20px; font-weight: 700;
   letter-spacing: .18em; text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: var(--blue);
   z-index: 12; pointer-events: none;
 }
 
