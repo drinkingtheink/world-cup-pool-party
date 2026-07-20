@@ -596,6 +596,16 @@ function computeBadges(name, entry, teams, teamsSet) {
   if (entry.rank === 2) badges.push({ key: 'runner',  icon: '🥈', name: 'Runner-Up' })
   if (entry.rank === 3) badges.push({ key: 'third',   icon: '🥉', name: 'Third Place' })
 
+  // ── Picked the Winner / Crossbones ───────────────────────────────
+  const _pickers = {}
+  lb.forEach(e => e.teams.forEach(t => { _pickers[t] = (_pickers[t] ?? []).concat(e.name) }))
+  const _maxPicked = Math.max(...Object.values(_pickers).map(p => p.length))
+  const _champTeam = Object.entries(_pickers).find(([,p]) => p.length === _maxPicked)?.[0]
+  if (_champTeam && teams.includes(_champTeam))
+    badges.push({ key: 'winner', icon: '🏆', name: `Picked the Winner (${_champTeam})` })
+  else
+    badges.push({ key: 'crossbones', icon: '☠️', name: "Didn't Pick the Winner" })
+
   // ── Golden Boot — overall ─────────────────────────────────────────
   const bootAll = lb.map(e => ({ name: e.name, g: teamGoalsFor(new Set(e.teams), played) }))
   const maxBoot = Math.max(...bootAll.map(c => c.g))
