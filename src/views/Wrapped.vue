@@ -313,6 +313,9 @@
         {{ currentSlide === SLIDE_COUNT - 1 ? '✓ Done' : '›' }}
       </button>
 
+      <!-- Persistent player name -->
+      <div class="wr-player-name">{{ activePlayer }}</div>
+
     </div>
   </div>
 </template>
@@ -1006,6 +1009,18 @@ function rankClass(r) {
 .pb-arrow { font-size: 16px; color: var(--c); margin-left: 4px; }
 
 /* ── Slideshow shell ──────────────────────────────────────────────── */
+.wr-player-name {
+  position: absolute;
+  bottom: 14px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: 'Orbitron', system-ui, sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  z-index: 12; pointer-events: none;
+}
+
 .wr-show {
   flex: 1; position: relative; overflow: hidden;
   display: flex; flex-direction: column;
